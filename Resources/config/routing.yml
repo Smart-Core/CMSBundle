@@ -1,0 +1,8 @@
+SmartCoreEngineBundle_homepage:
+    pattern:  /{name}
+    defaults: { _controller: SmartCoreEngineBundle:Default:index }
+
+SmartCoreEngineBundle_homepage:
+    pattern:  /
+    defaults: { _controller: SmartCoreEngineBundle:Default:index, name: world }
+    
