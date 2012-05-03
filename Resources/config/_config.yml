@@ -1,0 +1,3 @@
+# Пример конфигурирования
+smart_core_engine:
+    storage: db

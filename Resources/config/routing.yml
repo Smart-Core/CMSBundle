@@ -1,8 +1,99 @@
-SmartCoreEngineBundle_homepage:
-    pattern:  /{name}
-    defaults: { _controller: SmartCoreEngineBundle:Default:index }
-
-SmartCoreEngineBundle_homepage:
-    pattern:  /
-    defaults: { _controller: SmartCoreEngineBundle:Default:index, name: world }
+# ADMIN
+SmartCoreEngineBundle_admin_index:
+    pattern: /admin/
+    defaults:
+        _controller: SmartCore\CMF\Admin::indexAction
+SmartCoreEngineBundle_admin:
+    pattern: /admin/{slug}
+    defaults:
+        _controller: SmartCore\CMF\Admin::runAction
+        slug: ""
+    requirements:
+        slug: ".+"
+# ACTION        
+SmartCoreEngineBundle_action_index:
+    pattern: /action/{node_id}/
+    defaults:
+        _controller: SmartCore\CMF\Action::runAction
+    requirements:
+        node_id: \d+
+SmartCoreEngineBundle_action:
+    pattern: /action/{node_id}/{slug}
+    defaults:
+        _controller: SmartCore\CMF\Action::runAction
+    defaults:
+        slug: ""
+    requirements:
+        slug: ".+"
+        node_id: \d+
+SmartCoreEngineBundle_action_invalid_index:
+    pattern: /action/
+    defaults:
+        _controller: SmartCore\CMF\Action::invalidAction
+SmartCoreEngineBundle_action_invalid:
+    pattern: /action/{slug}
+    defaults:
+        _controller: SmartCore\CMF\Action::invalidAction
+        slug: ""
+    requirements:
+        slug: ".+"
+# AJAX
+SmartCoreEngineBundle_ajax_invalid:
+    pattern: /ajax
+    defaults:
+        _controller: SmartCore\CMF\Ajax::invalidAction
+SmartCoreEngineBundle_ajax_invalid2:
+    pattern: /ajax/
+    defaults:
+        _controller: SmartCore\CMF\Ajax::invalidAction
+SmartCoreEngineBundle_ajax_node_index:
+    pattern: /ajax/{node_id}/
+    defaults:
+        _controller: SmartCore\CMF\Ajax::nodeAction
+        slug: ""    
+    requirements:
+        slug: ".+"    
+        node_id: \d+
+SmartCoreEngineBundle_ajax_node:
+    pattern: /ajax/{node_id}/{slug}
+    defaults:
+        _controller: SmartCore\CMF\Ajax::nodeAction
+        slug: ""    
+    requirements:
+        slug: ".+"    
+        node_id: \d+
+SmartCoreEngineBundle_ajax_index:
+    pattern: /ajax/{object}/
+    defaults:
+        _controller: SmartCore\CMF\Ajax::runAction
+SmartCoreEngineBundle_ajax:
+    pattern: /ajax/{object}/{slug}
+    defaults:
+        _controller: SmartCore\CMF\Ajax::runAction
+        slug: ""
+    requirements:
+        slug: ".+"
+# robots.txt
+SmartCoreEngineBundle_robots_txt:
+    pattern: /robots.txt
+    defaults:
+        _controller: SmartCore\CMF\RobotsTxt::indexAction
+# NODE MAPPER
+SmartCoreEngineBundle_node_mapper:
+    pattern: /{slug}
+    defaults:
+        _controller: SmartCoreEngineBundle:NodeMapper:index
+        #_controller: SmartCore\Component\Engine\NodeMapper::runAction
+        slug: ""
+    requirements:
+        _method:  GET
+        slug: ".+"
+SmartCoreEngineBundle_node_postprocessor:
+    pattern: /{slug}
+    defaults:
+        _controller: SmartCore\Component\Engine\PostProcessor::runAction
+        slug: ""
+    requirements:
+        _method:  POST
+        slug: ".+"
     

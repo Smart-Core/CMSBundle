@@ -1,7 +1,11 @@
-parameters:
+#parameters:
 #    smart_core_engine.example.class: SmartCore\Bundle\EngineBundle\Example
 
 services:
+    db:
+        alias: database_connection
+#    engine.site:
+#        class: SmartCore\Bundle\EngineBundle\
 #    smart_core_engine.example:
 #        class: %smart_core_engine.example.class%
 #        arguments: [@service_id, "plain_value", %parameter%]
