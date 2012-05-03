@@ -4,6 +4,8 @@
 services:
     db:
         alias: database_connection
+    db.logger:
+        class: Doctrine\DBAL\Logging\DebugStack
 #    engine.site:
 #        class: SmartCore\Bundle\EngineBundle\
 #    smart_core_engine.example:

@@ -83,7 +83,6 @@ SmartCoreEngineBundle_node_mapper:
     pattern: /{slug}
     defaults:
         _controller: SmartCoreEngineBundle:NodeMapper:index
-        #_controller: SmartCore\Component\Engine\NodeMapper::runAction
         slug: ""
     requirements:
         _method:  GET
