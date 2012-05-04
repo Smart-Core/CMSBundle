@@ -2,12 +2,36 @@
 #    smart_core_engine.example.class: SmartCore\Bundle\EngineBundle\Example
 
 services:
-    db:
-        alias: database_connection
     db.logger:
-        class: Doctrine\DBAL\Logging\DebugStack
-#    engine.site:
-#        class: SmartCore\Bundle\EngineBundle\
+        class: Doctrine\DBAL\Logging\DebugStack    
+    engine.breadcrumbs:
+        class: SmartCore\Bundle\EngineBundle\Engine\Breadcrumbs
+    engine.env:
+        class: SmartCore\Bundle\EngineBundle\Engine\Environment
+        arguments: [ @service_container ]
+    engine.folder:
+        class: SmartCore\Bundle\EngineBundle\Engine\Folder
+        calls:
+            - [ setContainer, [ @service_container ] ]
+    engine.html:
+        class: SmartCore\Bundle\EngineBundle\Engine\Html
+    engine.site:
+        class: SmartCore\Bundle\EngineBundle\Engine\Site
+        calls:
+            - [ setContainer, [ @service_container ] ]
+            - [ init ]
+        
+    engine.permissions:
+        alias: service_container
+    engine.settings:
+        alias: service_container        
+        
+# Aliases
+    engine.db:
+        alias: database_connection        
+#    engine.environment:
+#        alias: engine.env
+
 #    smart_core_engine.example:
 #        class: %smart_core_engine.example.class%
 #        arguments: [@service_id, "plain_value", %parameter%]

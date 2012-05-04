@@ -1,7 +1,7 @@
 <?php
-namespace SmartCore\Bundle\EngineBundle\Entity;
+namespace SmartCore\Bundle\EngineBundle\Engine;
 
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use SmartCore\Bundle\EngineBundle\Controller\Controller;
 
 class Site extends Controller
 {
@@ -26,13 +26,17 @@ class Site extends Controller
 	protected $robots_txt			= '';
 	protected $root_layout			= '';
 	protected $root_view			= '';
-	
+		
 	/**
 	 * Constructor.
 	 *
-	public function __construct($DB)
+	public function __construct()
 	{
-		parent::__construct();
+//		parent::__construct();
+		
+//		cmf_dump($DB);
+//		cmf_dump(123);
+		
 		//$this->storage = new Storage\Database\Site($DB);
 	}
 	*/
@@ -51,7 +55,8 @@ class Site extends Controller
 	public function init($site_id = false, $domain = false)
 	{
 		// @todo пока так включается сайт по умолчанию, по принципу, самый младший site_id в БД.
-		if (empty($this->Request->Env->dir_sites)) {
+		$dir_sites = $this->Env->get('dir_sites');
+		if (empty($dir_sites)) {
 			$sql = "SELECT site_id FROM {$this->DB->prefix()}engine_sites ORDER BY site_id ASC LIMIT 1";
 			$site_id = $this->DB->fetchObject($sql)->site_id;
 		}
@@ -70,7 +75,7 @@ class Site extends Controller
 				FROM engine_sites AS site, engine_themes AS theme
 				WHERE site.site_id = '$site_id' AND site.theme_id = theme.theme_id AND site.site_id = theme.site_id ";
 			*/
-			$sql = "SELECT * FROM engine_sites WHERE site_id = '$site_id'";
+			$sql = "SELECT * FROM {$this->DB->prefix()}engine_sites WHERE site_id = '$site_id'";
 		}
 		
 		$row = $this->DB->fetchObject($sql);
@@ -97,10 +102,10 @@ class Site extends Controller
 		$this->create_datetime = $row->create_datetime;
 		
 		// Если указан dir_sites, то считается, что применяется мультисайтовый режим.
-		if (strlen($this->Request->Env->dir_sites) == 0) {
-			$this->http_theme = $this->Request->getBasePath() . '/' . $properties['dir_themes'];
+		if (strlen($this->Env->get('dir_sites')) == 0) {
+			$this->http_theme = $this->Env->base_path . $properties['dir_themes'];
 		} else {
-			$this->http_theme = $this->Request->getBasePath() . '/' . $this->Request->Env->dir_sites . $row->site_id . '/' . $properties['dir_themes'];
+			$this->http_theme = $this->Env->base_path . $this->Env->get('dir_sites') . $row->site_id . '/' . $properties['dir_themes'];
 		}
 		
 		return true;
@@ -113,15 +118,25 @@ class Site extends Controller
 	 * @return array
 	 */
 	public function getProperties($site_id = false)
-	{
+	{		
 		if ($this->id === false) {
 			if ($site_id === false) {
+				/*
+				$data = array();
+				foreach ($this as $key => $value) {
+					if ($key == 'container' or $key == 'View') {
+						continue;
+					}
+					$data[$key] = $value;
+				}
+				return $data;
+				*/
 				return null;
 			} else {
 				$this->init($site_id);
 			}
 		}
-	
+		
 		$sql = "SELECT * FROM {$this->DB->prefix()}engine_sites WHERE site_id = '{$site_id}' ";
 		
 		if ($row = $this->DB->fetchObject($sql)) {

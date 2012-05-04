@@ -1,8 +1,8 @@
 <?php 
 
-namespace SmartCore\Bundle\EngineBundle\Entity;
+namespace SmartCore\Bundle\EngineBundle\Engine;
 
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use SmartCore\Bundle\EngineBundle\Controller\Controller;
 
 class Folder extends Controller
 {
@@ -12,14 +12,6 @@ class Folder extends Controller
 	protected $_folder_tree = array();
 	protected $_tree_link = array();
 	protected $_tree_level = 0;
-	
-	/**
-	 * Constructor.
-	 */
-	public function __construct()
-	{
-		parent::__construct();
-	}
 	
 	/**
 	 * Установить условия выборки по состоянию $is_active
@@ -48,7 +40,7 @@ class Folder extends Controller
 	{
 		$sql = "SELECT *
 			FROM {$this->DB->prefix()}engine_folders
-			WHERE site_id = '{$this->Request->Env->Site->getId()}'
+			WHERE site_id = '{$this->Site->getId()}'
 			{$this->_sql_is_active}
 			AND is_deleted = 0
 			AND folder_id = '{$folder_id}' ";
@@ -67,7 +59,7 @@ class Folder extends Controller
 	{
 		$sql = "SELECT *
 			FROM {$this->DB->prefix()}engine_folders
-			WHERE site_id = '{$this->Request->Env->Site->getId()}'
+			WHERE site_id = '{$this->Site->getId()}'
 			{$this->_sql_is_active}
 			AND is_deleted = 0
 			AND uri_part = '{$uri_part}'
@@ -149,7 +141,7 @@ class Folder extends Controller
 				layout = $layout
 			WHERE
 				folder_id = '$folder_id'
-			AND site_id = '{$this->Request->Env->Site->getId()}' ";
+			AND site_id = '{$this->Site->getId()}' ";
 		$this->DB->exec($sql);
 		
 		/*
@@ -158,7 +150,7 @@ class Folder extends Controller
 				title = $title,
 				descr = $descr
 			WHERE folder_id = '$folder_id'
-			AND language_id = '{$this->Request->Env->language_id}'
+			AND language_id = '{$this->Env->language_id}'
 			AND site_id = '{$this->Request->Env->site_id}' ";
 		$this->DB->exec($sql);
 		*/
@@ -191,7 +183,7 @@ class Folder extends Controller
 		// Своеобразный автоинкремент
 		$sql = "SELECT max(folder_id) AS folder_id
 			FROM {$this->DB->prefix()}engine_folders
-			WHERE site_id = '{$this->Request->Env->Site->getId()}' ";
+			WHERE site_id = '{$this->Site->getId()}' ";
 		$folder_id = $this->DB->fetchObject($sql)->folder_id + 1;
 
 		$title = strlen(trim($pd['title'])) == 0 ? $title = "'Новая папка $folder_id'" : $this->DB->quote(trim($pd['title']));
@@ -218,7 +210,7 @@ class Folder extends Controller
 				 is_file, permissions, create_datetime,
 				 owner_id, title, descr, layout)
 			VALUES
-				('$folder_id', '$pid', '{$this->Request->Env->Site->getId()}',
+				('$folder_id', '$pid', '{$this->Site->getId()}',
 				 '$pos', $uri_part, '$is_active',
 				  $redirect_to, $parser_node_id, '$transmit_nodes',
 				 '$is_file', $permissions, NOW(),
@@ -232,7 +224,7 @@ class Folder extends Controller
 					uri_part = '$folder_id'
 				WHERE
 					folder_id = '$folder_id'
-				AND site_id = '{$this->Request->Env->Site->getId()}' ";
+				AND site_id = '{$this->Site->getId()}' ";
 			$this->DB->exec($sql);
 		}
 		
@@ -241,7 +233,7 @@ class Folder extends Controller
 			INSERT INTO {$this->DB->prefix()}engine_folders_translation 
 				(folder_id, site_id, language_id, title, descr)
 			VALUES 
-				('$folder_id', '{$this->Request->Env->Site->getId()}', '{$this->Request->Env->language_id}', $title, $descr) ";
+				('$folder_id', '{$this->Site->getId()}', '{$this->Env->language_id}', $title, $descr) ";
 		$this->DB->exec($sql);
 		*/
 		
@@ -314,7 +306,7 @@ class Folder extends Controller
 	{ 
 		$sql = "SELECT *
 			FROM {$this->DB->prefix()}engine_folders
-			WHERE site_id = '{$this->Request->Env->Site->getId()}'
+			WHERE site_id = '{$this->Site->getId()}'
 			{$this->_sql_is_active}
 			AND is_deleted = 0
 			AND pid = '{$parent_id}'
@@ -328,7 +320,7 @@ class Folder extends Controller
 					$this->_tree_link[$this->_tree_level] = $row->uri_part;
 				}
 				
-				$uri = HTTP_ROOT;
+				$uri = $this->Env->get('base_path');
 				foreach ($this->_tree_link as $value) {
 					$uri .= $value . '/';
 				}
@@ -411,7 +403,7 @@ class Folder extends Controller
 		$this->DB->exec("
 			UPDATE {$this->DB->prefix()}engine_folders SET
 				meta = $meta
-			WHERE site_id = '{$this->Request->Env->Site->getId()}'
+			WHERE site_id = '{$this->Site->getId()}'
 			AND folder_id = '$folder_id' ");
 		return true;
 	}
@@ -427,7 +419,7 @@ class Folder extends Controller
 	{
 		$sql = "SELECT meta 
 			FROM {$this->DB->prefix()}engine_folders
-			WHERE site_id = '{$this->Request->Env->Site->getId()}'
+			WHERE site_id = '{$this->Site->getId()}'
 			AND folder_id = '$folder_id' ";
 		$row = $this->DB->fetchObject($sql);
 		
@@ -444,7 +436,7 @@ class Folder extends Controller
 			$sql = "
 				UPDATE {$this->DB->prefix()}engine_folders SET
 					meta = $meta
-				WHERE site_id = '{$this->Request->Env->Site->getId()}'
+				WHERE site_id = '{$this->Site->getId()}'
 				AND folder_id = '$folder_id' ";
 			$this->DB->exec($sql);
 		}
@@ -483,7 +475,7 @@ class Folder extends Controller
 			$uri .= $value . '/';
 		}
 	
-		return HTTP_ROOT . $uri;
+		return $this->Env->get('base_path') . $uri;
 		//return HTTP_ROOT . Site::getHttpLangPrefix() . $uri;
 	}	
 }

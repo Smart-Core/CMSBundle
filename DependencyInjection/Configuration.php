@@ -20,14 +20,13 @@ class Configuration implements ConfigurationInterface
 		$treeBuilder = new TreeBuilder();
 		$rootNode = $treeBuilder->root('smart_core_engine');
 
-		// Here you should define the parameters that are allowed to
-		// configure your bundle. See the documentation linked above for
-		// more information on that topic.
 		$rootNode
 			->children()
 				->scalarNode('storage')->cannotBeEmpty()->defaultValue('database')->end()
+				->scalarNode('dir_sites')->defaultValue('')->end()
 			->end()
 		;
+		
 		return $treeBuilder;
 	}
 }
