@@ -146,7 +146,7 @@ class View
 	 */
 	public function setTemplateName($name)
 	{
-		$this->__options['template'] = $name;
+		$this->__options['template'] = strtolower($name);
 	}
 	
 	/**

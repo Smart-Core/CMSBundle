@@ -55,7 +55,7 @@ abstract class Module extends Controller
 		// По умолчанию устанавливается имя шаблона, как короткое имея класса, но без префикса 'Module_' и без постфикса '_Admin'.
 		$reflector = new \ReflectionClass(get_class($this));
 		$namespace = str_replace('\Controller', '', $reflector->getNamespaceName());
-		$this->View->setTemplateName(strtolower($reflector->getShortName()));
+		$this->View->setTemplateName($reflector->getShortName());
 		$this->View->setPaths(array(
 			$this->Env->dir_web_root . $this->Env->dir_themes . 'views/' . $namespace,
 			$this->Env->dir_app . 'views/' . $namespace,
