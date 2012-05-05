@@ -3,7 +3,7 @@
 namespace SmartCore\Bundle\EngineBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller as BaseController;
-//use SmartCore\Component\Templater\View;
+use SmartCore\Bundle\EngineBundle\Templater\View;
 
 class Controller extends BaseController
 {
@@ -20,12 +20,11 @@ class Controller extends BaseController
 	 */
 	public function __construct()
 	{
-//		parent::__construct();
 		//$this->View = $this->Templating->getView();
-//		$this->View	= new View();
+		$this->View	= new View();
 	}	
 	
-	public function init()
+	protected function init()
 	{
 		$this->container->get('engine.db')->getConfiguration()->setSQLLogger($this->container->get('db.logger'));
 	}
@@ -37,10 +36,13 @@ class Controller extends BaseController
 	 */
 	public function __get($name)
 	{
+		if (!is_object($this->container)) {
+			throw new \Exception('SmartCore\EngineBundle: Container is not accesible. Service "engine.' . $name . '" fail.');
+		}
+		
 		if ($this->container->has('engine.' . $name)) {
 			return $this->container->get('engine.' . $name);
 		} else {
-			
 			throw new \Exception('SmartCore\EngineBundle: Service "engine.' . strtolower($name) . '" does not register.');
 		}
 	}

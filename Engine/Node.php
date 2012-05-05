@@ -1,8 +1,8 @@
 <?php
 
-namespace SmartCore\Bundle\EngineBundle\Entity;
+namespace SmartCore\Bundle\EngineBundle\Engine;
 
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use SmartCore\Bundle\EngineBundle\Controller\Controller;
 
 class Node extends Controller
 {
@@ -57,7 +57,7 @@ class Node extends Controller
 			FROM {$this->DB->prefix()}engine_nodes
 			LEFT JOIN {$this->DB->prefix()}engine_modules USING (module_id)
 			WHERE node_id = '$node_id'
-			AND site_id = '{$this->Request->Env->Site->getId()}' ";
+			AND site_id = '{$this->Site->getId()}' ";
 		$result = $this->DB->query($sql);
 		if ($result->rowCount() == 1) {
 			$row = $result->fetchObject();
@@ -128,7 +128,7 @@ class Node extends Controller
 			$class .= '_Admin';
 		}
 
-		return new $class($node_id);
+		return new $class($this->container->get('service_container'), $node_id);
 	}
 	
 	/**

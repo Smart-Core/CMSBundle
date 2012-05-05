@@ -1,8 +1,8 @@
 <?php 
 
-namespace SmartCore\Bundle\EngineBundle\Entity;
+namespace SmartCore\Bundle\EngineBundle\Engine;
 
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use SmartCore\Bundle\EngineBundle\Controller\Controller;
 
 class Theme extends Controller
 {
@@ -22,7 +22,7 @@ class Theme extends Controller
 	 */
 	public function __construct($path = '/')
 	{
-		parent::__construct();
+//		parent::__construct();
 		$this->theme_path	= $path;
 		$this->css_path		= $path . 'css/';
 		$this->js_path		= $path . 'js/';

@@ -1,7 +1,7 @@
 <?php
-namespace SmartCore\Component\Engine;
+namespace SmartCore\Bundle\EngineBundle\Engine;
 
-use SmartCore\Framework\Controller;
+use SmartCore\Bundle\EngineBundle\Controller\Controller;
 
 class Permissions extends Controller
 {
@@ -18,9 +18,9 @@ class Permissions extends Controller
 	 * связанными с группами пользователей (добавление, удаление, изменении связей) а также с правами (добавление, удаление 
 	 * действий, изменения значений по умолчанию, )
 	 */
-	public function __construct()
-	{
-		parent::__construct();
+//	public function __construct()
+//	{
+//		parent::__construct();
 		/*
 		// Получаем массив со всеми возможными действиями над всеми объектами и правами по умолчанию для них.
 		$this->default_permissions = array();
@@ -56,7 +56,7 @@ class Permissions extends Controller
 			}
 		}
 		*/
-	}
+//	}
 	
 	/**
 	 * Перестройка значенией.

@@ -459,6 +459,7 @@ class Folder extends Controller
 		$uri = '';
 		
 		$Folder = new Folder();
+		$Folder->setContainer($this->container);
 		
 		while($folder_id != 1) {
 			$folder = $Folder->getDataById($folder_id);

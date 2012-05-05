@@ -1,13 +1,15 @@
 <?php 
 
-namespace SmartCore\Bundle\EngineBundle\Engine;
+namespace SmartCore\Bundle\EngineBundle\Templater\Helper;
 
-class Breadcrumbs //  extends View
+class Breadcrumbs implements \Iterator, \Countable
 {
+	protected $_position = 0;
+	
 	/**
 	 * Массив с хлебными крошками.
 	 */
-	protected $breadcrumbs = array();
+	protected $_breadcrumbs = array();
 	
 	/**
 	 * Constructor.
@@ -17,12 +19,42 @@ class Breadcrumbs //  extends View
 		//parent::__construct(array('action' => 'defaultRender'));
 	}
 	
+	public function rewind() 
+	{
+		$this->_position = 0;
+	}
+
+	public function current() 
+	{
+		return $this->_breadcrumbs[$this->_position];
+	}
+
+	public function key() 
+	{
+		return $this->_position;
+	}
+
+	public function next() 
+	{
+		++$this->_position;
+	}
+
+	public function valid() 
+	{
+		return isset($this->_breadcrumbs[$this->_position]);
+	}
+
+	public function count()
+	{
+		return count($this->_breadcrumbs);
+	}
+
 	/**
 	 * Установить данные.
 	 */
 	public function assign($data)
 	{
-		$this->breadcrumbs = $data;
+		$this->_breadcrumbs = $data;
 	}
 	
 	/**
@@ -34,7 +66,7 @@ class Breadcrumbs //  extends View
 	 */
 	public function add($uri, $title, $descr = false)
 	{
-		$this->breadcrumbs[] = array(
+		$this->_breadcrumbs[] = array(
 			'uri'	=> $uri,
 			'title' => $title,
 			'descr' => $descr,
@@ -52,7 +84,7 @@ class Breadcrumbs //  extends View
 		
 		$data = array();
 		$current_uri = '';
-		foreach ($this->breadcrumbs as $key => $value) {
+		foreach ($this->_breadcrumbs as $key => $value) {
 			$data[$key] = $value;
 			if (cmf_is_absolute_path($value['uri'])) {
 				$current_uri = $value['uri'];
@@ -71,18 +103,28 @@ class Breadcrumbs //  extends View
 	}
 	
 	/**
+	 * NewFunction
+	 *
+	 * @param
+	 */
+	public function all()
+	{
+		return $this->get();
+	}
+	
+	/**
 	 * Получение ссылки на последнюю крошку.
 	 */
 	public function getLastUri()
 	{
-		$item = $this->get(count($this->breadcrumbs) - 1);
+		$item = $this->get(count($this->_breadcrumbs) - 1);
 		return $item['uri'];
 	}
 	
 	/**
 	 * Отрисовщик по умолчанию.
 	 */
-	public function defaultRender()
+	public function display()
 	{
 		$bc = $this->get();
 		$cnt = count($bc);

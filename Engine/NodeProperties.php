@@ -1,24 +1,7 @@
 <?php
 
-namespace SmartCore\Component\Engine;
+namespace SmartCore\Bundle\EngineBundle\Engine;
 
-/**
- * Node Properties.
- * 
- * @author		Artem Ryzhkov
- * @category	System
- * @package		Kernel
- * @copyright	Copyright &copy; 2010-2012 Smart Core CMF 
- * @link		http://smart-core.org/
- * @license		http://opensource.org/licenses/gpl-2.0
- * 
- * @uses		DB
- * @uses		Env
- * @uses		Kernel
- * @uses		Node
- * 
- * @version		2012-01-14.0 
- */
 class NodeProperties
 {
 	/**
@@ -50,20 +33,22 @@ class NodeProperties
 	 */
 	private $__events = null;
 	
+	protected $container;
+	
 	/**
 	 * Constructor.
 	 *
 	 * @param array $properties
 	 */
-	public function __construct($node_id)
+	public function __construct($node_id, $container)
 	{
 		//$properties = Kernel::getNodeData($node_id);
 		$properties = null;
 		
 		if ($properties === null) {
-			$Node = new Node();
-			$properties = $Node->getProperties($node_id);
-			unset($Node);
+//			$Node = new Node();
+			$properties = $container->get('engine.node')->getProperties($node_id);
+//			unset($Node);
 		}
 		
 		$this->id			= $node_id;

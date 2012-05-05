@@ -1,6 +1,6 @@
 <?php
 
-namespace SmartCore\Bundle\EngineBundle\Engine;
+namespace SmartCore\Bundle\EngineBundle\Templater\Helper;
 
 /**
  * @todo поддерку тега <base>
