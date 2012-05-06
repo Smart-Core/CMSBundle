@@ -7,18 +7,20 @@ function cmf_is_absolute_path($path)
 
 function cmf_profile($container = null)
 {
-	echo '<hr />', memory_get_usage(), ' (', memory_get_peak_usage(true), ')<br />', microtime(true) - SMARTCORE_START_TIME , "<br />\n";
+	echo '<hr /><b>', round(microtime(true) - SMARTCORE_START_TIME, 3), '</b> sec', 
+		', <b>' , memory_get_usage(), '</b> current usage bytes, (<b>', memory_get_peak_usage(true), '</b> peak usage bytes )', 
+		"\n";
 	
 	if ($container and $container->has('db.logger')) {
 		$logger = $container->get('db.logger');
-		echo '<br />Запросов в БД: <b>' . $logger->currentQuery . '</b>';
+		echo '<br />DB query count: <b>' . $logger->currentQuery . '</b>';
 		
 		$total_time = 0;
 		foreach ($logger->queries as $value) {
 			$total_time += $value['executionMS'];
 		}
 		
-		echo ', суммарное время исполнения: <b>' . $total_time . '</b>';
+		echo ' (summary execution time: <b>' . round($total_time, 3) . '</b> sec)' . "\n";
 		
 //		cmf_dump($logger);
 //		cmf_dump($logger->queries);
