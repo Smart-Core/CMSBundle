@@ -5,10 +5,10 @@ function cmf_is_absolute_path($path)
 	return (strpos($path, '/') === 0 or strpos($path, ':') === 1) ? true : false;
 }
 
-function cmf_profile($container = null)
+function cmf_profile($container = null, $precision = 3)
 {
-	echo '<hr /><b>', round(microtime(true) - SMARTCORE_START_TIME, 3), '</b> sec', 
-		', <b>' , memory_get_usage(), '</b> current usage bytes, (<b>', memory_get_peak_usage(true), '</b> peak usage bytes )', 
+	echo '<hr />Execution time: <b>', round(microtime(true) - SMARTCORE_START_TIME, $precision), '</b> sec', 
+		'. Memory usage <b>' , memory_get_usage(), '</b> bytes (<b>', memory_get_peak_usage(true), '</b> peak)',
 		"\n";
 	
 	if ($container and $container->has('db.logger')) {
@@ -20,7 +20,7 @@ function cmf_profile($container = null)
 			$total_time += $value['executionMS'];
 		}
 		
-		echo ' (summary execution time: <b>' . round($total_time, 3) . '</b> sec)' . "\n";
+		echo ' (summary execution time: <b>' . round($total_time, $precision) . '</b> sec)' . "\n";
 		
 //		cmf_dump($logger);
 //		cmf_dump($logger->queries);
