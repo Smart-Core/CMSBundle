@@ -1,3 +1,15 @@
+parameters:
+    # путь для хранения данных (структура сайтов, данные модулей и т.д.)
+    smart_core_engine_data_dir: %kernel.root_dir%/usr/site
+
 # Пример конфигурирования
 smart_core_engine:
-    storage: db
+    # database (db), filesystem (fs)
+    storage: database
+        # настройки для 'database'
+        connection: @engine.db
+        # настройки для 'filesystem'
+        path: %smart_core_engine_data_dir%
+    # использовать ли мультисайтовый режим, если пустое значение - то нет.
+    dir_sites: site/
+    default_site_id: 1
