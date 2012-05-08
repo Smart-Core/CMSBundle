@@ -320,7 +320,7 @@ class Folder extends Controller
 					$this->_tree_link[$this->_tree_level] = $row->uri_part;
 				}
 				
-				$uri = $this->Env->get('base_path');
+				$uri = $this->Env->get('base_url');
 				foreach ($this->_tree_link as $value) {
 					$uri .= $value . '/';
 				}
@@ -476,7 +476,7 @@ class Folder extends Controller
 			$uri .= $value . '/';
 		}
 	
-		return $this->Env->get('base_path') . $uri;
+		return $this->Env->get('base_url') . $uri;
 		//return HTTP_ROOT . Site::getHttpLangPrefix() . $uri;
 	}	
 }

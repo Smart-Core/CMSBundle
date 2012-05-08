@@ -14,11 +14,13 @@ class Environment extends ParameterBag
 	 */
 	public function __construct(ContainerInterface $container)
 	{
-		$kernel = $container->get('kernel');
-		$base_path = $container->get('request')->getBasePath() . '/';
+		$kernel		= $container->get('kernel');
+		$base_path	= $container->get('request')->getBasePath() . '/';
+		$base_url	= $container->get('request')->getBaseUrl() . '/';
 				
 		parent::__construct(array(
 			'base_path'				=> $base_path,
+			'base_url'				=> $base_url,
 			'current_folder_id'		=> 1,
 			'current_folder_path'	=> $base_path,
 			'dir_app'				=> $kernel->getRootDir()  . '/',

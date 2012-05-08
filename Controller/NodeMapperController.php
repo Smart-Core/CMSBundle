@@ -46,11 +46,19 @@ class NodeMapperController extends Controller
 	{
 		$this->init();
 
-		$data = array();
-		$sql = "SELECT * FROM text_items ";
-		$result = $this->DB->query($sql);
-		while ($row = $result->fetchObject()) {
-			$data[$row->item_id] = $row->text;
+//		cmf_dump($this->get('security.context')->getToken());
+		
+//		cmf_dump($this->container->getParameterBag());
+//		cmf_dump($this->container->getParameter('security.role_hierarchy.roles'));
+		
+
+		if ($this->get('security.context')->isGranted('IS_AUTHENTICATED_ANONYMOUSLY')) {
+//			echo "123<br />";
+		}
+		
+		if ($this->get('security.context')->isGranted('ROLE_GUEST')) {
+//		if ($this->get('security.context')->isGranted('ROLE_ASD')) {
+			echo '<a href="' . $this->Env->base_url . 'logout">logout</a>';
 		}
 		
 		$folders = $this->router($this->get('request')->getPathInfo());
@@ -157,7 +165,7 @@ class NodeMapperController extends Controller
 	{
 		$folders = array();
 		
-		$current_folder_path = $this->Env->get('base_path');
+		$current_folder_path = $this->Env->get('base_url');
 		$router_node_id = null;
 		$folder_pid = 0;
 //		$Folder = new Folder();
