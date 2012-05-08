@@ -43,12 +43,10 @@ class NodeProperties
 	public function __construct($node_id, $container)
 	{
 		//$properties = Kernel::getNodeData($node_id);
-		$properties = null;
+		$properties = null; // @todo 
 		
 		if ($properties === null) {
-//			$Node = new Node();
 			$properties = $container->get('engine.node')->getProperties($node_id);
-//			unset($Node);
 		}
 		
 		$this->id			= $node_id;
@@ -56,7 +54,7 @@ class NodeProperties
 		$this->folder_id	= $properties['folder_id'];
 		$this->module_id	= $properties['module_id'];
 		$this->block_id		= $properties['block_id'];
-		$this->params		= unserialize($properties['params']);
+		$this->params		= empty($properties['params']) ? array() : unserialize($properties['params']);
 		$this->plugins		= $properties['plugins'];
 		$this->route_params	= $properties['route_params'];
 		$this->permissions	= $properties['permissions'];
