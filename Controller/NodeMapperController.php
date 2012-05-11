@@ -46,20 +46,22 @@ class NodeMapperController extends Controller
 	{
 		$this->init();
 
-//		cmf_dump($this->get('security.context')->getToken());
+//		cmf_dump($user = $this->container->get('security.context')->getToken()->getUser());
 		
 //		cmf_dump($this->container->getParameterBag());
 //		cmf_dump($this->container->getParameter('security.role_hierarchy.roles'));
 		
-
+		/*
 		if ($this->get('security.context')->isGranted('IS_AUTHENTICATED_ANONYMOUSLY')) {
 //			echo "123<br />";
 		}
+		
 		
 		if ($this->get('security.context')->isGranted('ROLE_GUEST')) {
 //		if ($this->get('security.context')->isGranted('ROLE_ASD')) {
 			echo '<a href="' . $this->Env->base_url . 'logout">logout</a>';
 		}
+		*/
 		
 		$folders = $this->router($this->get('request')->getPathInfo());
 		
