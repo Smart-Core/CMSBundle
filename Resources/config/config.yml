@@ -1,0 +1,8 @@
+# Пример конфигурирования
+smart_core_engine:
+    storage: db
+    
+security:
+    role_hierarchy:
+        ROLE_ROOT: [ROLE_USER, ROLE_ADMIN, ROLE_GUEST, ROLE_SUPER_ADMIN]
+        ROLE_SUPER_ADMIN: [ROLE_ADMIN, ROLE_SUPER_ADMIN, ROLE_GUEST]
