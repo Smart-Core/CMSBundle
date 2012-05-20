@@ -1,11 +1,16 @@
 <?php
 namespace SmartCore\Bundle\EngineBundle\Engine;
 
-use SmartCore\Bundle\EngineBundle\Controller\Controller;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
-class Permissions extends Controller
+class Permissions
 {
-	private $default_permissions;
+	private $DB;
+	private $site_id;	
+	private $permissions = array();
+	private $user_roles = array();
+	
+	// @todo remove!
 	private $user_groups;
 	
 	/**
@@ -18,45 +23,47 @@ class Permissions extends Controller
 	 * связанными с группами пользователей (добавление, удаление, изменении связей) а также с правами (добавление, удаление 
 	 * действий, изменения значений по умолчанию, )
 	 */
-//	public function __construct()
-//	{
-//		parent::__construct();
-		/*
-		// Получаем массив со всеми возможными действиями над всеми объектами и правами по умолчанию для них.
-		$this->default_permissions = array();
-		$sql = "SELECT action, default_access, object FROM {$this->DB->prefix()}engine_permissions";
+	public function __construct(ContainerInterface $container)
+	{
+		$this->DB = $container->get('engine.db');
+		$this->user_roles = $container->get('engine.user')->getRoles();
+		$this->site_id = $container->get('engine.site')->getId();
+		
+//		cmf_dump($this->user_roles);
+		
+//		cmf_dump($container->getParameter('security.role_hierarchy.roles'));
+		
+		// @todo вычисление какие группы прав присущи заданному сайту.
+		$sql = "SELECT group_id, name, default_access FROM {$this->DB->prefix()}engine_permissions";
 		$result = $this->DB->query($sql);
 		while ($row = $result->fetchObject()) {
-			$this->default_permissions[$row->object][$row->action] = $row->default_access;
+			$this->permissions[$row->group_id][$row->name] = $row->default_access;
 		}
 		
-		// Накладываем права по умолчанию прописынные для определённых групп.
-		// В итоге имеем массив $this->default_permissions со всеми дейсвиями с учетом коррекий по группам пользователей.
-		$this->user_groups = $this->User_Groups->getCurrentUsersGroupList(); // @todo возможно неоптимально.
-
 		$begin = true;
 		$where = 'WHERE ';
-		foreach ($this->user_groups as $key => $value) {
+		foreach ($this->user_roles as $role) {
 			if ($begin) {
 				$begin = false;
 			} else {
 				$where .= ' OR';
 			}
-			$where .= " user_group_id = '$key'";
+			$where .= " role_id = '$role'";
 		}
+		
 		if ($begin === false) {
-			$sql = "SELECT object, action, user_group_id, max(access) AS access 
+			$sql = "SELECT permission, max(access) AS access
 				FROM {$this->DB->prefix()}engine_permissions_defaults
 				$where
-				AND site_id = '{$this->Env->site_id}' 
-				GROUP BY action, object ";
+				AND site_id = '{$this->site_id}' 
+				GROUP BY permission";
 			$result = $this->DB->query($sql);
 			while ($row = $result->fetchObject()) {
-				$this->default_permissions[$row->object][$row->action] = $row->access;
+				$temp = explode(':', $row->permission);	
+				$this->permissions[$temp[0]][$temp[1]] = $row->access;
 			}
 		}
-		*/
-//	}
+	}
 	
 	/**
 	 * Перестройка значенией.

@@ -19,8 +19,7 @@ services:
             - [ setContainer, [ @service_container ] ]
     engine.permissions:
         class: SmartCore\Bundle\EngineBundle\Engine\Permissions
-        calls:
-            - [ setContainer, [ @service_container ] ]
+        arguments: [ @service_container ]
     engine.theme:
         class: SmartCore\Bundle\EngineBundle\Engine\Theme
         calls:
@@ -37,15 +36,17 @@ services:
         calls:
             - [ setContainer, [ @service_container ] ]
             - [ init ]
-        
     engine.settings:
         alias: service_container        
+    engine.user:
+        class: SmartCore\Bundle\EngineBundle\Engine\User
+        arguments: [ @service_container ]
         
 # Aliases
     engine.db:
         alias: database_connection        
-#    engine.environment:
-#        alias: engine.env
+    engine.environment:
+        alias: engine.env
 
 #    smart_core_engine.example:
 #        class: %smart_core_engine.example.class%
