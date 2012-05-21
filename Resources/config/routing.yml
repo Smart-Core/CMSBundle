@@ -90,7 +90,7 @@ SmartCoreEngineBundle_node_mapper:
 SmartCoreEngineBundle_node_postprocessor:
     pattern: /{slug}
     defaults:
-        _controller: SmartCore\Component\Engine\PostProcessor::runAction
+        _controller: SmartCoreEngineBundle:PostProcessor:index
         slug: ""
     requirements:
         _method:  POST

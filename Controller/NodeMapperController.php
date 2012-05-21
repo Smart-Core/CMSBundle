@@ -47,19 +47,12 @@ class NodeMapperController extends Controller
 		$this->init();
 
 //		cmf_dump($user = $this->container->get('security.context')->getToken()->getUser());
-		
 //		cmf_dump($this->container->getParameterBag());
 //		cmf_dump($this->container->getParameter('security.role_hierarchy.roles'));
 		
 		/*
 		if ($this->get('security.context')->isGranted('IS_AUTHENTICATED_ANONYMOUSLY')) {
 //			echo "123<br />";
-		}
-		
-		
-		if ($this->get('security.context')->isGranted('ROLE_GUEST')) {
-//		if ($this->get('security.context')->isGranted('ROLE_ASD')) {
-			echo '<a href="' . $this->Env->base_url . 'logout">logout</a>';
 		}
 		*/
 		
@@ -82,8 +75,6 @@ class NodeMapperController extends Controller
 				//'debug'			=> true,
 			),
 		));
-		
-//		echo __DIR__;
 		
 		$reflector = new \ReflectionClass('SmartCore\Bundle\EngineBundle\SmartCoreEngineBundle');
 		$this->View->setPaths(array(
@@ -193,9 +184,9 @@ class NodeMapperController extends Controller
 			if ($router_node_id !== null) {
 				// выполняется часть URI парсером модуля и возвращается результат работы, в дальнейшем он будет передан самой ноде.
 				// @todo сделать создание объекта модуля через статический вызов Ноде.
-				$Node = new Node();
-				$Module = $Node->getModuleInstance($router_node_id);
-				$module_route = $Module->router(str_replace($current_folder_path, '', substr(HTTP_ROOT, 0, -1) . $slug));
+//				$Node = new Node();
+				$Module = $this->Node->getModuleInstance($router_node_id);
+				$module_route = $Module->router(str_replace($current_folder_path, '', substr($this->Env->base_path, 0, -1) . $slug));
 				unset($Module);
 				
 				// Парсер модуля вернул положительный ответ.
@@ -314,7 +305,7 @@ class NodeMapperController extends Controller
 			
 			$sql = false;
 			if ($parsed_uri_value['is_inherit_nodes'] == 1) { // в этой папке есть ноды, которые наследуются...
-				$sql = "SELECT n.module_id, n.node_id, n.params, n.cache_params, n.plugins, n.database_id, 
+				$sql = "SELECT n.module_id, n.node_id, n.params, n.cache_params, n.plugins, n.database_id, n.action,
 						n.permissions, n.is_cached, n.block_id AS block_id,	n.node_action_mode
 					FROM {$this->DB->prefix()}engine_nodes AS n,
 						{$this->DB->prefix()}engine_blocks_inherit AS bi
@@ -358,6 +349,7 @@ class NodeMapperController extends Controller
 				$nodes_list[$row->node_id] = array(
 					'folder_id'		=> $folder_id,
 					'module_id'		=> $row->module_id,
+					'action'		=> $row->action,
 					'block_id'		=> $row->block_id,
 					'params'		=> $row->params,
 					'cache_params'	=> $row->cache_params,
@@ -484,11 +476,14 @@ class NodeMapperController extends Controller
 				*/
 				
 				$Module = $this->Node->getModuleInstance($node_id, false);
-				
 				if (empty($node_properties['route_params'])) {
-					$Module->indexAction($node_properties['route_params']);
+					$Module->{$node_properties['action'] . 'Action'}($node_properties['route_params']);
 				} else {
-					$Module->$node_properties['route_params']['action']($node_properties['route_params']['params']);
+					if (isset($node_properties['route_params']['params'])) {
+						$Module->{$node_properties['route_params']['action'] . 'Action'}($node_properties['route_params']['params']);
+					} else {
+						$Module->{$node_properties['route_params']['action'] . 'Action'}();
+					}
 				}
 				
 				// Указать шаблонизатору, что надо сохранить эту ноду как html.

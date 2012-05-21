@@ -67,3 +67,10 @@ function cmf_dump($input, $title = false, $to_file = false)
 		}
 	}
 }
+
+function cmf_redirect($url = null)
+{
+	$str = (null == $url) ? $_SERVER['REQUEST_URI'] : $url;
+	header('Location: ' . $str);
+	exit;
+}

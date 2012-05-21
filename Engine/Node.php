@@ -67,6 +67,7 @@ class Node extends Controller
 					'is_active'		=> $row->is_active,
 					'folder_id'		=> $row->folder_id,
 					'module_id'		=> $row->module_id,
+					'action'		=> $row->action,
 					'module_class'	=> $row->class,
 					'block_id'		=> $row->block_id,
 					'route_params'	=> false,
@@ -214,7 +215,7 @@ class Node extends Controller
 		$sql_folder = $folder_id === false ? '' : " AND folder_id = '$folder_id' ";
 		
 		$nodes = array();
-		$sql = "SELECT n.node_id, n.block_id, n.folder_id, n.pos, n.module_id,
+		$sql = "SELECT n.node_id, n.block_id, n.folder_id, n.pos, n.module_id, n.action,
 				n.params, n.plugins, n.is_cached, n.is_active, n.database_id, 
 				n.descr, b.name AS block_name, b.descr AS block_descr
 			FROM {$this->DB->prefix()}engine_nodes AS n
@@ -231,6 +232,7 @@ class Node extends Controller
 				'folder_id'		=> $row->folder_id,
 				'pos'			=> $row->pos,
 				'module_id'		=> $row->module_id,
+				'action'		=> $row->action,
 				'database_id'	=> $row->database_id,
 				'params'		=> $row->params,
 				'plugins'		=> $row->plugins,
@@ -288,6 +290,7 @@ class Node extends Controller
 		$cache_params	= $cache_params_yaml == 'cache_params_yaml = NULL' ? 'cache_params = NULL' : 'cache_params = ' . $this->DB->quote(serialize(Zend_Config_Yaml::decode($pd['cache_params_yaml'])));
 		$descr = $this->DB->quote(trim($pd['descr']));
 		
+		// @todo action		
 		$sql = "
 			UPDATE {$this->DB->prefix()}engine_nodes SET
 				descr = $descr,
