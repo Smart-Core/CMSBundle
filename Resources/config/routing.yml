@@ -1,9 +1,9 @@
 # ADMIN
-SmartCoreEngineBundle_admin_index:
+sc_engine_admin_index:
     pattern: /admin/
     defaults:
         _controller: SmartCore\CMF\Admin::indexAction
-SmartCoreEngineBundle_admin:
+sc_engine_admin:
     pattern: /admin/{slug}
     defaults:
         _controller: SmartCore\CMF\Admin::runAction
@@ -11,13 +11,13 @@ SmartCoreEngineBundle_admin:
     requirements:
         slug: ".+"
 # ACTION        
-SmartCoreEngineBundle_action_index:
+sc_engine_action_index:
     pattern: /action/{node_id}/
     defaults:
         _controller: SmartCore\CMF\Action::runAction
     requirements:
         node_id: \d+
-SmartCoreEngineBundle_action:
+sc_engine_action:
     pattern: /action/{node_id}/{slug}
     defaults:
         _controller: SmartCore\CMF\Action::runAction
@@ -26,11 +26,11 @@ SmartCoreEngineBundle_action:
     requirements:
         slug: ".+"
         node_id: \d+
-SmartCoreEngineBundle_action_invalid_index:
+sc_engine_action_invalid_index:
     pattern: /action/
     defaults:
         _controller: SmartCore\CMF\Action::invalidAction
-SmartCoreEngineBundle_action_invalid:
+sc_engine_action_invalid:
     pattern: /action/{slug}
     defaults:
         _controller: SmartCore\CMF\Action::invalidAction
@@ -38,15 +38,15 @@ SmartCoreEngineBundle_action_invalid:
     requirements:
         slug: ".+"
 # AJAX
-SmartCoreEngineBundle_ajax_invalid:
+sc_engine_ajax_invalid:
     pattern: /ajax
     defaults:
         _controller: SmartCore\CMF\Ajax::invalidAction
-SmartCoreEngineBundle_ajax_invalid2:
+sc_engine_ajax_invalid2:
     pattern: /ajax/
     defaults:
         _controller: SmartCore\CMF\Ajax::invalidAction
-SmartCoreEngineBundle_ajax_node_index:
+sc_engine_ajax_node_index:
     pattern: /ajax/{node_id}/
     defaults:
         _controller: SmartCore\CMF\Ajax::nodeAction
@@ -54,7 +54,7 @@ SmartCoreEngineBundle_ajax_node_index:
     requirements:
         slug: ".+"    
         node_id: \d+
-SmartCoreEngineBundle_ajax_node:
+sc_engine_ajax_node:
     pattern: /ajax/{node_id}/{slug}
     defaults:
         _controller: SmartCore\CMF\Ajax::nodeAction
@@ -62,11 +62,11 @@ SmartCoreEngineBundle_ajax_node:
     requirements:
         slug: ".+"    
         node_id: \d+
-SmartCoreEngineBundle_ajax_index:
+sc_engine_ajax_index:
     pattern: /ajax/{object}/
     defaults:
         _controller: SmartCore\CMF\Ajax::runAction
-SmartCoreEngineBundle_ajax:
+sc_engine_ajax:
     pattern: /ajax/{object}/{slug}
     defaults:
         _controller: SmartCore\CMF\Ajax::runAction
@@ -74,12 +74,12 @@ SmartCoreEngineBundle_ajax:
     requirements:
         slug: ".+"
 # robots.txt
-SmartCoreEngineBundle_robots_txt:
+sc_engine_robots_txt:
     pattern: /robots.txt
     defaults:
         _controller: SmartCore\CMF\RobotsTxt::indexAction
 # NODE MAPPER
-SmartCoreEngineBundle_node_mapper:
+sc_engine_node_mapper:
     pattern: /{slug}
     defaults:
         _controller: SmartCoreEngineBundle:NodeMapper:index
@@ -87,7 +87,7 @@ SmartCoreEngineBundle_node_mapper:
     requirements:
         _method:  GET
         slug: ".+"
-SmartCoreEngineBundle_node_postprocessor:
+sc_engine_node_postprocessor:
     pattern: /{slug}
     defaults:
         _controller: SmartCoreEngineBundle:PostProcessor:index
