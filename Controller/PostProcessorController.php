@@ -15,6 +15,7 @@ class PostProcessorController extends Controller
 		// @todo УБРАТЬ, это сейчас тут тесты с регистрацией...
 		if (isset($_POST['fos_user_registration_form']) or
 			isset($_POST['fos_user_profile_form']) or
+			isset($_POST['fos_user_resetting_form']) or
 			isset($_POST['fos_user_change_password_form'])
 		) {
 			return $this->forward('SmartCoreEngineBundle:NodeMapper:index', array('slug' => $slug));
