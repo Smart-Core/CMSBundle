@@ -46,9 +46,9 @@ class NodeMapperController extends Controller
 	{
 		$this->init();
 
-//		cmf_dump($user = $this->container->get('security.context')->getToken()->getUser());
-//		cmf_dump($this->container->getParameterBag());
-//		cmf_dump($this->container->getParameter('security.role_hierarchy.roles'));
+//		sc_dump($user = $this->container->get('security.context')->getToken()->getUser());
+//		sc_dump($this->container->getParameterBag());
+//		sc_dump($this->container->getParameter('security.role_hierarchy.roles'));
 		
 		/*
 		if ($this->get('security.context')->isGranted('IS_AUTHENTICATED_ANONYMOUSLY')) {
@@ -58,7 +58,7 @@ class NodeMapperController extends Controller
 		
 		$folders = $this->router($this->get('request')->getPathInfo());
 		
-//		cmf_dump($folders);
+//		sc_dump($folders);
 		
 		foreach ($folders as $folder) {
 			$this->Breadcrumbs->add($folder['uri'], $folder['title'], $folder['descr']);
@@ -116,12 +116,12 @@ class NodeMapperController extends Controller
 		
 		$nodes_list = $this->buildNodesList($folders);
 		
-//		cmf_dump($nodes_list);
+//		sc_dump($nodes_list);
 		
 		$this->buildModulesData($nodes_list);
 		
-//		cmf_dump($this->View->block);
-//		cmf_dump($this->Html);
+//		sc_dump($this->View->block);
+//		sc_dump($this->Html);
 		
 		/*
 		$View = $this->container->get('templating')->render('SmartCoreEngineBundle:Default:index.html.twig', array(
@@ -130,19 +130,19 @@ class NodeMapperController extends Controller
 		));
 		*/
 		
-//		cmf_dump($this->Breadcrumbs);
+//		sc_dump($this->Breadcrumbs);
 		
-//		cmf_dump($data);
-//		cmf_dump($this->get('engine.env'));
-//		cmf_dump($this->Env);
-//		cmf_dump($this->Site);
-//		cmf_dump($this->Site->getProperties(1));
-//		cmf_dump($this->Folder);
+//		sc_dump($data);
+//		sc_dump($this->get('engine.env'));
+//		sc_dump($this->Env);
+//		sc_dump($this->Site);
+//		sc_dump($this->Site->getProperties(1));
+//		sc_dump($this->Folder);
 		
-//		cmf_dump(BASE_PATH);
+//		sc_dump(BASE_PATH);
 		
-//		cmf_dump($this->get('engine.site'));
-//		cmf_dump($this->getUser());
+//		sc_dump($this->get('engine.site'));
+//		sc_dump($this->getUser());
 		
 //		return new Response("Hello $slug !", $this->status);
 		return new Response($this->View, $this->status);
@@ -459,7 +459,7 @@ class NodeMapperController extends Controller
 			// Попытка взять HTML кеш ноды.
 			if (_IS_CACHE_NODES
 				and !empty($cache_params)
-				and $this->Cookie->cmf_frontend_mode !== 'edit'
+				and $this->Cookie->sc_frontend_mode !== 'edit'
 				and $html_cache = $this->Cache_Node->loadHtml($cache_params['id'])
 			) {
 				// $this->EE->data[$block_name][$node_id]['html_cache'] = $html_cache; @todo !!!!!!!!
@@ -489,7 +489,7 @@ class NodeMapperController extends Controller
 				// Указать шаблонизатору, что надо сохранить эту ноду как html.
 				// @todo ПЕРЕДЕЛАТЬ!!! подумать где выполнять кеширование, внутри объекта View или где-то снаружи.
 				// @todo ВАЖНО подумать как тут поступить т.к. эта кука может стоять у гостя!!!
-				if (_IS_CACHE_NODES and !empty($cache_params) and $this->Cookie->cmf_frontend_mode !== 'edit') {
+				if (_IS_CACHE_NODES and !empty($cache_params) and $this->Cookie->sc_frontend_mode !== 'edit') {
 //					$this->EE->data[$block_name][$node_id]['store_html_cache'] = $Module->getCacheParams($cache_params);
 				} 
 
@@ -497,7 +497,7 @@ class NodeMapperController extends Controller
 				// @todo сделать нормальную проверку на возможность управления нодой. сейчас пока считается, что юзер с ИД = 1 имеет право админить.
 				// @todo также тут надо учитывать режим Фронт-Админки. если он выключен, то вытягивать фронт-контролсы нет смысла.
 				
-				//if ($this->Permissions->isAllowed('node', 'write', $node_properties['permissions']) and $this->Cookie->cmf_frontend_mode == 'edit') {
+				//if ($this->Permissions->isAllowed('node', 'write', $node_properties['permissions']) and $this->Cookie->sc_frontend_mode == 'edit') {
 				if ( false ) {
 
 					$front_controls = $Module->getFrontControls();

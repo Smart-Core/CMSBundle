@@ -29,9 +29,9 @@ class Permissions
 		$this->user_roles = $container->get('engine.user')->getRoles();
 		$this->site_id = $container->get('engine.site')->getId();
 		
-//		cmf_dump($this->user_roles);
+//		sc_dump($this->user_roles);
 		
-//		cmf_dump($container->getParameter('security.role_hierarchy.roles'));
+//		sc_dump($container->getParameter('security.role_hierarchy.roles'));
 		
 		// @todo вычисление какие группы прав присущи заданному сайту.
 		$sql = "SELECT group_id, name, default_access FROM {$this->DB->prefix()}engine_permissions";
@@ -166,7 +166,7 @@ class Permissions
 					}
 				}
 			}
-			// cmf_dump($permissions, 'массив permissions после разбора строки');
+			// sc_dump($permissions, 'массив permissions после разбора строки');
 
 			foreach ($this->user_groups as $key => $value) {
 				if (isset($permissions[$key][$action])) { // Значение для группы есть,

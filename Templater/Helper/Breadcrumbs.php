@@ -86,7 +86,7 @@ class Breadcrumbs implements \Iterator, \Countable
 		$current_uri = '';
 		foreach ($this->_breadcrumbs as $key => $value) {
 			$data[$key] = $value;
-			if (cmf_is_absolute_path($value['uri'])) {
+			if (sc_is_absolute_path($value['uri'])) {
 				$current_uri = $value['uri'];
 				continue;
 			} else {

@@ -32,11 +32,7 @@ class Site extends Controller
 	 *
 	public function __construct()
 	{
-//		parent::__construct();
-		
-//		cmf_dump($DB);
-//		cmf_dump(123);
-		
+		//parent::__construct();
 		//$this->storage = new Storage\Database\Site($DB);
 	}
 	*/

@@ -76,7 +76,7 @@ class Theme extends Controller
 		
 		$this->parseIni($this->template);
 		
-//		cmf_dump($this->ini);
+//		sc_dump($this->ini);
 
 		if (isset($this->ini['img_path'])) {
 			$this->img_path = $this->theme_path . $this->ini['img_path'];
