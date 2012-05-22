@@ -23,7 +23,7 @@ function sc_profile($Logger = null, $precision = 3)
 		}
 		
 		$delta = round($queries_time * 100 / $exec_time, 2);
-		echo ' (summary execution time: <b>' . round($queries_time, $precision) * 1000 . "</b> ms, $delta %)" . "\n";
+		echo ' (summary execution time: <b>' . round($queries_time, $precision) * 1000 . "</b> ms, $delta %)." . "\n";
 	}
 }
 
