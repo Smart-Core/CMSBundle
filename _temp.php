@@ -1,5 +1,5 @@
 <?php
-
+// test
 function sc_is_absolute_path($path)
 {
 	return (strpos($path, '/') === 0 or strpos($path, ':') === 1) ? true : false;
