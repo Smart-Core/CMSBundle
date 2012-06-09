@@ -122,14 +122,14 @@ class NodeMapperController extends Controller
 		
 //		sc_dump($this->View->block);
 //		sc_dump($this->Html);
-		
-		/*
-		$View = $this->container->get('templating')->render('SmartCoreEngineBundle:Default:index.html.twig', array(
+    
+        $View = $this->container->get('templating')->render("::{$this->View->getTemplateName()}.html.twig", array(
 			'html' => $this->Html,
-			'name' => $slug,
+            'block' => $this->View->block,
 		));
-		*/
-		
+        
+        return new Response($View, $this->status);
+        
 //		sc_dump($this->Breadcrumbs);
 		
 //		sc_dump($data);
@@ -144,7 +144,6 @@ class NodeMapperController extends Controller
 //		sc_dump($this->get('engine.site'));
 //		sc_dump($this->getUser());
 		
-//		return new Response("Hello $slug !", $this->status);
 		return new Response($this->View, $this->status);
 	}
 	
