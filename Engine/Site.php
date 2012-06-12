@@ -40,8 +40,6 @@ class Site extends Controller
 	/**
 	 * Инициализация сайта.
 	 *
-	 * Используется, как статический метод для того, чтобы можно было использовать в Cron для обращения к нодам.
-	 *  
 	 * @param int $site_id - инициализировать заданный site_id
 	 * @param string $domain - инициализировать заданный domain @todo 
 	 * @return bool

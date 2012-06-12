@@ -5,6 +5,7 @@ namespace SmartCore\Bundle\EngineBundle\Controller;
 use Symfony\Component\HttpFoundation\Response;
 use SmartCore\Bundle\EngineBundle\Engine\Theme;
 use SmartCore\Bundle\EngineBundle\Templater\View;
+use SmartCore\Bundle\EngineBundle\Container;
 
 class NodeMapperController extends Controller
 {
@@ -122,8 +123,9 @@ class NodeMapperController extends Controller
 		
 //		sc_dump($this->View->block);
 //		sc_dump($this->Html);
-    
+        
         $View = $this->container->get('templating')->render("::{$this->View->getTemplateName()}.html.twig", array(
+//        $View = $this->container->get('templating')->render("AcmeModule::{$this->View->getTemplateName()}.html.twig", array(
 			'html' => $this->Html,
             'block' => $this->View->block,
 		));
