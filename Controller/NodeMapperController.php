@@ -123,7 +123,11 @@ class NodeMapperController extends Controller
 		
 //		sc_dump($this->View->block);
 //		sc_dump($this->Html);
-        
+
+//        sc_dump($this->container->get('templating')->render("SmartCoreTexterModule::texter.html.twig", array('text' => 999)));
+//        sc_dump($this->forward('SmartCoreTexterModule:Test:index', array('text' => 'yahoo :)'))->getContent());
+//        sc_dump($this->forward('2:Test:index')->getContent());
+                
         $View = $this->container->get('templating')->render("::{$this->View->getTemplateName()}.html.twig", array(
 //        $View = $this->container->get('templating')->render("AcmeModule::{$this->View->getTemplateName()}.html.twig", array(
 			'html' => $this->Html,
