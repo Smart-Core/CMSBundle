@@ -12,21 +12,21 @@ use Symfony\Component\Config\Definition\ConfigurationInterface;
  */
 class Configuration implements ConfigurationInterface
 {
-	/**
-	 * {@inheritDoc}
-	 */
-	public function getConfigTreeBuilder()
-	{
-		$treeBuilder = new TreeBuilder();
-		$rootNode = $treeBuilder->root('smart_core_engine');
+    /**
+     * {@inheritDoc}
+     */
+    public function getConfigTreeBuilder()
+    {
+        $treeBuilder = new TreeBuilder();
+        $rootNode = $treeBuilder->root('smart_core_engine');
 
-		$rootNode
-			->children()
-				->scalarNode('storage')->cannotBeEmpty()->defaultValue('database')->end()
-				->scalarNode('dir_sites')->defaultValue('')->end()
-			->end()
-		;
-		
-		return $treeBuilder;
-	}
+        $rootNode
+            ->children()
+                ->scalarNode('storage')->defaultValue('database')->end() // cannotBeEmpty()->
+                ->scalarNode('dir_sites')->defaultValue('')->end()
+            ->end()
+        ;
+
+        return $treeBuilder;
+    }
 }

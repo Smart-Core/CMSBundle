@@ -10,11 +10,12 @@ class SmartCoreEngineBundle extends Bundle
 {
     protected $modules = array();
     
-	public function boot()
-	{
+    public function boot()
+    {
         Container::set($this->container);
-		require_once '_temp.php';
-	}
+        $this->container->get('engine.db')->getConfiguration()->setSQLLogger($this->container->get('db.logger'));
+        require_once '_temp.php';
+    }
     
     public function build(ContainerBuilder $container)
     {
