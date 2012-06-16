@@ -9,9 +9,7 @@ use SmartCore\Bundle\EngineBundle\Templater\View;
 class PostProcessorController extends Controller
 {
 	public function indexAction($slug)
-	{
-		$this->init();
-				
+	{				
 		// @todo УБРАТЬ, это сейчас тут тесты с регистрацией...
 		if (isset($_POST['fos_user_registration_form']) or
 			isset($_POST['fos_user_profile_form']) or

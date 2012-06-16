@@ -21,7 +21,7 @@ class Controller extends BaseController
     public function __construct()
     {
         //$this->View = $this->Templating->getView();
-        $this->View    = new View();
+        $this->View = new View();
     }    
     
     /**
