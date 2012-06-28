@@ -12,7 +12,7 @@ function sc_profile($Logger = null, $precision = 3)
 	echo '<hr />Execution time: <b>', round($exec_time, $precision) * 1000 , '</b> ms',
 		'. Memory usage <b>' , round((memory_get_usage() - SMARTCORE_START_MEMORY_USAGE) / 1024 / 1024, 2), '</b> MB (<b>',
 		round((memory_get_peak_usage(true) - SMARTCORE_START_MEMORY_USAGE) / 1024 / 1024, 2), '</b> peak).',
-		"\n";
+        ' Included files: <b>' . count(get_included_files()) . "</b>.\n";
 	
 	if (!is_null($Logger) and is_object($Logger)) {
 		echo '<br />DB query count: <b>' . $Logger->currentQuery . '</b>';
