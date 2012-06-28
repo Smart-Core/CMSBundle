@@ -138,7 +138,7 @@ class Node extends Controller
 	 * @param array $pd
 	 * @return bool
 	 */
-	public function create($pd)
+	public function __create($pd) // @todo 
 	{
 		if (is_numeric($pd['block_id'])) {
 			$block_id = $pd['block_id'];
@@ -188,6 +188,7 @@ class Node extends Controller
 			AND site_id = '{$this->Env->site_id}' ";
 		$this->DB->exec($sql);
 		$this->Cache->updateFolder($folder_id);
+        
 		return true;
 	}
 	
@@ -240,6 +241,7 @@ class Node extends Controller
 				'block_descr'	=> $row->block_descr,
 			);
 		}
+        
 		return $nodes;
 	}
 	
@@ -260,6 +262,7 @@ class Node extends Controller
 		while ($row = $result->fetchObject()) {
 			$data[$row->node_id] = $this->getProperties($row->node_id);
 		}
+        
 		return $data;
 	}
  
@@ -325,4 +328,142 @@ class Node extends Controller
 		$Module = $this->getModuleInstance($this->node_id);
 		return is_object($Module) ? $Module->hook($method, $args) : null;
 	}
+    
+    /**
+     * Создание списка всех запрошеных нод, в каких блоках они находятся и с какими 
+     * параметрами запускаются модули.
+     * 
+     * @access protected
+     * 
+     * @param array     $parsed_uri
+     * @return array     $nodes_list
+     */
+    public function buildNodesListByFolders(array $folders)
+    {
+        $nodes_list = array();
+        $used_nodes = array();
+        $lockout_nodes = array(
+            'single'  => array(), // Блокировка нод в папке, без наследования.
+            'inherit' => array(), // Блокировка нод в папке, с наследованием.
+            'except'  => array(), // Блокировка всех нод в папке, кроме заданных.
+        );
+
+        foreach ($folders as $folder_id => $parsed_uri_value) {
+            // single каждый раз сбрасывается и устанавливается заново для каждоый папки.
+            $lockout_nodes['single'] = array();
+            if (isset($parsed_uri_value['lockout_nodes']['single']) and !empty($parsed_uri_value['lockout_nodes']['single'])) {
+                //$lockout_nodes['single'] = $parsed_uri_value['lockout_nodes']['single'];
+                $tmp = explode(',', $parsed_uri_value['lockout_nodes']['single']);
+                foreach ($tmp as $single_value) {
+                    $t = trim($single_value);
+                    if (!empty($t)) {
+                        $lockout_nodes['single'][trim($single_value)] = 'blocked'; // ставлю тупо 'blocked', но главное в массиве с блокировками, это индексы.
+                    }
+                }
+            }
+
+            // Блокировка нод в папке, с наследованием.
+            if (isset($parsed_uri_value['lockout_nodes']['inherit']) and !empty($parsed_uri_value['lockout_nodes']['inherit'])) {
+                $tmp = explode(',', $parsed_uri_value['lockout_nodes']['inherit']);
+                foreach ($tmp as $inherit_value) {
+                    $t = trim($inherit_value);
+                    if (!empty($t)) {
+                        $lockout_nodes['inherit'][trim($inherit_value)] = 'blocked'; // ставлю тупо 'blocked', но главное в массиве с блокировками, это индексы.
+                    }
+                }
+            }
+
+            // Блокировка всех нод в папке, кроме заданных.
+            if (isset($parsed_uri_value['lockout_nodes']['except']) and !empty($parsed_uri_value['lockout_nodes']['except'])) {
+                $tmp = explode(',', $parsed_uri_value['lockout_nodes']['except']);
+                foreach ($tmp as $except_value) {
+                    $t = trim($except_value);
+                    if (!empty($t)) {
+                        $lockout_nodes['except'][trim($except_value)] = 'blocked'; // ставлю тупо 'blocked', но главное в массиве с блокировками, это индексы.
+                    }
+                }
+            }
+
+            $sql = false;
+            if ($parsed_uri_value['is_inherit_nodes'] == 1) { // в этой папке есть ноды, которые наследуются...
+                $sql = "SELECT n.module_id, n.node_id, n.params, n.cache_params, n.plugins, n.database_id, n.action,
+                        n.permissions, n.is_cached, n.block_id AS block_id, n.node_action_mode
+                    FROM {$this->DB->prefix()}engine_nodes AS n,
+                        {$this->DB->prefix()}engine_blocks_inherit AS bi
+                    WHERE n.block_id = bi.block_id 
+                        AND is_active = 1
+                        AND n.folder_id = '{$folder_id}'
+                        AND bi.folder_id = '{$folder_id}'
+                        AND n.site_id = '{$this->Site->getId()}'
+                        AND bi.site_id = '{$this->Site->getId()}'
+                    ORDER BY n.pos ";
+            }
+
+            // Обрабатываем последнюю папку т.е. текущую.
+            if ($folder_id == $this->Env->current_folder_id) { // @todo убрать Env
+                $sql = "SELECT * FROM {$this->DB->prefix()}engine_nodes WHERE folder_id = '{$folder_id}' AND is_active = '1' AND site_id = '{$this->Site->getId()}' ";
+                // исключаем ранее включенные ноды.
+                foreach ($used_nodes as $used_nodes_value) {
+                    $sql .= " AND node_id != '{$used_nodes_value}'";
+                }
+                $sql .= ' ORDER BY pos';
+            }
+
+            // В папке нет нод для сборки.
+            if ($sql === false) {
+                continue;
+            }
+
+            $result = $this->DB->query($sql);
+            while ($row = $result->fetchObject()) {
+                /*
+                if ($this->Permissions->isAllowed('node', 'read', $row->permissions) == 0) {
+                    continue;
+                }
+                */
+
+                // Создаётся список нод, которые уже в включены.
+                if ($parsed_uri_value['is_inherit_nodes'] == 1) { 
+                    $used_nodes[] = $row->node_id; 
+                }
+
+                $nodes_list[$row->node_id] = array(
+                    'folder_id'         => $folder_id,
+                    'module_id'         => $row->module_id,
+                    'action'            => $row->action,
+                    'block_id'          => $row->block_id,
+                    'params'            => $row->params,
+                    'cache_params'      => $row->cache_params,
+                    'is_cached'         => $row->is_cached,
+                    'plugins'           => $row->plugins,
+                    'permissions'       => $row->permissions,
+                    'route_params'      => null, // В случае, если не был отработан механизм парсинга строки запроса модулем, считаеся, что парсер данных не вернул ничего либо вернул NULL.
+                    'database_id'       => $row->database_id,
+                    'node_action_mode'  => $row->node_action_mode,
+                    );
+            }
+
+            if (isset($parsed_uri_value['route'])) {
+                $nodes_list[$parsed_uri_value['route']['node_id']]['route_params'] = $parsed_uri_value['route'];
+            }
+        }
+
+        foreach ($lockout_nodes['single'] as $node_id => $value) {
+            unset($nodes_list[$node_id]);
+        }
+
+        foreach ($lockout_nodes['inherit'] as $node_id => $value) {
+            unset($nodes_list[$node_id]);
+        }
+
+        if (!empty($lockout_nodes['except'])) {
+            foreach ($nodes_list as $node_id => $value) {
+                if (!array_key_exists($node_id, $lockout_nodes['except'])) {
+                    unset($nodes_list[$node_id]);
+                }
+            }
+        }
+
+        return $nodes_list;
+    }
 }

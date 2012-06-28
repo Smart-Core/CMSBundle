@@ -11,7 +11,7 @@ class Folder extends Controller
 	protected $_folder_tree_list_arr = array();
 	protected $_folder_tree = array();
 	protected $_tree_link = array();
-	protected $_tree_level = 0;
+    protected $_tree_level = 0;
 	
 	/**
 	 * Установить условия выборки по состоянию $is_active
@@ -44,6 +44,7 @@ class Folder extends Controller
 			{$this->_sql_is_active}
 			AND is_deleted = 0
 			AND folder_id = '{$folder_id}' ";
+
 		return $this->DB->fetchObject($sql);
 	}
 	
@@ -64,6 +65,7 @@ class Folder extends Controller
 			AND is_deleted = 0
 			AND uri_part = '{$uri_part}'
 			AND pid = '{$pid}' ";
+
 		return $this->DB->fetchObject($sql);
 	}
 	
@@ -74,7 +76,7 @@ class Folder extends Controller
 	 * @param array $pd
 	 * @return bool
 	 */
-	public function update($folder_id, $pd)
+	public function __update($folder_id, $pd) // @todo 
 	{
 		$is_file		= is_numeric($pd['is_file']) ? $pd['is_file'] : 0;
 		$transmit_nodes	= is_numeric($pd['transmit_nodes']) ? $pd['transmit_nodes'] : 0;
@@ -85,7 +87,7 @@ class Folder extends Controller
 		
 		if ($folder_id == 1) {
 			$is_active = 1;
-		} elseif (is_numeric($pd['is_active'])) {
+		} else if (is_numeric($pd['is_active'])) {
 			$is_active = $pd['is_active'];
 		} else {
 			$is_active = 1;
@@ -93,7 +95,7 @@ class Folder extends Controller
 		
 		if ($folder_id == 1) {
 			$pid = 0;
-		} elseif (is_numeric($pd['pid'])) {
+		} else if (is_numeric($pd['pid'])) {
 			$pid = $pd['pid'];
 		} else {
 			return false;	
@@ -164,7 +166,7 @@ class Folder extends Controller
 	 * @param array $pd
 	 * @return false|int - id созданной папки.
 	 */
-	public function create($pd)
+	public function __create($pd) // @todo 
 	{
 		$is_active		= is_numeric($pd['is_active']) ? $pd['is_active'] : 1;
 		$is_file		= is_numeric($pd['is_file']) ? $pd['is_file'] : 0;
@@ -269,6 +271,7 @@ class Folder extends Controller
 		if (count($this->_folder_tree_list_arr) == 0) {
 			$this->_getTreeList($this->_folder_tree);
 		}
+        
 		return $this->_folder_tree_list_arr;
 	}
 	
@@ -293,6 +296,7 @@ class Folder extends Controller
 				$this->_getTreeList($value['folders']);
 			}
 		}
+        
 		$this->_tree_level--;
 	}
 		
@@ -362,6 +366,7 @@ class Folder extends Controller
 			if (empty($this->_folder_tree)) {
 				$this->buildTree(0);
 			}
+            
 			$this->_getTreeList($this->_folder_tree);
 		}
 
@@ -375,7 +380,7 @@ class Folder extends Controller
 			$multi_options[$folder_id] = array(
 				'title' => $level . $value['title'],
 				'disabled' => ($disable_folder !== false and $disable_folder == $folder_id) ? true : false,
-				);
+			);
 		}		
 		
 		return $multi_options;
@@ -404,7 +409,9 @@ class Folder extends Controller
 			UPDATE {$this->DB->prefix()}engine_folders SET
 				meta = $meta
 			WHERE site_id = '{$this->Site->getId()}'
-			AND folder_id = '$folder_id' ");
+			AND folder_id = '$folder_id' "
+        );
+        
 		return true;
 	}
 
@@ -440,11 +447,12 @@ class Folder extends Controller
 				AND folder_id = '$folder_id' ";
 			$this->DB->exec($sql);
 		}
+        
 		return true;
 	}	
 	
 	/**
-	 * Получение полнуой ссылки на папку, указав её id. Если не указать ид папки, то вернётся текущий путь.
+	 * Получение полной ссылки на папку, указав её id. Если не указать ид папки, то вернётся текущий путь.
 	 * 
 	 * @param int $folder_id
 	 * @return string $uri
@@ -452,17 +460,14 @@ class Folder extends Controller
 	public function getUri($folder_id = false)
 	{
 		if ($folder_id === false) {
-			$folder_id = Env::getInstance()->current_folder_id;
+			$folder_id = $this->Env->get('current_folder_id');
 		}
 
 		$uri_parts = array();
 		$uri = '';
 		
-		$Folder = new Folder();
-		$Folder->setContainer($this->container);
-		
 		while($folder_id != 1) {
-			$folder = $Folder->getDataById($folder_id);
+			$folder = $this->getDataById($folder_id);
 			if ($folder !== false) {
 				$folder_id = $folder->pid;
 				$uri_parts[] = $folder->uri_part;		
@@ -477,6 +482,102 @@ class Folder extends Controller
 		}
 	
 		return $this->Env->get('base_url') . $uri;
-		//return HTTP_ROOT . Site::getHttpLangPrefix() . $uri;
-	}	
+	}
+    
+    /**
+     * Роутинг.
+     * 
+     * @param string $slug
+     * @return array
+     */
+    public function router($slug)
+    {
+        $data = array(
+            'folders' => array(),
+            'meta' => array(),
+            'status' => 200,
+            'template' => 'index',
+        );
+        
+        // @todo при обращении к фронт-контроллеру /web/app.php не коррекнтно определяется активные пункты меню.
+        $current_folder_path = $this->Env->get('base_path');
+        $router_node_id = null;
+        $folder_pid = 0;
+
+        $path_parts = explode('/', $slug);
+        
+        foreach ($path_parts as $key => $segment) {
+            // Проверка строки запроса на допустимые символы.
+            // @todo сделать проверку на разрешение круглых скобок.
+            if (!empty($segment) and !preg_match('/^[a-z_@0-9.-]*$/iu', $segment)) {
+                $data['status'] = 404;
+                break;
+            }
+
+            // заканчиваем работу, если имя папки пустое и папка не является корневой 
+            // т.е. обрабатываем последнюю запись в строке УРИ
+            if('' == $segment and 0 != $key) { 
+                // @todo видимо здесь надо делать обработчик "файла" т.е. папки с выставленным флагом "is_file".
+                break;
+            }
+
+            // В данной папке есть нода которой передаётся дальнейший парсинг URI.
+            if ($router_node_id !== null) {
+                // выполняется часть URI парсером модуля и возвращается результат работы, в дальнейшем он будет передан самой ноде.
+                $Module = $this->Node->getModuleInstance($router_node_id);
+                $module_route = $Module->router(str_replace($current_folder_path, '', substr($this->Env->base_path, 0, -1) . $slug));
+                unset($Module);
+                
+                // Парсер модуля вернул положительный ответ.
+                if ($module_route !== false) {
+                    $data['folders'][$folder->folder_id]['route'] = $module_route;
+                    $data['folders'][$folder->folder_id]['route']['node_id'] = $router_node_id;
+                    // В случае успешного завершения роутера модуля, роутинг ядром прекращается.
+                    break; 
+                }
+            } // __end if ($router_node_id !== null)
+
+            $folder = $this->getData($segment, $folder_pid);
+            
+            if ($folder !== false) {
+                //if ($this->Permissions->isAllowed('folder', 'read', $folder->permissions)) {
+                if ( true ) {
+                    // Заполнение мета-тегов.
+                    if (!empty($folder->meta)) {
+                        foreach (unserialize($folder->meta) as $key2 => $value2) {
+                            $data['meta'][$key2] = $value2;
+                        }
+                    }
+
+                    if ($folder->uri_part !== '') {
+                        $current_folder_path .= $folder->uri_part . '/';
+                    }
+
+                    // Чтение макета для папки.
+                    // @todo возможно ненадо. оставить только один view.
+                    if (!empty($folder->layout)) {
+                        $data['template'] = $folder->layout;
+                    }
+                    
+                    $folder_pid = $folder->folder_id;
+                    $router_node_id = $folder->router_node_id;
+                    $data['folders'][$folder->folder_id] = array(
+                        'uri' => $current_folder_path,
+                        'title' => $folder->title,
+                        'descr' => $folder->descr,
+                        'is_inherit_nodes' => $folder->is_inherit_nodes,
+                        'lockout_nodes' => unserialize($folder->lockout_nodes),
+                    );
+                    $this->Env->set('current_folder_id', $folder->folder_id);
+                    $this->Env->set('current_folder_path', $current_folder_path);
+                } else {
+                    $data['status'] = 403;
+                }
+            } else {
+                $data['status'] = 404;
+            }
+        }
+
+        return $data;
+    }
 }

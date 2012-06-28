@@ -22,20 +22,8 @@ class Site extends Controller
     protected $defult_theme         = 'default';
     protected $themes               = array('default' => '');
     protected $layouts              = array();
-    protected $views                = array();    // ??? подумать, может быть можно вообще без старого механизама 'views', а заюзать например расширение макетов, как в Twig.
     protected $robots_txt           = '';
     protected $root_layout          = '';
-    protected $root_view            = '';
-
-    /**
-     * Constructor.
-     *
-    public function __construct()
-    {
-        //parent::__construct();
-        //$this->storage = new Storage\Database\Site($DB);
-    }
-    */
 
     /**
      * Инициализация сайта.
@@ -57,22 +45,12 @@ class Site extends Controller
 
         if ($site_id === false) {
             $sql = "SELECT site.*, domain.language_id AS domain_language_id
-                    # ,theme.path AS theme_path, theme.content_language, theme.doctype, theme.theme_id
                 FROM {$this->DB->prefix()}engine_sites AS site,
-                  # {$this->DB->prefix()}engine_themes AS theme,
                     {$this->DB->prefix()}engine_sites_domains AS domain
-                WHERE domain.domain = '" . $this->container->get('engine.env')->get('http_host') . "'
-                # AND site.theme_id = theme.theme_id
-                # AND site.site_id = theme.site_id
-                AND site.site_id = domain.site_id
-            ";
+                WHERE domain.domain = '" . $this->Env->get('http_host') . "'
+                AND site.site_id = domain.site_id ";
         } else {
             // @todo сейчас если указан $site_id, то не учитывается язык домена. 
-            /*
-            $sql = "SELECT site.*, theme.path AS theme_path, theme.content_language, theme.doctype, theme.theme_id
-                FROM engine_sites AS site, engine_themes AS theme
-                WHERE site.site_id = '$site_id' AND site.theme_id = theme.theme_id AND site.site_id = theme.site_id ";
-            */
             $sql = "SELECT * FROM {$this->DB->prefix()}engine_sites WHERE site_id = '$site_id'";
         }
 
@@ -94,7 +72,6 @@ class Site extends Controller
         }
 
         date_default_timezone_set($this->timezone);
-        //$this->DB->exec("'SET TIME_ZONE = '" . date_default_timezone_get() . "'");
 
         $this->id = $row->site_id;
         $this->create_datetime = $row->create_datetime;
@@ -106,6 +83,9 @@ class Site extends Controller
             $this->http_theme = $this->Env->base_path . $this->Env->get('dir_sites') . $row->site_id . '/' . $properties['dir_themes'];
         }
 
+        // @todo configure storage.
+        $this->storage = new \SmartCore\Bundle\EngineBundle\Storage\Database\Site($this->DB);
+                
         return true;
     }
 
@@ -118,43 +98,33 @@ class Site extends Controller
     public function getProperties($site_id = false)
     {
         if ($this->id === false) {
-            if ($site_id === false) {
-                /*
-                $data = array();
-                foreach ($this as $key => $value) {
-                    if ($key == 'container' or $key == 'View') {
-                        continue;
-                    }
-                    $data[$key] = $value;
-                }
-                return $data;
-                */
-                return null;
-            } else {
-                $this->init($site_id);
-            }
+            $this->init();
         }
-
-        $sql = "SELECT * FROM {$this->DB->prefix()}engine_sites WHERE site_id = '{$site_id}' ";
-
-        if ($row = $this->DB->fetchObject($sql)) {
-            $properties = unserialize($row->properties);
-            $properties['create_datetime'] = $row->create_datetime;
-            return $properties;
+        
+        if ($site_id) {
+            return $this->storage->getProperties($site_id);
         } else {
-            return null;
-        }
+            return $this->storage->getProperties($this->id);
+        }        
     }
 
     /**
      * Получить список доменов.
      *
-     * @param int $site_id - ид сайта, по умолчанию системый.
+     * @param int $site_id - ID сайта, по умолчанию системый.
      * @return array
      */
     public function getDomainsList($site_id = false)
     {
-        return $this->storage->getDomainsList($site_id);
+        if ($this->id === false) {
+            $this->init();
+        }
+
+        if ($site_id) {
+            return $this->storage->getDomainsList($site_id);
+        } else {
+            return $this->storage->getDomainsList($this->id);
+        }
     }
 
     /**

@@ -25,9 +25,9 @@ class Controller extends BaseController
     }    
     
     /**
-     * Магическое обращение к сервисам
+     * Магическое обращение к сервисам.
      *
-     * @param
+     * @param string $name
      */
     public function __get($name)
     {
