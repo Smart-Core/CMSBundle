@@ -51,14 +51,14 @@ class Node extends Controller
 	 * @param string $property - получить конкретное свойство, если не указано, возвращаются все свойства.
 	 * @return array|string
 	 */
-	public function getProperties($node_id, $property = false)
-	{
-		$sql = "SELECT engine_nodes.*, engine_modules.class
-			FROM {$this->DB->prefix()}engine_nodes
-			LEFT JOIN {$this->DB->prefix()}engine_modules USING (module_id)
-			WHERE node_id = '$node_id'
-			AND site_id = '{$this->Site->getId()}' ";
-		$result = $this->DB->query($sql);
+    public function getProperties($node_id, $property = false)
+    {
+        $sql = "SELECT engine_nodes.*, engine_modules.class
+            FROM {$this->DB->prefix()}engine_nodes
+            LEFT JOIN {$this->DB->prefix()}engine_modules USING (module_id)
+            WHERE node_id = '$node_id'
+            AND site_id = '{$this->container->get('engine.site')->getId()}' ";
+        $result = $this->DB->query($sql);
 		if ($result->rowCount() == 1) {
 			$row = $result->fetchObject();
 			
@@ -77,7 +77,8 @@ class Node extends Controller
 					'plugins'		=> $row->plugins,
 					'database_id'	=> $row->database_id,
 					'descr'			=> $row->descr,
-					);
+				);
+                
 				return $properties;
 			} else {
 				return $row->$property;

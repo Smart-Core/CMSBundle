@@ -11,8 +11,13 @@ class Container
 		return self::$container->get($name);
 	}
 	
-	static public function set($container)
+    static public function set($container)
+    {    
+        self::$container = $container;
+    }
+    
+	static public function getContainer()
 	{	
-		self::$container = $container;
-	}
+		return self::$container;
+	}    
 }

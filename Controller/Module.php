@@ -40,9 +40,12 @@ abstract class Module extends Controller
 	 * @access public
 	 * @param int $node_id
 	 */
-	final public function __construct($container, $node_id = false)
+	final public function __construct($container = null, $node_id = false)
 	{
-		$this->setContainer($container);
+        if ($container) {
+            $this->setContainer($container);
+        }
+		
 		parent::__construct();
 		
 		if ($node_id === false) {

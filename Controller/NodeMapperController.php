@@ -10,30 +10,23 @@ use SmartCore\Bundle\EngineBundle\Container;
 class NodeMapperController extends Controller
 {
     /**
-     * Свойcтво поведения действия над нодой (всроенное в шаблон - 'built-it' или во всплывающем окошке - 'pupup' или 'ajax' - подгружаемое в блок размещения.).
-     * По умолчанию инициализируется как false.
+     * Свойcтво поведения действия над нодой:
+     *      'built-it' - встроенное в шаблон
+     *      'pupup' - во всплывающем окошке
+     *      'ajax' - подгружаемое в блок размещения.
      * 
-     * @access private
+     * По умолчанию инициализируется как false (popup).
      * 
-     * @todo надо подумать, надо ли вообще это держать в кернеле?
+     * @todo надо подумать, надо ли вообще это держать в здесь?
      */    
     protected $front_end_action_mode = false;
     
     /**
-     * @access private
-     * 
-     * @todo надо подумать, надо ли вообще это держать в кернеле?
+     * @todo надо подумать, надо ли вообще это держать в здесь?
      */
     protected $front_end_action_node_id = 0;
 
-    /**
-     * Constructor.
-     */
-    public function __construct()
-    {
-        parent::__construct();
-    }
-
+    
     public function indexAction($slug)
     {
 //        $tmp = $this->Env->get('base_url');
