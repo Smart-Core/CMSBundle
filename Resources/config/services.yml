@@ -13,6 +13,10 @@ services:
         class: SmartCore\Bundle\EngineBundle\Engine\Folder
         calls:
             - [ setContainer, [ @service_container ] ]
+    engine.block:
+        class: SmartCore\Bundle\EngineBundle\Engine\Block
+        calls:
+            - [ setContainer, [ @service_container ] ]
     engine.node:
         class: SmartCore\Bundle\EngineBundle\Engine\Node
         calls:

@@ -1,44 +1,43 @@
 <?php
-/**
- * Блоки.
- * 
- * @author	Artem Ryzhkov
- * @package	Kernel
- * @license	http://opensource.org/licenses/gpl-2.0
- * 
- * @uses	DB
- * 
- * @version 2012-02-01.0
- */
-class Block extends Container
+namespace SmartCore\Bundle\EngineBundle\Engine;
+
+use SmartCore\Bundle\EngineBundle\Controller\Controller;
+
+class Block extends Controller
 {
-	private $block_list = array();
-	
+    protected $blocks = array();
+    
 	/**
-	 * Получить список блоков.
+	 * Получить список всех блоков.
 	 * 
 	 * @param int $site_id
 	 * @return array
 	 */
-	public function getList($site_id = false)
+	public function all($site_id = false)
 	{
-		$data = array();
-		$sql = "SELECT * 
-			FROM {$this->DB->prefix()}engine_blocks
-			WHERE site_id = '{$this->Env->site_id}'
-			ORDER BY pos ASC";
+        if (!$site_id) {
+            $site_id = $this->Site->getId();
+        }
+
+        if (isset($this->blocks[$site_id])) {
+            return $this->blocks[$site_id];
+        }        
+        
+        $this->blocks[$site_id] = array();
+        
+		$sql = "SELECT * FROM {$this->DB->prefix()}engine_blocks WHERE site_id = '$site_id' ORDER BY pos ASC";
 		$result = $this->DB->query($sql);
-		while($row = $result->fetchObject()) {
-			$data[$row->block_id] = array(
+		while ($row = $result->fetchObject()) {
+			$this->blocks[$site_id][$row->block_id] = array(
 				'name'		=> $row->name,
 				'descr'		=> $row->descr,
 				'pos'		=> $row->pos,
-				'site_id'	=> $row->site_id,
 				'create_datetime'	=> $row->create_datetime,
 				'owner_id'	=> $row->owner_id,
-				);
+			);
 		}
-		return $data;
+        
+		return $this->blocks[$site_id];
 	}
 	
 	/**
@@ -48,12 +47,8 @@ class Block extends Container
 	 */
 	public function getHtmlSelectOptionsArray()
 	{
-		if (count($this->block_list) == 0) {
-			$this->block_list = $this->getList();
-		}
-		
 		$multi_options = array();
-		foreach ($this->block_list as $key => $value) {
+		foreach ($this->all() as $key => $value) {
 			$multi_options[$key] = $value['descr'] . ' (' . $value['name'] . ')';
 		}		
 		

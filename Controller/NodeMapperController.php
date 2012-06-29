@@ -71,7 +71,7 @@ class NodeMapperController extends Controller
             $this->Env->dir_app . 'Resources/views',
             $this->container->get('kernel')->getBundle('SmartCoreEngineBundle')->getPath() . '/Resources/views',
         ));
-
+        
         $this->View->html = $this->Html;
         $this->Html->title('SC Framework!');
 
@@ -132,7 +132,6 @@ class NodeMapperController extends Controller
 //        sc_dump($this->Breadcrumbs);
 //        sc_dump($this->Env);
 //        sc_dump($this->Site->getId());
-//        sc_dump(BASE_PATH);
 //        sc_dump($this->getUser());
         return new Response($View, $router_data['status']);
     }
@@ -145,19 +144,10 @@ class NodeMapperController extends Controller
      */
     protected function buildModulesData($nodes_list)
     {
-        $blocks = array();
-        
-        // Создаётся список всех доступных блоков в системе.
-        $sql = "SELECT block_id, name
-            FROM {$this->DB->prefix()}engine_blocks
-            WHERE site_id = '{$this->Site->getId()}'
-            ORDER BY pos ASC ";
-        $result = $this->DB->query($sql);
-        while ($row = $result->fetchObject()) {
-            $blocks[$row->block_id] = $row->name;
-            $name = $row->name;
-            $this->View->block->$name = new View();
-            $this->View->block->$name->setRenderMethod('echoProperties');
+        $blocks = $this->Block->all();
+        foreach ($blocks as $block_id => $block) {
+            $this->View->block->$block['name'] = new View();
+            $this->View->block->$block['name']->setRenderMethod('echoProperties');
         }
 
         define('_IS_CACHE_NODES', false); // @todo remove
@@ -168,9 +158,9 @@ class NodeMapperController extends Controller
                 continue;
             }
 
-//            $this->profilerStart('node', $node_id);
+            // $this->profilerStart('node', $node_id);
 
-            $block_name = $blocks[$node_properties['block_id']];
+            $block_name = $blocks[$node_properties['block_id']]['name'];
 
             // Обнаружены параметры кеша.
             if (_IS_CACHE_NODES and $node_properties['is_cached'] and !empty($node_properties['cache_params']) and $this->Env->cache_enable ) {
