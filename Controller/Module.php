@@ -1,6 +1,6 @@
 <?php
 
-namespace SmartCore\Bundle\EngineBundle\Engine;
+namespace SmartCore\Bundle\EngineBundle\Controller;
 
 use SmartCore\Bundle\EngineBundle\Controller\Controller;
 use SmartCore\Bundle\EngineBundle\Engine\NodeProperties;
@@ -61,7 +61,7 @@ abstract class Module extends Controller
 			$this->Env->dir_app . 'views/' . $namespace,
 			realpath(dirname($reflector->getFileName()) . '/../Resources/views'),
 		));
-		
+        
 		// При database_id = 0 модуль будет использовать тоже подключение, что и ядро, иначе создаётся новое подключение.
 		if ($this->NodeProperties->database_id != 0) {
 			// @todo для совместимости с эмуляцией функции get_called_class для РНР 5.2, дальше для PHP 5.3 only можно будет записывать в одну строку, без $con_data.
