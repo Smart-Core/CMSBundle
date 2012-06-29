@@ -11,7 +11,7 @@ class Controller extends BaseController
      * View object
      * @var View
      */
-    public $View;
+    public $View; // @todo переделать в protected.
 
     /**
      * Constructor.
@@ -51,4 +51,20 @@ class Controller extends BaseController
             throw new \Exception('SmartCore\EngineBundle: Service "engine.' . strtolower($name) . '" does not register.');
         }
     }
+    
+    /**
+     * Returns a RedirectResponse to the given URL.
+     *
+     * @param string  $url    The URL to redirect to
+     * @param integer $status The status code to use for the Response
+     *
+     * @return RedirectResponse
+     */
+    public function redirect($url, $status = 302)
+    {
+        $str = (null == $url) ? $_SERVER['REQUEST_URI'] : $url;
+        header('Location: ' . $str);
+        exit;
+        //return new RedirectResponse($url, $status);
+    }    
 }

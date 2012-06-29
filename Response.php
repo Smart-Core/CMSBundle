@@ -20,9 +20,23 @@ class Response extends BaseResponse
         return $this;
     }
 
-
+    /**
+     * Получить контент в виде строки.
+     * 
+     * @return string
+     */
     public function getContent()
     {
         return (string) $this->content;
+    }
+
+    /**
+     * Получить контент в нативном виде т.е. если это будет объект, то он будет получен без преобразования в строку.
+     * 
+     * @return object|string
+     */
+    public function getContentNative()
+    {
+        return $this->content;
     }
 }

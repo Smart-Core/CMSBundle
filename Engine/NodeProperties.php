@@ -1,6 +1,7 @@
 <?php
 
 namespace SmartCore\Bundle\EngineBundle\Engine;
+use SmartCore\Bundle\EngineBundle\Container;
 
 class NodeProperties
 {
@@ -40,13 +41,13 @@ class NodeProperties
 	 *
 	 * @param array $properties
 	 */
-	public function __construct($node_id, $container)
+	public function __construct($node_id)
 	{
 		//$properties = Kernel::getNodeData($node_id);
 		$properties = null; // @todo 
 		
 		if ($properties === null) {
-			$properties = $container->get('engine.node')->getProperties($node_id);
+			$properties = Container::get('engine.node')->getProperties($node_id);
 		}
 		
 		$this->id			= $node_id;
@@ -54,11 +55,13 @@ class NodeProperties
 		$this->folder_id	= $properties['folder_id'];
 		$this->module_id	= $properties['module_id'];
 		$this->block_id		= $properties['block_id'];
-		$this->params		= empty($properties['params']) ? array() : unserialize($properties['params']);
+//        $this->params        = empty($properties['params']) ? array() : unserialize($properties['params']);
+		$this->params		= $properties['params'];
 		$this->plugins		= $properties['plugins'];
 		$this->route_params	= $properties['route_params'];
 		$this->permissions	= $properties['permissions'];
-		$this->cache_params = empty($properties['cache_params']) ? null : unserialize($properties['cache_params']);
+//        $this->cache_params = empty($properties['cache_params']) ? null : unserialize($properties['cache_params']);
+		$this->cache_params = $properties['cache_params'];
 	}
 	
 	/**

@@ -3,6 +3,7 @@
 namespace SmartCore\Bundle\EngineBundle\Engine;
 
 use SmartCore\Bundle\EngineBundle\Controller\Controller;
+use SmartCore\Bundle\EngineBundle\Container;
 
 class Node extends Controller
 {
@@ -71,8 +72,8 @@ class Node extends Controller
 					'module_class'	=> $row->class,
 					'block_id'		=> $row->block_id,
 					'route_params'	=> false,
-					'cache_params'	=> $row->cache_params,
-					'params'		=> $row->params,
+					'cache_params'	=> empty($row->cache_params) ? null : unserialize($row->cache_params),
+					'params'		=> empty($row->params) ? array() : unserialize($row->params),
 					'permissions'	=> $row->permissions,
 					'plugins'		=> $row->plugins,
 					'database_id'	=> $row->database_id,
