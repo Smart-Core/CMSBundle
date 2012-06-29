@@ -47,7 +47,7 @@ abstract class Module extends Controller
         }
 		
 		parent::__construct();
-		
+
 		if ($node_id === false) {
 			// @todo сообщение о недопустимой операции.
 			return null;
@@ -55,15 +55,6 @@ abstract class Module extends Controller
 		
 		$this->NodeProperties = new NodeProperties($node_id, $container);
 		
-		// По умолчанию устанавливается имя шаблона, как короткое имея класса, но без префикса 'Module_' и без постфикса '_Admin'.
-		$reflector = new \ReflectionClass(get_class($this));
-		$namespace = str_replace('\Controller', '', $reflector->getNamespaceName());
-		$this->View->setTemplateName($reflector->getShortName());
-		$this->View->setPaths(array(
-			$this->Env->dir_web_root . $this->Env->dir_themes . 'views/' . $namespace,
-			$this->Env->dir_app . 'views/' . $namespace,
-			realpath(dirname($reflector->getFileName()) . '/../Resources/views'),
-		));
         
 		// При database_id = 0 модуль будет использовать тоже подключение, что и ядро, иначе создаётся новое подключение.
 		if ($this->NodeProperties->database_id != 0) {
@@ -79,7 +70,7 @@ abstract class Module extends Controller
 		
 		// Запуск метода init(), который является заменой конструктора для модулей.
 		if (method_exists($this, 'init')) {
-			$this->init();
+            $this->init();
 			foreach ($this->NodeProperties->getParams() as $key => $value) {
 				$this->$key = $value;
 			}

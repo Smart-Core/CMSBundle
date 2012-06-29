@@ -106,8 +106,11 @@ class NodeMapperController extends Controller
 //        sc_dump($this->Html);
 
 //        sc_dump($this->renderView("SmartCoreTexterModule::texter.html.twig", array('text' => 777)));
-//        sc_dump($this->forward('SmartCoreTexterModule:Test:index', array('text' => 'yahoo :)'))->getContent());
+        sc_dump($this->forward('SmartCoreTexterModule:Test:hello', array('text' => 'yahoo :)'))->getContent());
 //        sc_dump($this->forward('2:Test:index')->getContent());
+
+        sc_dump($this->forward('SmartCoreTexterModule:Test:test', array('text' => 'test!!')));
+//        sc_dump($this->forward('SmartCoreTexterModule:Test:test', array('text' => 'test!!'))->getContent());
 
 //        sc_dump($this->container->get('kernel')->getLogDir());
 
