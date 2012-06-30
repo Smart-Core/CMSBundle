@@ -22,10 +22,14 @@ class Controller extends BaseController
     {
         //$this->View = $this->Templating->getView();
         $this->View = new View();
-        // По умолчанию устанавливается имя шаблона, как короткое имея класса, но без префикса 'Module_' и без постфикса '_Admin'.
+        // По умолчанию устанавливается имя шаблона, как короткое имя контроллера.
         $reflector = new \ReflectionClass(get_class($this));
-        $namespace = str_replace('\Controller', '', $reflector->getNamespaceName());
-        $this->View->setTemplateName($reflector->getShortName());
+        
+        if (substr($reflector->getShortName(), -10) == 'Controller') {
+            $this->View->setTemplateName(substr($reflector->getShortName(), 0, strlen($reflector->getShortName()) - 10));
+        } else {
+            $this->View->setTemplateName($reflector->getShortName());
+        }
         
         $this->View->setPaths(array(
 //            $this->Env->dir_web_root . $this->Env->dir_themes . 'views/' . $namespace,
@@ -66,5 +70,5 @@ class Controller extends BaseController
         header('Location: ' . $str);
         exit;
         //return new RedirectResponse($url, $status);
-    }    
+    }
 }

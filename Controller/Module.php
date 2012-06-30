@@ -5,8 +5,9 @@ namespace SmartCore\Bundle\EngineBundle\Controller;
 use SmartCore\Bundle\EngineBundle\Controller\Controller;
 use SmartCore\Bundle\EngineBundle\Engine\NodeProperties;
 use SmartCore\Bundle\EngineBundle\Container;
+use Symfony\Component\DependencyInjection\ContainerInterface;
  
-abstract class Module extends Controller implements ModuleInterface
+abstract class Module extends Controller
 {
 	/**
 	 * Действие по умолчанию.
@@ -33,15 +34,7 @@ abstract class Module extends Controller implements ModuleInterface
 	 * Свойства ноды.
 	 * @var array
 	 */
-    protected $node = array(
-            'id' => null,
-            'folder_id' => null,
-            'module_id' => null,
-            'block_id' => null,
-            'params' => array(),
-            'permissions' => null,
-            'cache_params' => null,
-        );
+    protected $node = array();
 	
 	/**
 	 * Базовый конструктор. Модули используют в качестве конструктора метод init();
@@ -51,12 +44,22 @@ abstract class Module extends Controller implements ModuleInterface
 	 */
 	final public function __construct($container = null, $node_id = false)
 	{
+        parent::__construct();
+
+        // Запуск метода init(), который является заменой конструктора для модулей.
+        if (method_exists($this, 'init')) {
+            $this->init();
+        }
+        
+        return;
+        
+        // ------------------------------------------
+        
         if ($container) {
             $this->setContainer($container);
         }
 //        $this->container = Container::getContainer();
 		
-		parent::__construct();
 
 		if ($node_id === false) {
 			// @todo сообщение о недопустимой операции.
@@ -67,9 +70,7 @@ abstract class Module extends Controller implements ModuleInterface
         $this->node = Container::get('engine.node')->getProperties($node_id);
         $this->node['id'] = $node_id;
         
-//        sc_dump($this->node);
-//        exit;
-		
+//        sc_dump($this->node); // exit;
         
 		// При database_id = 0 модуль будет использовать тоже подключение, что и ядро, иначе создаётся новое подключение.
 //        if ($this->NodeProperties->database_id != 0) {
@@ -93,7 +94,26 @@ abstract class Module extends Controller implements ModuleInterface
 		}
 	}
 
-	/**
+    /**
+     * Установить параметры ноды.
+     */
+    public function setNode(array $node)
+    {
+        $this->node = $node;
+        foreach ($node['params'] as $key => $value) {
+            $this->$key = $value;
+            /*
+            if (isset($this->{$key})) {
+                $this->{$key} = $value;
+            } else {
+                die('Недопустимый параметр: ' . $key);
+            }
+            */
+        }
+
+    }
+    
+    /**
 	 * Ajax.
 	 *
 	 * @param string $uri_path - часть URI, адресованная модулю.

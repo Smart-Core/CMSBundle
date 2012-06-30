@@ -2,6 +2,17 @@
 #    smart_core_engine.example.class: SmartCore\Bundle\EngineBundle\Example
 
 services:
+    engine.controller.listener:
+        class: SmartCore\Bundle\EngineBundle\Listener\ModuleControllerModifier
+        arguments: [ @service_container ]
+        tags:
+            - { name: kernel.event_listener, event: kernel.controller, method: onController }
+    engine.request.listener:
+        class: SmartCore\Bundle\EngineBundle\Listener\ModuleControllerModifier
+        arguments: [ @service_container ]
+        tags:
+            - { name: kernel.event_listener, event: kernel.request, method: onRequest }
+
     db.logger:
         class: Doctrine\DBAL\Logging\DebugStack    
     engine.breadcrumbs:
@@ -15,6 +26,10 @@ services:
             - [ setContainer, [ @service_container ] ]
     engine.block:
         class: SmartCore\Bundle\EngineBundle\Engine\Block
+        calls:
+            - [ setContainer, [ @service_container ] ]
+    engine.module:
+        class: SmartCore\Bundle\EngineBundle\Engine\Module
         calls:
             - [ setContainer, [ @service_container ] ]
     engine.node:

@@ -54,30 +54,37 @@ class Node extends Controller
 	 */
     public function getProperties($node_id, $property = false)
     {
-        $sql = "SELECT engine_nodes.*, engine_modules.class
+        $sql = "SELECT *
             FROM {$this->DB->prefix()}engine_nodes
-            LEFT JOIN {$this->DB->prefix()}engine_modules USING (module_id)
             WHERE node_id = '$node_id'
             AND site_id = '{$this->container->get('engine.site')->getId()}' ";
         $result = $this->DB->query($sql);
 		if ($result->rowCount() == 1) {
 			$row = $result->fetchObject();
+            
+            $module = $this->container->get('engine.module')->get($row->module_id);
+//            sc_dump($module);
+//            sc_dump($row);
 			
 			if ($property === false) {
 				$properties = array(
-					'is_active'		=> $row->is_active,
-					'folder_id'		=> $row->folder_id,
-					'module_id'		=> $row->module_id,
-					'action'		=> $row->action,
-					'module_class'	=> $row->class,
-					'block_id'		=> $row->block_id,
-					'route_params'	=> false,
-					'cache_params'	=> empty($row->cache_params) ? null : unserialize($row->cache_params),
-					'params'		=> empty($row->params) ? array() : unserialize($row->params),
-					'permissions'	=> $row->permissions,
-					'plugins'		=> $row->plugins,
-					'database_id'	=> $row->database_id,
-					'descr'			=> $row->descr,
+                    'id'            => $node_id,
+					'is_active'     => $row->is_active,
+					'folder_id'     => $row->folder_id,
+                    
+                    'module_id'     => $row->module_id,
+                    'module_class'  => $module['class'],
+					'action'        => $this->container->get('kernel')->getBundle($row->module_id . 'Module')->getDefaultAction(),
+					'controller'    => $this->container->get('kernel')->getBundle($row->module_id . 'Module')->getDefaultController(),
+                    
+					'block_id'      => $row->block_id,
+					'route_params'  => false,
+					'cache_params'  => empty($row->cache_params) ? null : unserialize($row->cache_params),
+					'params'        => empty($row->params) ? array() : unserialize($row->params),
+					'permissions'   => $row->permissions,
+					'plugins'       => $row->plugins, // @todo продумать.
+					'database_id'   => $row->database_id,
+					'descr'         => $row->descr,
 				);
                 
 				return $properties;
@@ -96,7 +103,7 @@ class Node extends Controller
 	 * @param bool $is_admin - вернуть объект с административными методами.
 	 * @return object
 	 */
-	public function getModuleInstance($node_id = false, $is_admin = false)
+	public function __getModuleInstance($node_id = false, $is_admin = false)
 	{
 		/**
 		  Array
@@ -126,11 +133,12 @@ class Node extends Controller
 		}
 
 //		$class = 'Module_' . $properties['module_class'];
-		$class = $properties['module_class'];
+		$class = $properties['default_action'];
 		if ($is_admin) {
 			$class .= '_Admin';
 		}
 
+//        return new $class($this->container->get('service_container'), $node_id);
 		return new $class($this->container->get('service_container'), $node_id);
 	}
 	
@@ -445,8 +453,8 @@ class Node extends Controller
                     );
             }
 
-            if (isset($parsed_uri_value['route'])) {
-                $nodes_list[$parsed_uri_value['route']['node_id']]['route_params'] = $parsed_uri_value['route'];
+            if (isset($parsed_uri_value['router'])) {
+                $nodes_list[$parsed_uri_value['router']['node_id']]['route_params'] = $parsed_uri_value['router'];
             }
         }
 

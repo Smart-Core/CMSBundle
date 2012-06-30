@@ -222,11 +222,13 @@ class View
 	public function includeTpl()
 	{
 		if (empty($this->__options['paths'])) {
-			throw new \Exception('Не указаны пути для шаблонов.');
+            die('Не указаны пути для шаблонов.');
+//			throw new \Exception('Не указаны пути для шаблонов.');
 		}
 		
 		if (empty($this->__options['template'])) {
-			throw new \Exception('Не указано имя шаблона.');
+            die('Не указано имя шаблона.');
+//			throw new \Exception('Не указано имя шаблона.');
 		}
 		
 		switch (strtolower($this->__options['engine'])) {
@@ -237,7 +239,8 @@ class View
 				$template = new Engine\Simple\Simple($this->__options);
 				break;
 			default;
-				throw new \Exception('Неопознанный шаблонный движок.');
+                die('Неопознанный шаблонный движок.');
+//				throw new \Exception('Неопознанный шаблонный движок.');
 		}
 		
 		$template->display($this->all());

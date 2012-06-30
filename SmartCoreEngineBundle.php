@@ -8,6 +8,7 @@ use SmartCore\Bundle\EngineBundle\DependencyInjection\Compiler\TemplateResources
 
 class SmartCoreEngineBundle extends Bundle
 {
+    protected $modules_cache = array();
     protected $modules = array();
     
     public function boot()
@@ -17,26 +18,27 @@ class SmartCoreEngineBundle extends Bundle
         require_once '_temp.php';
     }
     
+    /*
     public function build(ContainerBuilder $container)
     {
         parent::build($container);
 //        $container->addCompilerPass(new TemplateResourcesPass());
     }
+    */
     
     /**
      * Динамические сущности - "Модули", наподобии бандлов.
      * 
      * @todo продумать наследование, как у бандлов.
-     * @todo сделать создание объктов.
      */
     public function getModule($name, $first = true)
     {
-        if ($name == 2) {
-            $name = 'SmartCoreTexterModule';
+        if (empty($this->modules_cache)) {
+            $this->modules_cache = $this->container->get('engine.module')->all();
         }
         
         if (!isset($this->modules[$name])) {
-            $this->modules[$name][0] = new \SmartCore\Module\Texter\SmartCoreTexterModule();
+            $this->modules[$name][0] = new $this->modules_cache[substr($name, 0, strlen($name) - 6)]['class']();
         }
                 
         if (true === $first) {
