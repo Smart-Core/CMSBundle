@@ -4,6 +4,7 @@ namespace SmartCore\Bundle\EngineBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller as BaseController;
 use SmartCore\Bundle\EngineBundle\Templater\View;
+use Symfony\Component\HttpFoundation\Response;
 
 class Controller extends BaseController
 {
@@ -57,18 +58,16 @@ class Controller extends BaseController
     }
     
     /**
-     * Returns a RedirectResponse to the given URL.
+     * Жесткий редирект.
      *
      * @param string  $url    The URL to redirect to
      * @param integer $status The status code to use for the Response
-     *
-     * @return RedirectResponse
      */
     public function redirect($url, $status = 302)
     {
-        $str = (null == $url) ? $_SERVER['REQUEST_URI'] : $url;
+        $str = (empty($url)) ? $_SERVER['REQUEST_URI'] : $url;
+        header(sprintf('%s %s %s', $_SERVER['SERVER_PROTOCOL'], $status, Response::$statusTexts[$status]));
         header('Location: ' . $str);
         exit;
-        //return new RedirectResponse($url, $status);
     }
 }
