@@ -5,7 +5,7 @@ use SmartCore\Bundle\EngineBundle\Controller\Controller;
 
 class Site extends Controller
 {
-	protected $storage;
+    protected $storage;
 
     protected $id                   = false;
     protected $create_datetime      = null;
@@ -105,7 +105,7 @@ class Site extends Controller
             return $this->storage->getProperties($site_id);
         } else {
             return $this->storage->getProperties($this->id);
-        }        
+        }
     }
 
     /**

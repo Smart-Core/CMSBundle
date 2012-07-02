@@ -10,30 +10,30 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class SitesDomains
 {
-	/**
-	 * @ORM\Id
-	 * @ORM\Column(type="string")
-	 * @ORM\GeneratedValue(strategy="AUTO")
-	 */
-	protected $domain;
-	
-	/**
-	 * @ORM\Column(type="integer")
-	 */
-	protected $site_id;
-	
-	/**
-	 * @ORM\Column(type="string", nullable=TRUE)
-	 */
-	protected $descr = null;
-	
-	/**
-	 * @ORM\Column(type="string", length=8, nullable=TRUE)
-	 */
-	protected $language_id = null;
-	
-	/**
-	 * @ORM\Column(type="datetime")
-	 */
-	protected $create_datetime;
+    /**
+     * @ORM\Id
+     * @ORM\Column(type="string")
+     * @ORM\GeneratedValue(strategy="AUTO")
+     */
+    protected $domain;
+    
+    /**
+     * @ORM\Column(type="integer")
+     */
+    protected $site_id;
+    
+    /**
+     * @ORM\Column(type="string", nullable=TRUE)
+     */
+    protected $descr = null;
+    
+    /**
+     * @ORM\Column(type="string", length=8, nullable=TRUE)
+     */
+    protected $language_id = null;
+    
+    /**
+     * @ORM\Column(type="datetime")
+     */
+    protected $create_datetime;
 }

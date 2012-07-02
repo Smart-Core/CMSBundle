@@ -4,137 +4,137 @@ namespace SmartCore\Bundle\EngineBundle\Templater\Helper;
 
 class Breadcrumbs implements \Iterator, \Countable
 {
-	protected $_position = 0;
-	
-	/**
-	 * Массив с хлебными крошками.
-	 */
-	protected $_breadcrumbs = array();
-	
-	/**
-	 * Constructor.
-	 */
-	public function __construct()
-	{
-		//parent::__construct(array('action' => 'defaultRender'));
-	}
-	
-	public function rewind() 
-	{
-		$this->_position = 0;
-	}
+    protected $_position = 0;
 
-	public function current() 
-	{
-		return $this->_breadcrumbs[$this->_position];
-	}
+    /**
+     * Массив с хлебными крошками.
+     */
+    protected $_breadcrumbs = array();
 
-	public function key() 
-	{
-		return $this->_position;
-	}
+    /**
+     * Constructor.
+     */
+    public function __construct()
+    {
+        //parent::__construct(array('action' => 'defaultRender'));
+    }
 
-	public function next() 
-	{
-		++$this->_position;
-	}
+    public function rewind() 
+    {
+        $this->_position = 0;
+    }
 
-	public function valid() 
-	{
-		return isset($this->_breadcrumbs[$this->_position]);
-	}
+    public function current() 
+    {
+        return $this->_breadcrumbs[$this->_position];
+    }
 
-	public function count()
-	{
-		return count($this->_breadcrumbs);
-	}
+    public function key() 
+    {
+        return $this->_position;
+    }
 
-	/**
-	 * Установить данные.
-	 */
-	public function assign($data)
-	{
-		$this->_breadcrumbs = $data;
-	}
-	
-	/**
-	 * Добавление хлебной крошки.
-	 * 
-	 * @param string $uri
-	 * @param string $title
-	 * @param string $descr
-	 */
-	public function add($uri, $title, $descr = false)
-	{
-		$this->_breadcrumbs[] = array(
-			'uri'	=> $uri,
-			'title' => $title,
-			'descr' => $descr,
-			);
-	}
-	
-	/**
-	 * Получиить хлебные крошки.
-	 * 
-	 * @return array
-	 */
-	public function get($num = false)
-	{
-		// @todo если $num отрицательный, то вернуть указанный номер с конца, напроимер -1 это последний, а -2 предпослений и т.д...
-		
-		$data = array();
-		$current_uri = '';
-		foreach ($this->_breadcrumbs as $key => $value) {
-			$data[$key] = $value;
-			if (sc_is_absolute_path($value['uri'])) {
-				$current_uri = $value['uri'];
-				continue;
-			} else {
-				$current_uri .= $value['uri'];
-				$data[$key]['uri'] = $current_uri;
-			}
-		}
-		
-		if ($num === false) {
-			return $data;
-		} else {
-			return $data[$num];
-		}
-	}
-	
-	/**
-	 * NewFunction
-	 *
-	 * @param
-	 */
-	public function all()
-	{
-		return $this->get();
-	}
-	
-	/**
-	 * Получение ссылки на последнюю крошку.
-	 */
-	public function getLastUri()
-	{
-		$item = $this->get(count($this->_breadcrumbs) - 1);
-		return $item['uri'];
-	}
-	
-	/**
-	 * Отрисовщик по умолчанию.
-	 */
-	public function display()
-	{
-		$bc = $this->get();
-		$cnt = count($bc);
-		if ($cnt > 0) {
-			foreach ($bc as $item) {
-				echo --$cnt ? "<a href=\"{$item['uri']}\" title=\"{$item['descr']}\">" : '';
-				echo $item['title'];
-				echo $cnt ? "</a>&nbsp;&raquo;&nbsp;" : '';
-			}
-			echo "\n";
-		}
-	}
+    public function next() 
+    {
+        ++$this->_position;
+    }
+
+    public function valid() 
+    {
+        return isset($this->_breadcrumbs[$this->_position]);
+    }
+
+    public function count()
+    {
+        return count($this->_breadcrumbs);
+    }
+
+    /**
+     * Установить данные.
+     */
+    public function assign($data)
+    {
+        $this->_breadcrumbs = $data;
+    }
+
+    /**
+     * Добавление хлебной крошки.
+     * 
+     * @param string $uri
+     * @param string $title
+     * @param string $descr
+     */
+    public function add($uri, $title, $descr = false)
+    {
+        $this->_breadcrumbs[] = array(
+            'uri'   => $uri,
+            'title' => $title,
+            'descr' => $descr,
+            );
+    }
+
+    /**
+     * Получиить хлебные крошки.
+     * 
+     * @return array
+     */
+    public function get($num = false)
+    {
+        // @todo если $num отрицательный, то вернуть указанный номер с конца, напроимер -1 это последний, а -2 предпослений и т.д...
+        
+        $data = array();
+        $current_uri = '';
+        foreach ($this->_breadcrumbs as $key => $value) {
+            $data[$key] = $value;
+            if (sc_is_absolute_path($value['uri'])) {
+                $current_uri = $value['uri'];
+                continue;
+            } else {
+                $current_uri .= $value['uri'];
+                $data[$key]['uri'] = $current_uri;
+            }
+        }
+
+        if ($num === false) {
+            return $data;
+        } else {
+            return $data[$num];
+        }
+    }
+
+    /**
+     * NewFunction
+     *
+     * @param
+     */
+    public function all()
+    {
+        return $this->get();
+    }
+
+    /**
+     * Получение ссылки на последнюю крошку.
+     */
+    public function getLastUri()
+    {
+        $item = $this->get(count($this->_breadcrumbs) - 1);
+        return $item['uri'];
+    }
+
+    /**
+     * Отрисовщик по умолчанию.
+     */
+    public function display()
+    {
+        $bc = $this->get();
+        $cnt = count($bc);
+        if ($cnt > 0) {
+            foreach ($bc as $item) {
+                echo --$cnt ? "<a href=\"{$item['uri']}\" title=\"{$item['descr']}\">" : '';
+                echo $item['title'];
+                echo $cnt ? "</a>&nbsp;&raquo;&nbsp;" : '';
+            }
+            echo "\n";
+        }
+    }
 }

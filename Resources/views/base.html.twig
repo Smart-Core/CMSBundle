@@ -4,45 +4,45 @@
 <head>
 {% block html_head_title %}
 {% if html.title %}
-	<title>{{ html.title }}</title>
+    <title>{{ html.title }}</title>
 {% endif %}
 {% endblock html_head_title %}
-{# Meta #}	<!-- Meta -->
+{# Meta #}    <!-- Meta -->
 {% block html_head_meta %}
 {% for type, vals in html.meta %}
 {% for name, content in vals %}
-	<meta {{ type }}="{{ name }}" content="{{ content }}"{{ html.end }}>
+    <meta {{ type }}="{{ name }}" content="{{ content }}"{{ html.end }}>
 {% endfor %}
 {% endfor %}
 {% endblock html_head_meta %}
-{# Links #}	<!-- Links -->
+{# Links #}    <!-- Links -->
 {% block html_head_links %}
 {% for href, link in html.links %}
-{% if link._ie %}	<!--[if {{ link._ie }}]>
+{% if link._ie %}    <!--[if {{ link._ie }}]>
 {% endif %}
-	<link{% for attr, value in link %}{% if attr == '_ie' %}{% else %} {{ attr }}="{{ value }}"{% endif %}{% endfor %}{{ html.end }}>
-{% if link._ie %}	<![endif]-->
+    <link{% for attr, value in link %}{% if attr == '_ie' %}{% else %} {{ attr }}="{{ value }}"{% endif %}{% endfor %}{{ html.end }}>
+{% if link._ie %}    <![endif]-->
 {% endif %}
 {% endfor %}
 {% endblock html_head_links %}
-{# Styles #}	<!-- Styles -->
+{# Styles #}    <!-- Styles -->
 {% block html_head_styles %}
 {% for name, style in html.styles %}
-{% if style._ie %}	<!--[if {{ style._ie }}]>
+{% if style._ie %}    <!--[if {{ style._ie }}]>
 {% endif %}
-	<style{% for attr, value in style %}{% if attr == '_code' or attr == '_ie' or attr == 'href' %}{% else %} {{ attr }}="{{ value }}"{% endif %}{% endfor %}>{% if style.href %} @import url({{ style.href | raw }}); {% endif %}
+    <style{% for attr, value in style %}{% if attr == '_code' or attr == '_ie' or attr == 'href' %}{% else %} {{ attr }}="{{ value }}"{% endif %}{% endfor %}>{% if style.href %} @import url({{ style.href | raw }}); {% endif %}
 {% if style._code %}{{ style._code | raw }}{% endif %}</style>
-{% if style._ie %}	<![endif]-->
+{% if style._ie %}    <![endif]-->
 {% endif %}
 {% endfor %}
 {% endblock html_head_styles %}
-{# Scripts #}	<!-- Scripts -->
+{# Scripts #}    <!-- Scripts -->
 {% block html_head_scripts %}
 {% for name, script in html.scripts %}
-{% if script._ie %}	<!--[if {{ script._ie }}]>
+{% if script._ie %}    <!--[if {{ script._ie }}]>
 {% endif %}
-	<script{% for attr, value in script %}{% if attr == '_code' or attr == '_ie' %}{% else %} {{ attr }}="{{ value | raw }}"{% endif %}{% endfor %}>{% if script._code %}{{ script._code | raw }}{% endif %}</script>
-{% if script._ie %}	<![endif]-->
+    <script{% for attr, value in script %}{% if attr == '_code' or attr == '_ie' %}{% else %} {{ attr }}="{{ value | raw }}"{% endif %}{% endfor %}>{% if script._code %}{{ script._code | raw }}{% endif %}</script>
+{% if script._ie %}    <![endif]-->
 {% endif %}
 {% endfor %}
 {% endblock html_head_scripts %}

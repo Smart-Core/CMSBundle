@@ -40,7 +40,7 @@ class Environment extends ParameterBag
             // Путь к глобальным ресурсам. Может быть на другом домене, например 'http://site.com/assets/'
             'global_assets'         => $base_path . 'assets/',
         ));
-    }    
+    }
 
     /**
      * Магическое получение параметров.

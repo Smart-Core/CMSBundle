@@ -11,32 +11,32 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class SiteCreateCommand extends ContainerAwareCommand
 {
-	protected function configure()
-	{
-		$this
-			->setName('engine:site:create')
-			->setDescription('@todo Create New Site Instance.')
-			->addArgument('domain', InputArgument::OPTIONAL, 'Default domain')
-			->addOption('descr', null, InputOption::VALUE_NONE, 'Description')
-//			->addOption('yell', null, InputOption::VALUE_NONE, 'If set, the task will yell in uppercase letters')
-		;
-	}
-	
-	protected function execute(InputInterface $input, OutputInterface $output)
-	{
-		$domain = $input->getArgument('domain');
-		
-		if ($domain) {
-			$text = 'Creating http://' . $domain;
-		} else {
-			$text = 'Hello';
-		}
+    protected function configure()
+    {
+        $this
+            ->setName('engine:site:create')
+            ->setDescription('@todo Create New Site Instance.')
+            ->addArgument('domain', InputArgument::OPTIONAL, 'Default domain')
+            ->addOption('descr', null, InputOption::VALUE_NONE, 'Description')
+//            ->addOption('yell', null, InputOption::VALUE_NONE, 'If set, the task will yell in uppercase letters')
+        ;
+    }
 
-		/*
-		if ($input->getOption('yell')) {
-			$text = strtoupper($text);
-		}
-		*/
-		$output->writeln($text);
-	}
+    protected function execute(InputInterface $input, OutputInterface $output)
+    {
+        $domain = $input->getArgument('domain');
+
+        if ($domain) {
+            $text = 'Creating http://' . $domain;
+        } else {
+            $text = 'Hello';
+        }
+
+        /*
+        if ($input->getOption('yell')) {
+            $text = strtoupper($text);
+        }
+        */
+        $output->writeln($text);
+    }
 }
