@@ -3,7 +3,7 @@
 namespace SmartCore\Bundle\EngineBundle\Controller;
 
 use SmartCore\Bundle\EngineBundle\Controller\Controller;
-use SmartCore\Bundle\EngineBundle\Engine\NodeProperties;
+//use SmartCore\Bundle\EngineBundle\Engine\NodeProperties;
 use SmartCore\Bundle\EngineBundle\Container;
 use Symfony\Component\DependencyInjection\ContainerInterface;
  
@@ -66,7 +66,7 @@ abstract class Module extends Controller
 			return null;
 		}
 		
-		$this->NodeProperties = new NodeProperties($node_id);
+		//$this->NodeProperties = new NodeProperties($node_id);
         $this->node = Container::get('engine.node')->getProperties($node_id);
         $this->node['id'] = $node_id;
         

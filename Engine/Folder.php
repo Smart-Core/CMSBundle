@@ -524,22 +524,19 @@ class Folder extends Controller
             // В данной папке есть нода которой передаётся дальнейший парсинг URI.
             if ($router_node_id !== null) {
                 // выполняется часть URI парсером модуля и возвращается результат работы, в дальнейшем он будет передан самой ноде.
-                //$Module = $this->Node->getModuleInstance($router_node_id);
-                $Module = $this->forward($router_node_id . '::router', array(
+                $ModuleRouter = $this->forward($router_node_id . '::router', array(
                     'slug' => str_replace($current_folder_path, '', substr($this->Env->base_path, 0, -1) . $slug))
                 );
                 
-                //$module_route = $Module->router(str_replace($current_folder_path, '', substr($this->Env->base_path, 0, -1) . $slug));
-                $module_route = $Module->getContentNative()->router;
-                unset($Module);
-                
-                // Парсер модуля вернул положительный ответ.
-                if ($module_route !== false) {
-                    $data['folders'][$folder->folder_id]['router'] = $module_route;
-                    $data['folders'][$folder->folder_id]['router']['node_id'] = $router_node_id;
+                // Роутер модуля вернул положительный ответ.
+                if ($ModuleRouter->isOk()) {
+                    $data['folders'][$folder->folder_id]['router_response'] = $ModuleRouter;
+                    $data['folders'][$folder->folder_id]['router_node_id'] = $router_node_id;
                     // В случае успешного завершения роутера модуля, роутинг ядром прекращается.
                     break; 
                 }
+                
+                unset($ModuleRouter);
             } // __end if ($router_node_id !== null)
 
             $folder = $this->getData($segment, $folder_pid);

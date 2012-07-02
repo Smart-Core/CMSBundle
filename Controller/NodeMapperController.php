@@ -29,7 +29,6 @@ class NodeMapperController extends Controller
     
     public function indexAction($slug)
     {
-        
 //        $tmp = $this->Env->get('base_url');
 //        sc_dump($user = $this->container->get('security.context')->getToken()->getUser());
 //        sc_dump($this->container->getParameterBag());
@@ -42,10 +41,16 @@ class NodeMapperController extends Controller
 
         $router_data = $this->Folder->router($this->get('request')->getPathInfo());
 
-        sc_dump($router_data);
+//        sc_dump($router_data);
 
         foreach ($router_data['folders'] as $folder) {
             $this->Breadcrumbs->add($folder['uri'], $folder['title'], $folder['descr']);
+            if (isset($folder['router_response'])) {
+                $mbc = $folder['router_response']->getBreadcrumbs();
+                foreach ($mbc as $bc) {
+                    $this->Breadcrumbs->add($bc['uri'], $bc['title'], $bc['descr']);
+                }
+            }
         }
 
         $this->View->setOptions(array(
@@ -98,6 +103,7 @@ class NodeMapperController extends Controller
         $this->View->block->setOptions(array('comment' => 'Блоки'));
 
         $nodes_list = $this->Node->buildNodesListByFolders($router_data['folders']);
+//        $this->Node->buildNodesListByFolders($router_data['folders']);
 
 //        sc_dump($nodes_list);
 
@@ -155,6 +161,8 @@ class NodeMapperController extends Controller
     protected function buildModulesData($nodes_list)
     {
         $blocks = $this->Block->all();
+        
+        // Каждый "блок" является объектом вида.
         foreach ($blocks as $block_id => $block) {
             $this->View->block->$block['name'] = new View();
             $this->View->block->$block['name']->setRenderMethod('echoProperties');
@@ -167,8 +175,6 @@ class NodeMapperController extends Controller
             if ($node_id == $this->front_end_action_node_id) {
                 continue;
             }
-
-            // $this->profilerStart('node', $node_id);
 
             $block_name = $blocks[$node_properties['block_id']]['name'];
 
@@ -224,29 +230,11 @@ class NodeMapperController extends Controller
                     $Module = $Node->getModuleInstance($node_id, false);
                 }
                 */
+                
+//                sc_dump($node_properties);
 
-                
-                if (isset($node_properties['route_params'])) {
-                    sc_dump($node_id);
-                    sc_dump($node_properties);
-                }
-                
                 $Module = $this->forward($node_id);
-                                
-                /*
-                $Module = $this->Node->getModuleInstance($node_id, false);
-                if (empty($node_properties['route_params'])) {
-                    $Module->{$node_properties['action'] . 'Action'}($node_properties['route_params']);
-                } else {
-                    if (isset($node_properties['route_params']['params'])) {
-                        $Module->{$node_properties['route_params']['action'] . 'Action'}($node_properties['route_params']['params']);
-                    } else {
-                        $Module->{$node_properties['route_params']['action'] . 'Action'}();
-                    }
-                }
-                */
-                
-                
+
                 // Указать шаблонизатору, что надо сохранить эту ноду как html.
                 // @todo ПЕРЕДЕЛАТЬ!!! подумать где выполнять кеширование, внутри объекта View или где-то снаружи.
                 // @todo ВАЖНО подумать как тут поступить т.к. эта кука может стоять у гостя!!!
@@ -293,12 +281,9 @@ class NodeMapperController extends Controller
                 }
             }
             
-//            $this->View->block->$block_name->$node_id = $Module->View;
             $this->View->block->$block_name->$node_id = $Module->getContentNative();
 
-            // $this->profilerStop('node', $node_id);
             unset($Module);
         }
-        unset($Node);
     }
 }

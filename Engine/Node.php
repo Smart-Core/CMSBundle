@@ -7,94 +7,85 @@ use SmartCore\Bundle\EngineBundle\Container;
 
 class Node extends Controller
 {
-	/**
-	 * Node ID.
-	 * @var int
-	 */
-	protected $node_id = false;
-	
-	/**
-	 * Объект модуля.
-	 * @var object
-	 */
-	protected $Module;
-	
-	/**
-	 * Constructor.
-	 *
-	 * @param
-	 * @return
-	 */
-	public function __construct($node_id = false)
-	{
-		parent::__construct();
-		if ($node_id) {
-			$this->activate($node_id);
-		}
-	}
-	
-	/**
-	 * Активировать ноду.
-	 *
-	 * @param int $node_id
-	 * 
-	 * @todo может быть и не нужно...
-	 */
-	public function activate($node_id)
-	{
-		$this->node_id = $node_id;
-	}
-	
+    /**
+     * Список всех нод, запрошенных через роутинг.
+     * Строится методом buildNodesListByFolders().
+     */
+    protected $nodes_list = array();
+    
 	/**
 	 * Получить свойва ноды.
 	 *
 	 * @param int $node_id
-	 * @param string $property - получить конкретное свойство, если не указано, возвращаются все свойства.
-	 * @return array|string
+	 * @return array
 	 */
-    public function getProperties($node_id, $property = false)
+    public function getProperties($node_id)
     {
+        if (isset($this->nodes_list[$node_id])) {
+            return $this->nodes_list[$node_id];
+        }
+        
         $sql = "SELECT *
             FROM {$this->DB->prefix()}engine_nodes
             WHERE node_id = '$node_id'
             AND site_id = '{$this->container->get('engine.site')->getId()}' ";
         $result = $this->DB->query($sql);
 		if ($result->rowCount() == 1) {
-			$row = $result->fetchObject();
-            
-            $module = $this->container->get('engine.module')->get($row->module_id);
-//            sc_dump($module);
-//            sc_dump($row);
-			
-			if ($property === false) {
-				$properties = array(
-                    'id'            => $node_id,
-					'is_active'     => $row->is_active,
-					'folder_id'     => $row->folder_id,
-                    
-                    'module_id'     => $row->module_id,
-                    'module_class'  => $module['class'],
-					'action'        => $this->container->get('kernel')->getBundle($row->module_id . 'Module')->getDefaultAction(),
-					'controller'    => $this->container->get('kernel')->getBundle($row->module_id . 'Module')->getDefaultController(),
-                    
-					'block_id'      => $row->block_id,
-					'route_params'  => false,
-					'cache_params'  => empty($row->cache_params) ? null : unserialize($row->cache_params),
-					'params'        => empty($row->params) ? array() : unserialize($row->params),
-					'permissions'   => $row->permissions,
-					'plugins'       => $row->plugins, // @todo продумать.
-					'database_id'   => $row->database_id,
-					'descr'         => $row->descr,
-				);
-                
-				return $properties;
-			} else {
-				return $row->$property;
-			}
+			return $this->getPropertiesByRow($result->fetchObject());
 		} else {
 			return false;
 		}
 	}
+    
+    /**
+     * Получить массив со свойствами ноды, по заданному результату выборки из БД.
+     * 
+     * @param object $row
+     * 
+     * @return array
+     */
+    protected function getPropertiesByRow($row)
+    {
+        $module = $this->container->get('engine.module')->get($row->module_id);
+        
+        if (!empty($row->controller)) {
+            $tmp = explode(':', $row->controller);
+            $controller = $tmp[0];
+            $action = $tmp[1];
+        } else {
+            $controller = $this->container->get('kernel')->getBundle($row->module_id . 'Module')->getDefaultController();
+            $action = $this->container->get('kernel')->getBundle($row->module_id . 'Module')->getDefaultAction();
+        }
+
+        return array (
+            'id'            => $row->node_id,
+            'node_id'       => $row->node_id,
+            'is_active'     => $row->is_active,
+            'is_cached'     => $row->is_cached,
+            'folder_id'     => $row->folder_id,
+            'block_id'      => $row->block_id,
+            'pos'           => $row->pos,
+            'database_id'   => $row->database_id,
+            'descr'         => $row->descr,
+            
+            'module_id'     => $row->module_id,
+            'module_class'  => $module['class'],
+            'controller'    => $controller,
+            'action'        => $action,
+            'arguments'     => array(),
+            
+            'params'        => empty($row->params) ? array() : unserialize($row->params),
+            'permissions'   => $row->permissions,
+            'plugins'       => $row->plugins, // @todo продумать.
+            
+            'cache_params'  => empty($row->cache_params) ? null : unserialize($row->cache_params),
+            'cache_params_yaml' => $row->cache_params_yaml,
+            
+            'node_action_mode'  => $row->node_action_mode,
+            'owner_id'          => $row->owner_id,
+            'create_datetime'   => $row->create_datetime,
+        );
+    }
 	
 	/**
 	 * Получить объект модуля.
@@ -283,7 +274,7 @@ class Node extends Controller
 	 * @param array $pd
 	 * @return bool
 	 */
-	public function update($node_id, $pd)
+	public function ___update($node_id, $pd)
 	{
 		if (is_numeric($pd['block_id'])) {
 			$block_id = $pd['block_id'];
@@ -333,7 +324,7 @@ class Node extends Controller
 	 * @param array $args - массив с аргументами.
 	 * @return mixed
 	 */
-	public function hook($method, array $args = null)
+	public function ___hook($method, array $args = null)
 	{
 		$Module = $this->getModuleInstance($this->node_id);
 		return is_object($Module) ? $Module->hook($method, $args) : null;
@@ -350,7 +341,10 @@ class Node extends Controller
      */
     public function buildNodesListByFolders(array $folders)
     {
-        $nodes_list = array();
+        if (!empty($this->nodes_list)) {
+            return $this->nodes_list;
+        }
+        
         $used_nodes = array();
         $lockout_nodes = array(
             'single'  => array(), // Блокировка нод в папке, без наследования.
@@ -396,8 +390,7 @@ class Node extends Controller
 
             $sql = false;
             if ($parsed_uri_value['is_inherit_nodes'] == 1) { // в этой папке есть ноды, которые наследуются...
-                $sql = "SELECT n.module_id, n.node_id, n.params, n.cache_params, n.plugins, n.database_id, n.action,
-                        n.permissions, n.is_cached, n.block_id AS block_id, n.node_action_mode
+                $sql = "SELECT n.*
                     FROM {$this->DB->prefix()}engine_nodes AS n,
                         {$this->DB->prefix()}engine_blocks_inherit AS bi
                     WHERE n.block_id = bi.block_id 
@@ -406,11 +399,12 @@ class Node extends Controller
                         AND bi.folder_id = '{$folder_id}'
                         AND n.site_id = '{$this->Site->getId()}'
                         AND bi.site_id = '{$this->Site->getId()}'
-                    ORDER BY n.pos ";
+                    ORDER BY n.pos
+                ";
             }
 
             // Обрабатываем последнюю папку т.е. текущую.
-            if ($folder_id == $this->Env->current_folder_id) { // @todo убрать Env
+            if ($folder_id == $this->Env->get('current_folder_id')) { // @todo убрать Env
                 $sql = "SELECT * FROM {$this->DB->prefix()}engine_nodes WHERE folder_id = '{$folder_id}' AND is_active = '1' AND site_id = '{$this->Site->getId()}' ";
                 // исключаем ранее включенные ноды.
                 foreach ($used_nodes as $used_nodes_value) {
@@ -437,43 +431,43 @@ class Node extends Controller
                     $used_nodes[] = $row->node_id; 
                 }
 
-                $nodes_list[$row->node_id] = array(
-                    'folder_id'         => $folder_id,
-                    'module_id'         => $row->module_id,
-                    'action'            => $row->action,
-                    'block_id'          => $row->block_id,
-                    'params'            => $row->params,
-                    'cache_params'      => $row->cache_params,
-                    'is_cached'         => $row->is_cached,
-                    'plugins'           => $row->plugins,
-                    'permissions'       => $row->permissions,
-                    'route_params'      => null, // В случае, если не был отработан механизм парсинга строки запроса модулем, считаеся, что парсер данных не вернул ничего либо вернул NULL.
-                    'database_id'       => $row->database_id,
-                    'node_action_mode'  => $row->node_action_mode,
-                    );
+                $this->nodes_list[$row->node_id] = $this->getPropertiesByRow($row);
             }
-
-            if (isset($parsed_uri_value['router'])) {
-                $nodes_list[$parsed_uri_value['router']['node_id']]['route_params'] = $parsed_uri_value['router'];
+            
+            // Если есть ответ роутинга модуля, то подменяются controller, action и arguments.  
+            if (isset($parsed_uri_value['router_response'])) {
+                if ($controller = $parsed_uri_value['router_response']->getController()) {
+                    $this->nodes_list[$parsed_uri_value['router_node_id']]['controller'] = $controller;
+                }
+                
+                if ($action = $parsed_uri_value['router_response']->getAction()) {
+                    $this->nodes_list[$parsed_uri_value['router_node_id']]['action'] = $action;
+                }
+                
+                $arguments = $parsed_uri_value['router_response']->getAllArguments();
+                if (!empty($arguments)) {
+                    $this->nodes_list[$parsed_uri_value['router_node_id']]['arguments'] = $arguments;
+                }
+                // $this->nodes_list[$parsed_uri_value['router_node_id']]['router_response'] = $parsed_uri_value['router_response'];
             }
         }
 
         foreach ($lockout_nodes['single'] as $node_id => $value) {
-            unset($nodes_list[$node_id]);
+            unset($this->nodes_list[$node_id]);
         }
 
         foreach ($lockout_nodes['inherit'] as $node_id => $value) {
-            unset($nodes_list[$node_id]);
+            unset($this->nodes_list[$node_id]);
         }
 
         if (!empty($lockout_nodes['except'])) {
-            foreach ($nodes_list as $node_id => $value) {
+            foreach ($this->nodes_list as $node_id => $value) {
                 if (!array_key_exists($node_id, $lockout_nodes['except'])) {
-                    unset($nodes_list[$node_id]);
+                    unset($this->nodes_list[$node_id]);
                 }
             }
         }
 
-        return $nodes_list;
+        return $this->nodes_list;
     }
 }
