@@ -61,7 +61,7 @@ class ModuleRouterResponse extends Response
         $this->arguments[$name] = $value;
     }
 
-    public function addBreacrumb($uri, $title, $descr = false)
+    public function addBreadcrumb($uri, $title, $descr = false)
     {
         $this->breadcrumbs[] = array(
             'uri'   => $uri,
