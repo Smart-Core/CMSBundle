@@ -72,7 +72,7 @@ class NodeMapperController extends Controller
         ));
         
         $this->View->html = $this->Html;
-        $this->Html->title('SC Framework!');
+        $this->Html->title('Smart Core CMS (based on Symfony2 Framework)');
 
         $theme_path = $this->Env->base_path . $this->Env->theme_path;
         $this->View->assets = array(
@@ -281,7 +281,12 @@ class NodeMapperController extends Controller
                 }
             }
             
-            $this->View->block->$block_name->$node_id = $Module->getContentNative();
+            if (method_exists($Module, 'getContentNative')) {
+                $this->View->block->$block_name->$node_id = $Module->getContentNative();
+            } else {
+                $this->View->block->$block_name->$node_id = $Module->getContent();
+            }
+            
 
             unset($Module);
         }
