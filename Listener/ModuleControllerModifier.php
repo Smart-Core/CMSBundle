@@ -3,8 +3,10 @@
 namespace SmartCore\Bundle\EngineBundle\Listener;
 
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\FilterControllerEvent;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
+use Symfony\Component\HttpKernel\Event\GetResponseForControllerResultEvent;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 
 class ModuleControllerModifier
@@ -16,6 +18,14 @@ class ModuleControllerModifier
         $this->container = $container;
     }
 
+    public function onView(GetResponseForControllerResultEvent $event)
+    {
+        $response = new Response();
+        $response->setContent($event->getControllerResult());
+        
+        $event->setResponse($response);        
+    }
+    
     public function onController(FilterControllerEvent $event)
     {
         if (!is_array($controller = $event->getController())) {
@@ -55,6 +65,10 @@ class ModuleControllerModifier
                     }
                 }
             }
+            
+//            sc_dump($controller);
+//            sc_dump($event->getRequest()->attributes->all());
+            
         }
     }
 }

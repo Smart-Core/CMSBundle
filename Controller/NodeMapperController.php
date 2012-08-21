@@ -110,6 +110,8 @@ class NodeMapperController extends Controller
         $this->buildModulesData($nodes_list);
         
 //        sc_dump($this->View->block);
+        
+//        sc_dump($this->View->block);
 //        sc_dump($this->Html);
 
 //        sc_dump($this->renderView("SmartCoreTexterModule::texter.html.twig", array('text' => 777)));
@@ -153,10 +155,8 @@ class NodeMapperController extends Controller
     }
     
     /**
-     * Собираютя блоки из подготовленного списка нод,
-     * по мере прохождения, подключаются и запускаются нужные модули с нужными параметрами.
-     * 
-     * @uses Module_*
+     * Сборка "блоков" из подготовленного списка нод.
+     * По мере прохождения, подключаются и запускаются нужные модули с нужными параметрами.
      */
     protected function buildModulesData($nodes_list)
     {
@@ -233,7 +233,11 @@ class NodeMapperController extends Controller
                 
 //                sc_dump($node_properties);
 
-                $Module = $this->forward($node_id);
+                $Module = $this->forward($node_id, array(
+                    '_eip' => true,
+                ));
+                
+//                sc_dump(get_class($Module));
 
                 // Указать шаблонизатору, что надо сохранить эту ноду как html.
                 // @todo ПЕРЕДЕЛАТЬ!!! подумать где выполнять кеширование, внутри объекта View или где-то снаружи.
@@ -286,7 +290,6 @@ class NodeMapperController extends Controller
             } else {
                 $this->View->block->$block_name->$node_id = $Module->getContent();
             }
-            
 
             unset($Module);
         }

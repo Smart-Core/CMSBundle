@@ -40,11 +40,11 @@ class SmartCoreEngineBundle extends Bundle
         if (!isset($this->modules[$name])) {
             $this->modules[$name][0] = new $this->modules_cache[substr($name, 0, strlen($name) - 6)]['class']();
         }
-                
+        
         if (true === $first) {
             return $this->modules[$name][0];
         } else {
             return $this->modules[$name];
         }
-    }    
+    }
 }
