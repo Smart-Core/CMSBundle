@@ -26,7 +26,7 @@ class SmartCoreEngineExtension extends Extension
         
         $container->setParameter($this->getAlias() . '.dir_sites', $config['dir_sites']);
         $container->setParameter($this->getAlias() . '.storage', $config['storage']);
-
+        
         if ($container->hasParameter('liip_theme.file_locator.class')) {
             $container->setParameter('liip_theme.file_locator.class', 'SmartCore\Bundle\EngineBundle\Locator\MultisitesFileLocator');
             $container->setAlias($this->getAlias() . '.active_theme', 'liip_theme.active_theme');

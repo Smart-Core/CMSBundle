@@ -22,8 +22,8 @@ class ModuleControllerModifier
     {
         $response = new Response();
         $response->setContent($event->getControllerResult());
-        
-        $event->setResponse($response);        
+
+        $event->setResponse($response);
     }
     
     public function onController(FilterControllerEvent $event)
@@ -31,16 +31,16 @@ class ModuleControllerModifier
         if (!is_array($controller = $event->getController())) {
             return;
         }
-        
+
         if ($event->getRequest()->attributes->has('_node')) {
             $node = $event->getRequest()->attributes->get('_node');
-
-            $controller[0]->setNode($node);
             
+            $controller[0]->setNode($node);
+
             $event->getRequest()->attributes->remove('_node');
         }
     }
-    
+
     public function onRequest(GetResponseEvent $event)
     {
         if (HttpKernelInterface::SUB_REQUEST === $event->getRequestType()) {
@@ -48,15 +48,15 @@ class ModuleControllerModifier
             
             if (is_numeric($controller[0])) {
                 $node = $this->container->get('engine.node')->getProperties($controller[0]);
-                
+
                 if (empty($controller[1])) {
                     $controller[1] = $node['controller'];
                 }
-                
+
                 if (empty($controller[2])) {
                     $controller[2] = $node['action'];
                 }
-                
+
                 $event->getRequest()->attributes->set('_controller', $node['module_id'] . 'Module:' . $controller[1] . ':' . $controller[2]);
                 $event->getRequest()->attributes->set('_node', $node);
                 if (!empty($node['arguments']) and is_array($node['arguments'])) {
@@ -65,10 +65,6 @@ class ModuleControllerModifier
                     }
                 }
             }
-            
-//            sc_dump($controller);
-//            sc_dump($event->getRequest()->attributes->all());
-            
         }
     }
 }

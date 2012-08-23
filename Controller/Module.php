@@ -42,35 +42,22 @@ abstract class Module extends Controller
      * @access public
      * @param int $node_id
      */
-    final public function __construct($container = null, $node_id = false)
+    final public function __construct()
     {
         parent::__construct();
-
+        
         // Запуск метода init(), который является заменой конструктора для модулей.
         if (method_exists($this, 'init')) {
             $this->init();
         }
         
-        return;
-        
         // ------------------------------------------
-        
-        if ($container) {
-            $this->setContainer($container);
-        }
+        /*
 //        $this->container = Container::getContainer();
-        
 
-        if ($node_id === false) {
-            // @todo сообщение о недопустимой операции.
-            return null;
-        }
-        
         //$this->NodeProperties = new NodeProperties($node_id);
         $this->node = Container::get('engine.node')->getProperties($node_id);
         $this->node['id'] = $node_id;
-        
-//        sc_dump($this->node); // exit;
         
         // При database_id = 0 модуль будет использовать тоже подключение, что и ядро, иначе создаётся новое подключение.
 //        if ($this->NodeProperties->database_id != 0) {
@@ -83,15 +70,8 @@ abstract class Module extends Controller
             }
             $this->DB = Registry::get($db_key);
             unset($con_data, $db_key);
-        }
-        
-        // Запуск метода init(), который является заменой конструктора для модулей.
-        if (method_exists($this, 'init')) {
-            $this->init();
-            foreach ($this->node['params'] as $key => $value) {
-                $this->$key = $value;
-            }
-        }
+        }        
+        */
     }
 
     /**
