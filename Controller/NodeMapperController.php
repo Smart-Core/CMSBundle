@@ -41,9 +41,9 @@ class NodeMapperController extends Controller
         
         //$em = $this->getDoctrine()->getEntityManager();
         
-        //$item = $this->getDoctrine()->getRepository('SmartCoreTexterModule:TextItem')->find(1);
+        //$item = $this->getDoctrine()->getRepository('SmartCoreTexterModule:Item')->find(1);
         
-//        ladybug_dump($item);
+//        ladybug_dump($this->container->get('security.context')->getToken()->getUser());
 
         
         $router_data = $this->Folder->router($this->get('request')->getPathInfo());

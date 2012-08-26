@@ -42,7 +42,7 @@ class Controller extends BaseController
     /**
      * Магическое обращение к сервисам.
      *
-     * @param string $name
+     * @todo убрать.
      */
     public function __get($name)
     {
@@ -55,6 +55,42 @@ class Controller extends BaseController
         } else {
             throw new \Exception('SmartCore\EngineBundle: Service "engine.' . strtolower($name) . '" does not register.');
         }
+    }
+    
+    /**
+     * Обращение к сервисам движка.
+     * 
+     * @param string $name
+     * @return object
+     */
+    public function engine($name)
+    {
+        if (!is_object($this->container)) {
+            throw new \Exception('SmartCore\EngineBundle: Container is not accesible. Service "engine.' . $name . '" fail.');
+        }
+        
+        if ($this->container->has('engine.' . $name)) {
+            return $this->container->get('engine.' . $name);
+        } else {
+            throw new \Exception('SmartCore\EngineBundle: Service "engine.' . strtolower($name) . '" does not register.');
+        }
+    }
+
+    public function EM()
+    {
+        return $this->getDoctrine()->getEntityManager();
+    }
+    
+
+    public function DQL($dql)
+    {
+        return $this->EM()->createQuery($dql);
+    }
+    
+
+    public function getRepo($name)
+    {
+        return $this->getDoctrine()->getRepository($name);
     }
     
     /**
