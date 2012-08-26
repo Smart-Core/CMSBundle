@@ -1,13 +1,12 @@
 <?php
 
-namespace SmartCore\Bundle\EngineBundle\Controller;
+namespace SmartCore\Bundle\EngineBundle\Module;
 
-use SmartCore\Bundle\EngineBundle\Controller\Controller;
-//use SmartCore\Bundle\EngineBundle\Engine\NodeProperties;
+use SmartCore\Bundle\EngineBundle\Controller\Controller as BaseController;
 use SmartCore\Bundle\EngineBundle\Container;
 use Symfony\Component\DependencyInjection\ContainerInterface;
  
-abstract class Module extends Controller
+abstract class Controller extends BaseController
 {
     /**
      * Действие по умолчанию.

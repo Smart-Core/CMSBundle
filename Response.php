@@ -1,7 +1,11 @@
 <?php
 /**
  * Перегружены 2 метода.
- * Теперь отрисовка контента производится только в момент получения контента, а не в момент его установки.
+ * 
+ * В отличие от оригинального класса, отрисовка контента производится только в момент получения контента,
+ * а не в момент его установки.
+ * 
+ * Таким образом появляется возможность получить "чистый" контент вернувшийся от контроллера.
  */
 namespace SmartCore\Bundle\EngineBundle;
 
@@ -35,7 +39,7 @@ class Response extends BaseResponse
      * 
      * @return object|string
      */
-    public function getContentNative()
+    public function getContentRaw()
     {
         return $this->content;
     }

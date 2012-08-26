@@ -1,8 +1,10 @@
 <?php
 
-namespace SmartCore\Bundle\EngineBundle;
+namespace SmartCore\Bundle\EngineBundle\Module;
 
-class ModuleRouterResponse extends Response
+use SmartCore\Bundle\EngineBundle\Response;
+
+class RouterResponse extends Response
 {
     protected $controller = null;
     protected $action = null;

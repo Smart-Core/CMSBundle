@@ -38,7 +38,14 @@ class NodeMapperController extends Controller
             echo "123<br />";
         }
         */
+        
+        //$em = $this->getDoctrine()->getEntityManager();
+        
+        //$item = $this->getDoctrine()->getRepository('SmartCoreTexterModule:TextItem')->find(1);
+        
+//        ladybug_dump($item);
 
+        
         $router_data = $this->Folder->router($this->get('request')->getPathInfo());
 
 //        sc_dump($router_data);
@@ -121,7 +128,7 @@ class NodeMapperController extends Controller
 //        $tmp = $this->forward(8);
 //        $tmp = $this->forward('SmartCoreMenuModule:Menu:index');
 //        sc_dump(get_class($tmp));
-//        sc_dump($tmp->getContentNative());
+//        sc_dump($tmp->getContentRaw());
         
 //        echo $tmp->getContent();
         
@@ -285,8 +292,8 @@ class NodeMapperController extends Controller
                 }
             }
             
-            if (method_exists($Module, 'getContentNative')) {
-                $this->View->block->$block_name->$node_id = $Module->getContentNative();
+            if (method_exists($Module, 'getContentRaw')) {
+                $this->View->block->$block_name->$node_id = $Module->getContentRaw();
             } else {
                 $this->View->block->$block_name->$node_id = $Module->getContent();
             }

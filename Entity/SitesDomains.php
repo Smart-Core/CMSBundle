@@ -13,7 +13,6 @@ class SitesDomains
     /**
      * @ORM\Id
      * @ORM\Column(type="string")
-     * @ORM\GeneratedValue(strategy="AUTO")
      */
     protected $domain;
     

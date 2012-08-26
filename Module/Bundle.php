@@ -1,10 +1,10 @@
 <?php
 
-namespace SmartCore\Bundle\EngineBundle;
+namespace SmartCore\Bundle\EngineBundle\Module;
 
-use Symfony\Component\HttpKernel\Bundle\Bundle;
+use Symfony\Component\HttpKernel\Bundle\Bundle as BaseBundle;
 
-class ModuleBundle extends Bundle
+class Bundle extends BaseBundle
 {
     /**
      * Получить имя контроллера по умолчанию.

@@ -1,10 +1,12 @@
 <?php
 /**
- * Обёртка для Doctrine DBAL.
+ * Doctrine DBAL wrapper.
  */
 namespace SmartCore\Bundle\EngineBundle\Engine;
 
-class DataBaseWrapper extends \Doctrine\DBAL\Connection
+use Doctrine\DBAL\Connection;
+
+class DataBaseWrapper extends Connection
 {
     /**
      * Префикс таблиц
@@ -18,6 +20,16 @@ class DataBaseWrapper extends \Doctrine\DBAL\Connection
      * @return string
      */
     public function prefix()
+    {
+        return $this->prefix;
+    }
+
+    /**
+     * Получить значение префикса таблиц.
+     *
+     * @return string
+     */
+    public function getPrefix()
     {
         return $this->prefix;
     }
