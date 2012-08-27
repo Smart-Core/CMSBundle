@@ -16,7 +16,7 @@ class Block extends Controller
     public function all($site_id = false)
     {
         if (!$site_id) {
-            $site_id = $this->Site->getId();
+            $site_id = $this->engine('site')->getId();
         }
 
         if (isset($this->blocks[$site_id])) {

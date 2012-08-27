@@ -153,7 +153,7 @@ class Node extends Controller
             FROM {$this->DB->prefix()}engine_nodes
             WHERE block_id = '$pd[block_id]'
             AND folder_id = '$pd[folder_id]'
-            AND site_id = '{$this->Env->site_id}' ";
+            AND site_id = '{$this->engine('env')->site_id}' ";
         $result = $this->DB->query($sql);
         $row = $result->fetchObject();
         $max_pos = $row->max_pos + 1;
@@ -170,7 +170,7 @@ class Node extends Controller
             INSERT INTO {$this->DB->prefix()}engine_nodes
                 (folder_id, site_id, descr, block_id, module_id, database_id, params, is_active, is_cached, pos, permissions, create_datetime, owner_id)
             VALUES
-                ('$folder_id', '{$this->Env->site_id}', $descr, '$block_id', '$pd[module_id]', '$database_id', NULL, '$is_active', '$is_cached', '$pos', $permissions, NOW(), '{$this->Env->user_id}') ";
+                ('$folder_id', '{$this->engine('env')->site_id}', $descr, '$block_id', '$pd[module_id]', '$database_id', NULL, '$is_active', '$is_cached', '$pos', $permissions, NOW(), '{$this->engine('env')->user_id}') ";
         $this->DB->query($sql);
         $node_id = $this->DB->lastInsertId();
 
@@ -186,7 +186,7 @@ class Node extends Controller
             UPDATE {$this->DB->prefix()}engine_nodes SET
                 params = $params
             WHERE node_id = '$node_id'
-            AND site_id = '{$this->Env->site_id}' ";
+            AND site_id = '{$this->engine('env')->site_id}' ";
         $this->DB->exec($sql);
         $this->Cache->updateFolder($folder_id);
 
@@ -222,8 +222,8 @@ class Node extends Controller
                 n.descr, b.name AS block_name, b.descr AS block_descr
             FROM {$this->DB->prefix()}engine_nodes AS n
             LEFT JOIN {$this->DB->prefix()}engine_blocks AS b USING (block_id)
-            WHERE n.site_id = '{$this->Env->site_id}'
-            AND b.site_id = '{$this->Env->site_id}'
+            WHERE n.site_id = '{$this->engine('env')->site_id}'
+            AND b.site_id = '{$this->engine('env')->site_id}'
             $sql_folder
             ORDER BY n.pos ";
         $result = $this->DB->query($sql);
@@ -257,7 +257,7 @@ class Node extends Controller
         $data = array();
         $sql = "SELECT node_id 
             FROM {$this->DB->prefix()}engine_nodes
-            WHERE site_id = '{$this->Env->site_id}'
+            WHERE site_id = '{$this->engine('env')->site_id}'
             AND module_id = {$this->DB->quote($module)} ";
         $result = $this->DB->query($sql);
         while ($row = $result->fetchObject()) {
@@ -311,7 +311,7 @@ class Node extends Controller
                 $cache_params_yaml
             WHERE
                 node_id = '$node_id'
-            AND site_id = '{$this->Env->site_id}' ";
+            AND site_id = '{$this->engine('env')->site_id}' ";
         $this->DB->exec($sql);
         $this->Cache->updateNode($node_id);
         return true;
@@ -397,15 +397,15 @@ class Node extends Controller
                         AND is_active = 1
                         AND n.folder_id = '{$folder_id}'
                         AND bi.folder_id = '{$folder_id}'
-                        AND n.site_id = '{$this->Site->getId()}'
-                        AND bi.site_id = '{$this->Site->getId()}'
+                        AND n.site_id = '{$this->engine('site')->getId()}'
+                        AND bi.site_id = '{$this->engine('site')->getId()}'
                     ORDER BY n.pos
                 ";
             }
 
             // Обрабатываем последнюю папку т.е. текущую.
-            if ($folder_id == $this->Env->get('current_folder_id')) { // @todo убрать Env
-                $sql = "SELECT * FROM {$this->DB->prefix()}engine_nodes WHERE folder_id = '{$folder_id}' AND is_active = '1' AND site_id = '{$this->Site->getId()}' ";
+            if ($folder_id == $this->engine('env')->get('current_folder_id')) { // @todo убрать Env
+                $sql = "SELECT * FROM {$this->DB->prefix()}engine_nodes WHERE folder_id = '{$folder_id}' AND is_active = '1' AND site_id = '{$this->engine('site')->getId()}' ";
                 // исключаем ранее включенные ноды.
                 foreach ($used_nodes as $used_nodes_value) {
                     $sql .= " AND node_id != '{$used_nodes_value}'";

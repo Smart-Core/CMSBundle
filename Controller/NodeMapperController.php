@@ -29,7 +29,7 @@ class NodeMapperController extends Controller
     
     public function indexAction($slug)
     {
-//        $tmp = $this->Env->get('base_url');
+//        $tmp = $this->engine('env')->get('base_url');
 //        sc_dump($user = $this->container->get('security.context')->getToken()->getUser());
 //        sc_dump($this->container->getParameterBag());
 //        sc_dump($this->container->getParameter('security.role_hierarchy.roles'));
@@ -46,16 +46,16 @@ class NodeMapperController extends Controller
 //        ladybug_dump($this->container->get('security.context')->getToken()->getUser());
 
         
-        $router_data = $this->Folder->router($this->get('request')->getPathInfo());
+        $router_data = $this->engine('folder')->router($this->get('request')->getPathInfo());
 
 //        sc_dump($router_data);
 
         foreach ($router_data['folders'] as $folder) {
-            $this->Breadcrumbs->add($folder['uri'], $folder['title'], $folder['descr']);
+            $this->engine('breadcrumbs')->add($folder['uri'], $folder['title'], $folder['descr']);
             if (isset($folder['router_response'])) {
                 $mbc = $folder['router_response']->getBreadcrumbs();
                 foreach ($mbc as $bc) {
-                    $this->Breadcrumbs->add($bc['uri'], $bc['title'], $bc['descr']);
+                    $this->engine('breadcrumbs')->add($bc['uri'], $bc['title'], $bc['descr']);
                 }
             }
         }
@@ -65,7 +65,7 @@ class NodeMapperController extends Controller
             //'engine'        => 'twig',
             'template'      => $router_data['template'],
             'environment'   => array(
-                'cache'         => $this->Env->dir_cache . 'twig',
+                'cache'         => $this->engine('env')->dir_cache . 'twig',
                 'auto_reload'   => true,
                 'autoescape'    => false,
                 //'debug'          => true,
@@ -73,34 +73,34 @@ class NodeMapperController extends Controller
         ));
 
         $this->View->setPaths(array(
-            $this->Env->dir_web_root . 'theme/views', // @todo сделать через настройки.
-            $this->Env->dir_app . 'Resources/views',
+            $this->engine('env')->dir_web_root . 'theme/views', // @todo сделать через настройки.
+            $this->engine('env')->dir_app . 'Resources/views',
             $this->container->get('kernel')->getBundle('SmartCoreEngineBundle')->getPath() . '/Resources/views',
         ));
         
         $this->View->html = $this->Html;
-        $this->Html->title('Smart Core CMS (based on Symfony2 Framework)');
+        $this->engine('html')->title('Smart Core CMS (based on Symfony2 Framework)');
 
-        $theme_path = $this->Env->base_path . $this->Env->theme_path;
+        $theme_path = $this->engine('env')->base_path . $this->engine('env')->theme_path;
         $this->View->assets = array(
             'theme_path'        => $theme_path,
             'theme_css_path'    => $theme_path . 'css/',
             'theme_js_path'     => $theme_path . 'js/',
             'theme_img_path'    => $theme_path . 'images/',
-            'vendor'            => $this->Env->global_assets,
+            'vendor'            => $this->engine('env')->global_assets,
         );
 
-        $this->Theme->processConfig($this->View);
+        $this->engine('theme')->processConfig($this->View);
 
-        foreach ($this->JsLib->all() as $lib => $res) {
+        foreach ($this->engine('JsLib')->all() as $lib => $res) {
             if (isset($res['js']) and is_array($res['js'])) {
                 foreach ($res['js'] as $js) {
-                    $this->Html->js($js, 200);
+                    $this->engine('html')->js($js, 200);
                 }
             }
             if (isset($res['css']) and is_array($res['css'])) {
                 foreach ($res['css'] as $css) {
-                    $this->Html->css($css, 200);
+                    $this->engine('html')->css($css, 200);
                 }
             }
         }
@@ -109,7 +109,7 @@ class NodeMapperController extends Controller
         //$this->View->block->setRenderMethod('echoProperties');
         $this->View->block->setOptions(array('comment' => 'Блоки'));
 
-        $nodes_list = $this->Node->buildNodesListByFolders($router_data['folders']);
+        $nodes_list = $this->engine('node')->buildNodesListByFolders($router_data['folders']);
 //        $this->Node->buildNodesListByFolders($router_data['folders']);
 
 //        sc_dump($nodes_list);
@@ -150,13 +150,13 @@ class NodeMapperController extends Controller
         }
 
         $View = $this->container->get('templating')->render("::{$this->View->getTemplateName()}.html.twig", array(
-            'html' => $this->Html,
+            'html' => $this->engine('Html'),
             'block' => $this->View->block,
         ));
                 
-//        sc_dump($this->Breadcrumbs);
-//        sc_dump($this->Env);
-//        sc_dump($this->Site->getId());
+//        sc_dump($this->engine('breadcrumbs'));
+//        sc_dump($this->engine('env'));
+//        sc_dump($this->engine('site')->getId());
 //        sc_dump($this->getUser());
         return new Response($View, $router_data['status']);
     }
@@ -167,7 +167,7 @@ class NodeMapperController extends Controller
      */
     protected function buildModulesData($nodes_list)
     {
-        $blocks = $this->Block->all();
+        $blocks = $this->engine('block')->all();
         
         // Каждый "блок" является объектом вида.
         foreach ($blocks as $block_id => $block) {
@@ -186,17 +186,17 @@ class NodeMapperController extends Controller
             $block_name = $blocks[$node_properties['block_id']]['name'];
 
             // Обнаружены параметры кеша.
-            if (_IS_CACHE_NODES and $node_properties['is_cached'] and !empty($node_properties['cache_params']) and $this->Env->cache_enable ) {
+            if (_IS_CACHE_NODES and $node_properties['is_cached'] and !empty($node_properties['cache_params']) and $this->engine('env')->cache_enable ) {
                 $cache_params = unserialize($node_properties['cache_params']);
                 if (isset($cache_params['id']) and is_array($cache_params['id'])) {
                     $cache_id = array();
                     foreach ($cache_params['id'] as $key => $dummy) {
                         switch ($key) {
                             case 'current_folder_id':
-                                $cache_id['current_folder_id'] = $this->Env->current_folder_id;
+                                $cache_id['current_folder_id'] = $this->engine('env')->current_folder_id;
                                 break;
                             case 'user_id':
-                                $cache_id['user_id'] = $this->Env->user_id;
+                                $cache_id['user_id'] = $this->engine('env')->user_id;
                                 break;
                             case 'parser_data': // @todo route_data
                                 $cache_id['parser_data'] = $node_properties['parser_data'];

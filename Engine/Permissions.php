@@ -155,7 +155,7 @@ class Permissions
                         $t4 = explode(':', $value);
                         $permissions[$t2[0]][$t4[0]] = $t4[1];
                     }
-                } elseif (substr($t2[0], 0, 1) == 'u' and substr($t2[0], 1) == $this->Env->user_id) { // отдельные права для юзера
+                } elseif (substr($t2[0], 0, 1) == 'u' and substr($t2[0], 1) == $this->engine('env')->user_id) { // отдельные права для юзера
                     $t3 = explode(',', $t2[1]);
                     foreach ($t3 as $key => $value) {
                         $t4 = explode(':', $value);

@@ -92,7 +92,7 @@ class Theme extends Controller
         foreach ($this->ini as $key => $value) {
             switch ($key) {
                 case 'doctype':
-                    $this->Html->doctype($value);
+                    $this->engine('html')->doctype($value);
                     break;
                 case 'css':
                     $css_list = explode(',', $value);
@@ -105,7 +105,7 @@ class Theme extends Controller
                                 $css = $this->css_path . $css;
                             }
 
-                            $this->Html->css($css);
+                            $this->engine('html')->css($css);
                         }
                     }
                     break;
@@ -114,14 +114,14 @@ class Theme extends Controller
                     foreach ($js_list as $js_filename) {
                         $tmp = trim($js_filename);
                         if ( ! empty($tmp) ) {
-                            $this->Html->js($this->js_path . $tmp);
+                            $this->engine('html')->js($this->js_path . $tmp);
                         }
                     }
                     break;
                 case 'js_lib': // @todo 
                     $js_libs = explode(',', $value);
                     foreach ($js_libs as $js_lib) {
-                        $this->JsLib->request(trim($js_lib));
+                        $this->engine('JsLib')->request(trim($js_lib));
                     }
                     break;
                 case 'icon':
@@ -147,7 +147,7 @@ class Theme extends Controller
                             $value = str_replace('{IMG_PATH}', $this->img_path, $value);
                         }
 
-                        $this->Html->link($value, $attr);
+                        $this->engine('html')->link($value, $attr);
                     }
                     break;
                 default;

@@ -30,7 +30,7 @@ class Cache extends Controller
             INSERT INTO {$this->DB->prefix()}cache
                 (site_id, id, element, valid_to_timestamp)
             VALUES
-                ('{$this->Env->site_id}', '{$id}', '$element', '$valid_to_timestamp') ";
+                ('{$this->engine('env')->site_id}', '{$id}', '$element', '$valid_to_timestamp') ";
         $this->DB->query($sql, false);
         
         return $this->DB->errorCode() != 0 ? false : true;
@@ -51,11 +51,11 @@ class Cache extends Controller
         $values = '';
         if (is_array($object_id)) {
             foreach ($object_id as $key => $dummy) {
-                $values .= "\n\t('{$this->Env->site_id}', '{$id}', '$element', '$object', '$key' ),";
+                $values .= "\n\t('{$this->engine('env')->site_id}', '{$id}', '$element', '$object', '$key' ),";
             }
             $values = substr($values, 0, strlen($values)-1);
         } else {
-            $values .= "\n\t('{$this->Env->site_id}', '{$id}', '$element', '$object', '$object_id' )";
+            $values .= "\n\t('{$this->engine('env')->site_id}', '{$id}', '$element', '$object', '$object_id' )";
         }        
 
         $sql = "INSERT INTO {$this->DB->prefix()}cache_relations (site_id, id, element, object, object_id ) VALUES $values ";
@@ -72,7 +72,7 @@ class Cache extends Controller
     {
         $sql = "SELECT id, element
             FROM {$this->DB->prefix()}cache_relations
-            WHERE site_id = '{$this->Env->site_id}'
+            WHERE site_id = '{$this->engine('env')->site_id}'
             AND object = '$object'
             AND object_id = '$object_id' ";
         $result = $this->DB->query($sql);
@@ -112,10 +112,10 @@ class Cache extends Controller
     public function commonDelete($id, $element)
     {
         $this->DB->exec("DELETE FROM {$this->DB->prefix()}cache 
-            WHERE site_id = '{$this->Env->site_id}' 
+            WHERE site_id = '{$this->engine('env')->site_id}' 
             AND id = '$id' AND element = '$element' ");
         $this->DB->exec("DELETE FROM {$this->DB->prefix()}cache_relations 
-            WHERE site_id = '{$this->Env->site_id}' 
+            WHERE site_id = '{$this->engine('env')->site_id}' 
             AND id = '$id'  AND element = '$element' ");
     }
 
@@ -152,7 +152,7 @@ class Cache extends Controller
     {
         $sql = "SELECT id
             FROM {$this->DB->prefix()}cache
-            WHERE site_id = '{$this->Env->site_id}'
+            WHERE site_id = '{$this->engine('env')->site_id}'
             AND valid_to_timestamp > '" . time() . "'
             AND id = '$id'
             AND element = '$element'";
@@ -175,7 +175,7 @@ class Cache extends Controller
         
         $sql = "SELECT id, element
             FROM {$this->DB->prefix()}cache
-            WHERE site_id = '{$this->Env->site_id}'
+            WHERE site_id = '{$this->engine('env')->site_id}'
             AND valid_to_timestamp < '" . time() . "'
             LIMIT 0, $max_items ";
         $result = $this->DB->query($sql);

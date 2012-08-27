@@ -40,7 +40,7 @@ class Folder extends Controller
     {
         $sql = "SELECT *
             FROM {$this->DB->prefix()}engine_folders
-            WHERE site_id = '{$this->Site->getId()}'
+            WHERE site_id = '{$this->engine('site')->getId()}'
             {$this->_sql_is_active}
             AND is_deleted = 0
             AND folder_id = '{$folder_id}' ";
@@ -60,7 +60,7 @@ class Folder extends Controller
     {
         $sql = "SELECT *
             FROM {$this->DB->prefix()}engine_folders
-            WHERE site_id = '{$this->Site->getId()}'
+            WHERE site_id = '{$this->engine('site')->getId()}'
             {$this->_sql_is_active}
             AND is_deleted = 0
             AND uri_part = '{$uri_part}'
@@ -143,7 +143,7 @@ class Folder extends Controller
                 layout = $layout
             WHERE
                 folder_id = '$folder_id'
-            AND site_id = '{$this->Site->getId()}' ";
+            AND site_id = '{$this->engine('site')->getId()}' ";
         $this->DB->exec($sql);
         
         /*
@@ -152,7 +152,7 @@ class Folder extends Controller
                 title = $title,
                 descr = $descr
             WHERE folder_id = '$folder_id'
-            AND language_id = '{$this->Env->language_id}'
+            AND language_id = '{$this->engine('env')->language_id}'
             AND site_id = '{$this->Request->Env->site_id}' ";
         $this->DB->exec($sql);
         */
@@ -185,7 +185,7 @@ class Folder extends Controller
         // Своеобразный автоинкремент
         $sql = "SELECT max(folder_id) AS folder_id
             FROM {$this->DB->prefix()}engine_folders
-            WHERE site_id = '{$this->Site->getId()}' ";
+            WHERE site_id = '{$this->engine('site')->getId()}' ";
         $folder_id = $this->DB->fetchObject($sql)->folder_id + 1;
 
         $title = strlen(trim($pd['title'])) == 0 ? $title = "'Новая папка $folder_id'" : $this->DB->quote(trim($pd['title']));
@@ -212,7 +212,7 @@ class Folder extends Controller
                  is_file, permissions, create_datetime,
                  owner_id, title, descr, layout)
             VALUES
-                ('$folder_id', '$pid', '{$this->Site->getId()}',
+                ('$folder_id', '$pid', '{$this->engine('site')->getId()}',
                  '$pos', $uri_part, '$is_active',
                   $redirect_to, $parser_node_id, '$transmit_nodes',
                  '$is_file', $permissions, NOW(),
@@ -226,7 +226,7 @@ class Folder extends Controller
                     uri_part = '$folder_id'
                 WHERE
                     folder_id = '$folder_id'
-                AND site_id = '{$this->Site->getId()}' ";
+                AND site_id = '{$this->engine('site')->getId()}' ";
             $this->DB->exec($sql);
         }
         
@@ -235,7 +235,7 @@ class Folder extends Controller
             INSERT INTO {$this->DB->prefix()}engine_folders_translation 
                 (folder_id, site_id, language_id, title, descr)
             VALUES 
-                ('$folder_id', '{$this->Site->getId()}', '{$this->Env->language_id}', $title, $descr) ";
+                ('$folder_id', '{$this->engine('site')->getId()}', '{$this->engine('env')->language_id}', $title, $descr) ";
         $this->DB->exec($sql);
         */
         
@@ -310,7 +310,7 @@ class Folder extends Controller
     { 
         $sql = "SELECT *
             FROM {$this->DB->prefix()}engine_folders
-            WHERE site_id = '{$this->Site->getId()}'
+            WHERE site_id = '{$this->engine('site')->getId()}'
             {$this->_sql_is_active}
             AND is_deleted = 0
             AND pid = '{$parent_id}'
@@ -324,7 +324,7 @@ class Folder extends Controller
                     $this->_tree_link[$this->_tree_level] = $row->uri_part;
                 }
                 
-                $uri = $this->Env->get('base_url');
+                $uri = $this->engine('env')->get('base_url');
                 foreach ($this->_tree_link as $value) {
                     $uri .= $value . '/';
                 }
@@ -408,7 +408,7 @@ class Folder extends Controller
         $this->DB->exec("
             UPDATE {$this->DB->prefix()}engine_folders SET
                 meta = $meta
-            WHERE site_id = '{$this->Site->getId()}'
+            WHERE site_id = '{$this->engine('site')->getId()}'
             AND folder_id = '$folder_id' "
         );
         
@@ -426,7 +426,7 @@ class Folder extends Controller
     {
         $sql = "SELECT meta 
             FROM {$this->DB->prefix()}engine_folders
-            WHERE site_id = '{$this->Site->getId()}'
+            WHERE site_id = '{$this->engine('site')->getId()}'
             AND folder_id = '$folder_id' ";
         $row = $this->DB->fetchObject($sql);
         
@@ -443,7 +443,7 @@ class Folder extends Controller
             $sql = "
                 UPDATE {$this->DB->prefix()}engine_folders SET
                     meta = $meta
-                WHERE site_id = '{$this->Site->getId()}'
+                WHERE site_id = '{$this->engine('site')->getId()}'
                 AND folder_id = '$folder_id' ";
             $this->DB->exec($sql);
         }
@@ -460,7 +460,7 @@ class Folder extends Controller
     public function getUri($folder_id = false)
     {
         if ($folder_id === false) {
-            $folder_id = $this->Env->get('current_folder_id');
+            $folder_id = $this->engine('env')->get('current_folder_id');
         }
 
         $uri_parts = array();
@@ -481,7 +481,7 @@ class Folder extends Controller
             $uri .= $value . '/';
         }
     
-        return $this->Env->get('base_url') . $uri;
+        return $this->engine('env')->get('base_url') . $uri;
     }
     
     /**
@@ -500,7 +500,7 @@ class Folder extends Controller
         );
         
         // @todo при обращении к фронт-контроллеру /web/app.php не коррекнтно определяется активные пункты меню.
-        $current_folder_path = $this->Env->get('base_path');
+        $current_folder_path = $this->engine('env')->get('base_path');
         $router_node_id = null;
         $folder_pid = 0;
 
@@ -525,7 +525,7 @@ class Folder extends Controller
             if ($router_node_id !== null) {
                 // выполняется часть URI парсером модуля и возвращается результат работы, в дальнейшем он будет передан самой ноде.
                 $ModuleRouter = $this->forward($router_node_id . '::router', array(
-                    'slug' => str_replace($current_folder_path, '', substr($this->Env->base_path, 0, -1) . $slug))
+                    'slug' => str_replace($current_folder_path, '', substr($this->engine('env')->base_path, 0, -1) . $slug))
                 );
                 
                 // Роутер модуля вернул положительный ответ.
@@ -570,8 +570,8 @@ class Folder extends Controller
                         'is_inherit_nodes' => $folder->is_inherit_nodes,
                         'lockout_nodes' => unserialize($folder->lockout_nodes),
                     );
-                    $this->Env->set('current_folder_id', $folder->folder_id);
-                    $this->Env->set('current_folder_path', $current_folder_path);
+                    $this->engine('env')->set('current_folder_id', $folder->folder_id);
+                    $this->engine('env')->set('current_folder_path', $current_folder_path);
                 } else {
                     $data['status'] = 403;
                 }

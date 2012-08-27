@@ -33,8 +33,8 @@ class Controller extends BaseController
         }
         
         $this->View->setPaths(array(
-//            $this->Env->dir_web_root . $this->Env->dir_themes . 'views/' . $namespace,
-//            $this->Env->dir_app . 'views/' . $namespace,
+//            $this->engine('env')->dir_web_root . $this->engine('env')->dir_themes . 'views/' . $namespace,
+//            $this->engine('env')->dir_app . 'views/' . $namespace,
             realpath(dirname($reflector->getFileName()) . '/../Resources/views'),
         ));        
     }    
@@ -50,10 +50,8 @@ class Controller extends BaseController
             throw new \Exception('SmartCore\EngineBundle: Container is not accesible. Service "engine.' . $name . '" fail.');
         }
         
-        if ($this->container->has('engine.' . $name)) {
-            return $this->container->get('engine.' . $name);
-        } else {
-            throw new \Exception('SmartCore\EngineBundle: Service "engine.' . strtolower($name) . '" does not register.');
+        if ($name == 'DB') {
+            return $this->container->get('engine.db');
         }
     }
     

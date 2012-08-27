@@ -37,7 +37,7 @@ class Site extends Controller
     public function init($site_id = false, $domain = false)
     {
         // @todo пока так включается сайт по умолчанию, по принципу, самый младший site_id в БД.
-        $dir_sites = $this->Env->get('dir_sites');
+        $dir_sites = $this->engine('env')->get('dir_sites');
         if (empty($dir_sites)) {
             $sql = "SELECT site_id FROM {$this->DB->prefix()}engine_sites ORDER BY site_id ASC LIMIT 1";
             $site_id = $this->DB->fetchObject($sql)->site_id;
@@ -47,7 +47,7 @@ class Site extends Controller
             $sql = "SELECT site.*, domain.language_id AS domain_language_id
                 FROM {$this->DB->prefix()}engine_sites AS site,
                     {$this->DB->prefix()}engine_sites_domains AS domain
-                WHERE domain.domain = '" . $this->Env->get('http_host') . "'
+                WHERE domain.domain = '" . $this->engine('env')->get('http_host') . "'
                 AND site.site_id = domain.site_id ";
         } else {
             // @todo сейчас если указан $site_id, то не учитывается язык домена. 
@@ -77,10 +77,10 @@ class Site extends Controller
         $this->create_datetime = $row->create_datetime;
         
         // Если указан dir_sites, то считается, что применяется мультисайтовый режим.
-        if (strlen($this->Env->get('dir_sites')) == 0) {
-            $this->http_theme = $this->Env->base_path . $properties['dir_themes'];
+        if (strlen($this->engine('env')->get('dir_sites')) == 0) {
+            $this->http_theme = $this->engine('env')->base_path . $properties['dir_themes'];
         } else {
-            $this->http_theme = $this->Env->base_path . $this->Env->get('dir_sites') . $row->site_id . '/' . $properties['dir_themes'];
+            $this->http_theme = $this->engine('env')->base_path . $this->engine('env')->get('dir_sites') . $row->site_id . '/' . $properties['dir_themes'];
         }
 
         // @todo configure storage.
