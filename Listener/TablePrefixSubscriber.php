@@ -3,10 +3,8 @@
 namespace SmartCore\Bundle\EngineBundle\Listener;
 
 use Doctrine\Common\EventSubscriber;
-use Doctrine\ORM\Events;
 use Doctrine\ORM\Event\LoadClassMetadataEventArgs;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
-
 
 class TablePrefixSubscriber implements EventSubscriber
 {
@@ -19,18 +17,14 @@ class TablePrefixSubscriber implements EventSubscriber
 
     public function getSubscribedEvents()
     {
-        return array(
-            Events::loadClassMetadata,
-        );        
+        return array('loadClassMetadata');
     }
 
     public function loadClassMetadata(LoadClassMetadataEventArgs $args)
     {
-        ladybug_dump('YES!!');
-        
         $classMetadata = $args->getClassMetadata();
         $classMetadata->setTableName($this->prefix . $classMetadata->getTableName());
-
+        
         foreach ($classMetadata->getAssociationMappings() as $fieldName => $mapping) {
             if ($mapping['type'] == ClassMetadataInfo::MANY_TO_MANY) {
                 $mappedTableName = $classMetadata->associationMappings[$fieldName]['joinTable']['name'];
