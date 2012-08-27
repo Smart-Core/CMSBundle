@@ -45,7 +45,7 @@ class NodeMapperController extends Controller
         
 //        ladybug_dump($this->container->get('security.context')->getToken()->getUser());
 
-        
+        // @todo вынести router в другое место... можно сделать в виде отдельного сервиса, например 'engine.folder_router'.
         $router_data = $this->engine('folder')->router($this->get('request')->getPathInfo());
 
 //        sc_dump($router_data);

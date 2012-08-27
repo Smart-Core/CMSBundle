@@ -64,7 +64,13 @@ services:
     engine.user:
         class: SmartCore\Bundle\EngineBundle\Engine\User
         arguments: [ @service_container ]
-        
+
+    engine.db.table_prefix_subscriber:
+        class: SmartCore\Bundle\EngineBundle\Listener\TablePrefixSubscriber
+        arguments: [%database_table_prefix%]
+        tags:
+            - { name: doctrine.event_subscriber }
+
 # Aliases
     engine.db:
         alias: database_connection        
