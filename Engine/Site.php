@@ -46,10 +46,9 @@ class Site extends Controller
         
         /*
         SELECT s.*
-        FROM aaa_engine_sites as s
-        JOIN aaa_engine_sites_domains as d
+        FROM aaa_engine_sites AS s
+        JOIN aaa_engine_sites_domains AS d ON s.site_id = d.site_id
         WHERE d.domain = 'loc'
-        AND s.site_id = d.site_id
         */
         
 //            AND s.site_id = d.site_id 

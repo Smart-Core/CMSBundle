@@ -24,7 +24,7 @@ class SiteDomains
     /**
      * @ORM\Column(type="integer")
      * 
-     * @ORM\ManyToOne(targetEntity="SmartCore\Bundle\EngineBundle\Entity\Site", inversedBy="site_id")
+     * @ORM\ManyToOne(targetEntity="Site", inversedBy="site_id")
      * @ORM\JoinColumns({
      *      @ORM\JoinColumn(name="site_id", referencedColumnName="site_id")
      * })
