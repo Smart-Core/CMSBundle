@@ -9,30 +9,12 @@ use SmartCore\Bundle\EngineBundle\Container;
 
 class NodeMapperController extends Controller
 {
-    /**
-     * Свойcтво поведения действия над нодой:
-     *      'built-it' - встроенное в шаблон
-     *      'pupup' - во всплывающем окошке
-     *      'ajax' - подгружаемое в блок размещения.
-     * 
-     * По умолчанию инициализируется как false (popup).
-     * 
-     * @todo надо подумать, надо ли вообще это держать в здесь?
-     */    
-    protected $front_end_action_mode = false;
-    
-    /**
-     * @todo надо подумать, надо ли вообще это держать в здесь?
-     */
-    protected $front_end_action_node_id = 0;
-
-    
     public function indexAction($slug)
     {
-//        $tmp = $this->engine('env')->get('base_url');
 //        sc_dump($user = $this->container->get('security.context')->getToken()->getUser());
 //        sc_dump($this->container->getParameterBag());
 //        sc_dump($this->container->getParameter('security.role_hierarchy.roles'));
+
         /*
         if ($this->get('security.context')->isGranted('IS_AUTHENTICATED_ANONYMOUSLY')) {
             echo "123<br />";
@@ -40,10 +22,7 @@ class NodeMapperController extends Controller
         */
         
         //$em = $this->getDoctrine()->getEntityManager();
-        
         //$item = $this->getDoctrine()->getRepository('SmartCoreTexterModule:Item')->find(1);
-        
-//        ladybug_dump($this->container->get('security.context')->getToken()->getUser());
 
         // @todo вынести router в другое место... можно сделать в виде отдельного сервиса, например 'engine.folder_router'.
         $router_data = $this->engine('folder')->router($this->get('request')->getPathInfo());

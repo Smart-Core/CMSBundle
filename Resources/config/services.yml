@@ -18,7 +18,7 @@ services:
         tags:
             - { name: kernel.event_listener, event: kernel.view, method: onView }
     db.logger:
-        class: Doctrine\DBAL\Logging\DebugStack    
+        class: Doctrine\DBAL\Logging\DebugStack
     engine.breadcrumbs:
         class: SmartCore\Bundle\EngineBundle\Templater\Helper\Breadcrumbs
     engine.env:
@@ -64,7 +64,6 @@ services:
     engine.user:
         class: SmartCore\Bundle\EngineBundle\Engine\User
         arguments: [ @service_container ]
-
     engine.db.table_prefix_subscriber:
         class: SmartCore\Bundle\EngineBundle\Listener\TablePrefixSubscriber
         arguments: [%database_table_prefix%]

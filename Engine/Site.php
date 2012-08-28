@@ -39,10 +39,30 @@ class Site extends Controller
         // @todo пока так включается сайт по умолчанию, по принципу, самый младший site_id в БД.
         $dir_sites = $this->engine('env')->get('dir_sites');
         if (empty($dir_sites)) {
-            $sql = "SELECT site_id FROM {$this->DB->prefix()}engine_sites ORDER BY site_id ASC LIMIT 1";
-            $site_id = $this->DB->fetchObject($sql)->site_id;
+            $site = $this->getRepo('SmartCoreEngineBundle:Site')->findBy(array(), array('site_id' => 'ASC'), 1);
+            $site_id = $site[0]->getId();            
         }
 
+        
+        /*
+        SELECT s.*
+        FROM aaa_engine_sites as s
+        JOIN aaa_engine_sites_domains as d
+        WHERE d.domain = 'loc'
+        AND s.site_id = d.site_id
+        */
+        
+//            AND s.site_id = d.site_id 
+        /*
+        // @todo !!!!!
+        $site2 = $this->DQL("SELECT s
+            FROM SmartCoreEngineBundle:Site s JOIN s.site_id d
+            WHERE d.domain = '" . $this->engine('env')->get('http_host') . "'
+        ")->getResult();
+        
+        ladybug_dump($site2);
+        */
+        
         if ($site_id === false) {
             $sql = "SELECT site.*, domain.language_id AS domain_language_id
                 FROM {$this->DB->prefix()}engine_sites AS site,

@@ -14,7 +14,11 @@ class SmartCoreEngineBundle extends Bundle
     public function boot()
     {
         Container::set($this->container);
-        $this->container->get('engine.db')->getConfiguration()->setSQLLogger($this->container->get('db.logger'));
+        
+        if ($this->container->get('kernel')->getEnvironment() == 'prod' and $this->container->has('db.logger')) {
+            $this->container->get('engine.db')->getConfiguration()->setSQLLogger($this->container->get('db.logger'));
+        }
+        
         require_once '_temp.php';
     }
     
@@ -30,8 +34,8 @@ class SmartCoreEngineBundle extends Bundle
      * Динамические сущности - "Модули", наподобии бандлов.
      * 
      * @todo продумать наследование, как у бандлов.
-     */
-    public function getModule($name, $first = true)
+     *
+    public function __getModule($name, $first = true)
     {
         if (empty($this->modules_cache)) {
             $this->modules_cache = $this->container->get('engine.module')->all();
@@ -47,4 +51,5 @@ class SmartCoreEngineBundle extends Bundle
             return $this->modules[$name];
         }
     }
+    */
 }

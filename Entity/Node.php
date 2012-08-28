@@ -17,7 +17,7 @@ use Doctrine\ORM\Mapping as ORM;
  * )
  * 
  */
-class Nodes
+class Node
 {
     /**
      * @ORM\Id
