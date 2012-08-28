@@ -20,13 +20,13 @@ class SiteDomains
      * @ORM\Column(type="string")
      */
     protected $domain;
-    
+
     /**
      * @ORM\Column(type="integer")
      * 
      * @ORM\ManyToOne(targetEntity="SmartCore\Bundle\EngineBundle\Entity\Site", inversedBy="site_id")
      * @ORM\JoinColumns({
-     *      JoinColumn(name="site_id", referencedColumnName="site_id")
+     *      @ORM\JoinColumn(name="site_id", referencedColumnName="site_id")
      * })
      */
     protected $site_id;

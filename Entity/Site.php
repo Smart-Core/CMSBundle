@@ -18,7 +18,7 @@ class Site
      * @ORM\GeneratedValue(strategy="AUTO")
      * 
      * @ORM\OneToMany(targetEntity="SmartCore\Bundle\EngineBundle\Entity\SiteDomains", mappedBy="site_id")
-     * -ORM\JoinColumn(name="site_id", referencedColumnName="site_id")
+     * @ORM\JoinColumn(name="site_id", referencedColumnName="site_id")
      */
     protected $site_id;
     
