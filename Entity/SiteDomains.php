@@ -23,23 +23,10 @@ class SiteDomains
 
     /**
      * @ORM\Column(type="integer")
-     * 
      * @ORM\ManyToOne(targetEntity="Site", inversedBy="site_id")
-     * @ORM\JoinColumns({
-     *      @ORM\JoinColumn(name="site_id", referencedColumnName="site_id")
-     * })
+     * @ORM\JoinColumn(name="site_id", referencedColumnName="site_id")
      */
     protected $site_id;
-    
-    /**
-     * @ORM\Column(type="text", nullable=TRUE)
-     */
-    protected $descr;
-    
-    /**
-     * @ORM\Column(type="string", length=8, nullable=TRUE)
-     */
-    protected $language;
     
     /**
      * @ORM\Column(type="datetime")
@@ -48,10 +35,7 @@ class SiteDomains
     
     public function __construct()
     {
-        //parent::__construct();
         $this->create_datetime = new \DateTime();
-        $this->descr = null;
-        $this->language = null;
     }
-    
+       
 }

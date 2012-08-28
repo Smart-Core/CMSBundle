@@ -16,17 +16,9 @@ class Site
      * @ORM\Id
      * @ORM\Column(type="integer")
      * @ORM\GeneratedValue(strategy="AUTO")
-     * 
-     * @ORM\OneToMany(targetEntity="SiteDomains", mappedBy="site_id")
-     * @ORM\JoinColumn(name="site_id", referencedColumnName="site_id")
      */
     protected $site_id;
     
-    /**
-     * @ORM\Column(type="string", length=8)
-     */
-    protected $language;
-
     /**
      * @ORM\Column(type="array")
      */
@@ -37,12 +29,17 @@ class Site
      */
     protected $create_datetime;
     
+    /**
+     * @ORM\OneToMany(targetEntity="SiteDomains", mappedBy="site_id")
+     * @ORM\JoinColumn(name="site_id", referencedColumnName="site_id")
+     */
+    protected $siteDomains;
+    
     public function __construct()
     {
-        //parent::__construct();
         $this->create_datetime = new \DateTime();
-        $this->language = 'ru';
         $this->properties = new ArrayCollection();
+        $this->siteDomains = new ArrayCollection();
     }
     
     public function getId()
@@ -54,4 +51,5 @@ class Site
     {
         return $this->site_id;
     }
+    
 }
