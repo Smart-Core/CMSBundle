@@ -14,7 +14,7 @@ class Site
 {
     /**
      * @ORM\Id
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="smallint")
      * @ORM\GeneratedValue(strategy="AUTO")
      */
     protected $site_id;
@@ -31,9 +31,9 @@ class Site
     
     /**
      * @ORM\OneToMany(targetEntity="SiteDomains", mappedBy="site_id")
-     * @ORM\JoinColumn(name="site_id", referencedColumnName="site_id")
+     * -ORM\JoinColumn(name="site_id", referencedColumnName="site_id")
      */
-    protected $siteDomains;
+    protected $site_domains;
     
     public function __construct()
     {
@@ -52,4 +52,13 @@ class Site
         return $this->site_id;
     }
     
+    public function getProperties()
+    {
+        return $this->properties;
+    }
+    
+    public function getCreateDatetime()
+    {
+        return $this->create_datetime;
+    }
 }

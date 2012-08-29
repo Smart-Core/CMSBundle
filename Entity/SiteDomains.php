@@ -22,20 +22,33 @@ class SiteDomains
     protected $domain;
 
     /**
-     * @ORM\Column(type="integer")
-     * @ORM\ManyToOne(targetEntity="Site", inversedBy="site_id")
+     * @ORM\ManyToOne(targetEntity="Site", inversedBy="siteDomains")
      * @ORM\JoinColumn(name="site_id", referencedColumnName="site_id")
      */
     protected $site_id;
+    
+    /**
+     * @ORM\Column(type="text", nullable=TRUE)
+     */
+    protected $descr;
+    
+    /**
+     * @ORM\Column(type="string", length=8, nullable=TRUE)
+     */
+    protected $language;
     
     /**
      * @ORM\Column(type="datetime")
      */
     protected $create_datetime;
     
+    /**
+     * Constructor.
+     */
     public function __construct()
     {
         $this->create_datetime = new \DateTime();
+        $this->descr = null;
+        $this->language = 'ru';
     }
-       
 }

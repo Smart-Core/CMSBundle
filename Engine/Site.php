@@ -9,6 +9,9 @@ class Site extends Controller
 
     protected $id                   = false;
     protected $create_datetime      = null;
+    protected $properties           = array();
+
+    // @todo убрать.
     protected $short_name           = '';
     protected $full_name            = '';
     protected $language_id          = 'ru';
@@ -36,38 +39,30 @@ class Site extends Controller
      */
     public function init($site_id = false, $domain = false)
     {
-        // @todo пока так включается сайт по умолчанию, по принципу, самый младший site_id в БД.
         $dir_sites = $this->engine('env')->get('dir_sites');
+        
         if (empty($dir_sites)) {
+            // в односайтовом режиме включается сайт по умолчанию, по принципу, самый младший site_id в БД.
             $site = $this->getRepo('SmartCoreEngineBundle:Site')->findBy(array(), array('site_id' => 'ASC'), 1);
-            $site_id = $site[0]->getId();            
+        } else {
+            $site = $this->DQL("SELECT s 
+                FROM SmartCoreEngineBundle:Site s 
+                JOIN s.site_domains d 
+                WHERE d.domain = '" . $this->engine('env')->get('http_host') . "'")
+            ->getResult();
         }
-
         
+        if (isset($site[0])) {
+            $site_id = $site[0]->getId();
+            $this->id = $site[0]->getId();
+            $this->create_datetime = $site[0]->getCreateDatetime();
+            $this->properties = $site[0]->getProperties();
+        } else {
+            return false;
+        }
+                
+        // ----------------------------------------------------------
         /*
-        SELECT s.*
-        FROM aaa_engine_sites AS s
-        JOIN aaa_engine_sites_domains AS d ON s.site_id = d.site_id
-        WHERE d.domain = 'loc'
-        */
-        
-//            AND s.site_id = d.site_id 
-        
-        // @todo !!!!!
-        $site2 = $this->DQL("SELECT s FROM SmartCoreEngineBundle:Site s JOIN s.siteDomains d WHERE d.domain = '" . $this->engine('env')->get('http_host') . "'")->getResult();
-        ladybug_dump($site2);
-        
-        /*
-        $site3 = $this->EM()->createQueryBuilder()
-            ->select('s')
-            ->from('SmartCoreEngineBundle:Site', 's')
-            ->leftJoin('SmartCoreEngineBundle:SiteDomains.site_id', 'd')
-        ->getQuery()->getResult();
-            
-        
-        ladybug_dump($site3);
-        */
-        
         if ($site_id === false) {
             $sql = "SELECT site.*, domain.language_id AS domain_language_id
                 FROM {$this->DB->prefix()}engine_sites AS site,
@@ -85,6 +80,8 @@ class Site extends Controller
         }
 
         $properties = unserialize($row->properties);
+        */
+        $properties = $this->properties;
 
         foreach ($this as $key => $_dummy) {
             if (isset($properties[$key])) {
@@ -98,14 +95,14 @@ class Site extends Controller
 
         date_default_timezone_set($this->timezone);
 
-        $this->id = $row->site_id;
-        $this->create_datetime = $row->create_datetime;
+//        $this->id = $row->site_id;
+//        $this->create_datetime = $row->create_datetime;
         
         // Если указан dir_sites, то считается, что применяется мультисайтовый режим.
         if (strlen($this->engine('env')->get('dir_sites')) == 0) {
             $this->http_theme = $this->engine('env')->base_path . $properties['dir_themes'];
         } else {
-            $this->http_theme = $this->engine('env')->base_path . $this->engine('env')->get('dir_sites') . $row->site_id . '/' . $properties['dir_themes'];
+            $this->http_theme = $this->engine('env')->base_path . $this->engine('env')->get('dir_sites') . $site_id . '/' . $properties['dir_themes'];
         }
 
         // @todo configure storage.
@@ -202,5 +199,15 @@ class Site extends Controller
     public function isMultiLanguage()
     {
         return $this->is_multi_language;
+    }
+    
+    /**
+     * Получить дату создания.
+     * 
+     * @return \DateTime object
+     */
+    public function getCreateDatetime()
+    {
+        return $this->create_datetime;
     }
 }
