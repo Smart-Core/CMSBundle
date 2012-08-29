@@ -52,14 +52,20 @@ class Site extends Controller
         */
         
 //            AND s.site_id = d.site_id 
-        /*
-        // @todo !!!!!
-        $site2 = $this->DQL("SELECT s
-            FROM SmartCoreEngineBundle:Site s JOIN s.site_id d
-            WHERE d.domain = '" . $this->engine('env')->get('http_host') . "'
-        ")->getResult();
         
+        // @todo !!!!!
+        $site2 = $this->DQL("SELECT s FROM SmartCoreEngineBundle:Site s JOIN s.siteDomains d WHERE d.domain = '" . $this->engine('env')->get('http_host') . "'")->getResult();
         ladybug_dump($site2);
+        
+        /*
+        $site3 = $this->EM()->createQueryBuilder()
+            ->select('s')
+            ->from('SmartCoreEngineBundle:Site', 's')
+            ->leftJoin('SmartCoreEngineBundle:SiteDomains.site_id', 'd')
+        ->getQuery()->getResult();
+            
+        
+        ladybug_dump($site3);
         */
         
         if ($site_id === false) {
