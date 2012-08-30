@@ -22,10 +22,10 @@ services:
     engine.breadcrumbs:
         class: SmartCore\Bundle\EngineBundle\Templater\Helper\Breadcrumbs
     engine.env:
-        class: SmartCore\Bundle\EngineBundle\Engine\Environment
+        class: SmartCore\Bundle\EngineBundle\Service\Environment
         arguments: [ @service_container ]
     engine.folder:
-        class: SmartCore\Bundle\EngineBundle\Engine\Folder
+        class: SmartCore\Bundle\EngineBundle\Service\Folder
         calls:
             - [ setContainer, [ @service_container ] ]
     engine.block:
@@ -55,7 +55,7 @@ services:
     engine.html:
         class: SmartCore\Bundle\EngineBundle\Templater\Helper\Html
     engine.site:
-        class: SmartCore\Bundle\EngineBundle\Engine\Site
+        class: SmartCore\Bundle\EngineBundle\Service\Site
         calls:
             - [ setContainer, [ @service_container ] ]
             - [ init ]

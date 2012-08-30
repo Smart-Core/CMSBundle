@@ -14,22 +14,6 @@ class Folder extends Controller
     protected $_tree_level = 0;
 
     /**
-     * Установить условия выборки по состоянию $is_active
-     *
-     * @param string $is_active
-     */
-    public function setIsActive($is_active)
-    {
-        if ($is_active === 0 or $is_active === false) {
-            $this->_sql_is_active = ' AND is_active = 0 ';
-        } elseif ($is_active === 'all' or $is_active === '') {
-            $this->_sql_is_active = '';
-        } else {
-            $this->_sql_is_active = ' AND is_active = 1 ';
-        }
-    }
-
-    /**
      * Получить данные о папке по её ID.
      *
      * @param int $folder_id
@@ -360,7 +344,7 @@ class Folder extends Controller
      * @param int $disable_folder - ID папки, которая будет помечена деактивированная.
      * @return array
      */
-    public function getSelectOptionsArray($disable_folder = false)
+    public function __getSelectOptionsArray($disable_folder = false)
     {
         if (count($this->_folder_tree_list_arr) == 0) {
             if (empty($this->_folder_tree)) {
@@ -393,7 +377,7 @@ class Folder extends Controller
      * @param array $pd - массив данных.
      * @return bool
      */
-    public function updateMeta($folder_id, $pd)
+    public function __updateMeta($folder_id, $pd)
     {
         $meta = array();
         foreach ($pd as $key => $value) {
@@ -422,7 +406,7 @@ class Folder extends Controller
      * @param array $pd - массив данных.
      * @return bool
      */
-    public function createMeta($folder_id, $pd)
+    public function __createMeta($folder_id, $pd)
     {
         $sql = "SELECT meta 
             FROM {$this->DB->prefix()}engine_folders

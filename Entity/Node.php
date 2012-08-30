@@ -6,7 +6,7 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity
- * @ORM\Table(name="sites_nodes",
+ * @ORM\Table(name="engine_nodes",
  *         indexes={
  *             @ORM\Index(name="is_active", columns={"is_active"}),
  *             @ORM\Index(name="pos", columns={"pos"})

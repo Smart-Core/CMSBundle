@@ -27,7 +27,7 @@ class NodeMapperController extends Controller
         // @todo вынести router в другое место... можно сделать в виде отдельного сервиса, например 'engine.folder_router'.
         $router_data = $this->engine('folder')->router($this->get('request')->getPathInfo());
 
-//        sc_dump($router_data);
+//        ladybug_dump($router_data);
 
         foreach ($router_data['folders'] as $folder) {
             $this->engine('breadcrumbs')->add($folder['uri'], $folder['title'], $folder['descr']);

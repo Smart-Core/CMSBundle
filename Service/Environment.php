@@ -1,6 +1,6 @@
 <?php
 
-namespace SmartCore\Bundle\EngineBundle\Engine;
+namespace SmartCore\Bundle\EngineBundle\Service;
 
 use Symfony\Component\HttpFoundation\ParameterBag;
 use Symfony\Component\DependencyInjection\ContainerInterface;
