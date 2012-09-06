@@ -9,10 +9,12 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Table(name="engine_nodes",
  *         indexes={
  *             @ORM\Index(name="is_active", columns={"is_active"}),
- *             @ORM\Index(name="pos", columns={"pos"})
+ *             @ORM\Index(name="pos", columns={"pos"}),
+ *             @ORM\Index(name="block_id", columns={"block_id"}),
+ *             @ORM\Index(name="module_id", columns={"module_id"})
  *         },
  *         uniqueConstraints={
- *             @ORM\UniqueConstraint(name="_PRIMARY", columns={"node_id", "folder_id", "site_id"}),
+ *             @ORM\UniqueConstraint(name="node_folder_site", columns={"node_id", "folder_id", "site_id"}),
  *         }
  * )
  * 
@@ -52,7 +54,7 @@ class Node
     protected $pos = 0;
 
     /**
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="string", length=50)
      */
     protected $module_id;
 
@@ -68,6 +70,8 @@ class Node
 
     /**
      * @ORM\Column(type="text", nullable=TRUE)
+     * 
+     * @todo !!! Убрать !!! это временное поле...
      */
     protected $cache_params_yaml;
 
@@ -91,11 +95,6 @@ class Node
     protected $permissions;
 
     /**
-     * @ORM\Column(type="integer", nullable=TRUE)
-     */
-    protected $owner_id;
-
-    /**
      * @ORM\Column(type="smallint")
      */
     protected $database_id = 0;
@@ -109,6 +108,11 @@ class Node
      * @ORM\Column(type="string", nullable=TRUE)
      */
     protected $descr = null;
+
+    /**
+     * @ORM\Column(type="integer")
+     */
+    protected $create_by_user_id;
 
     /**
      * @ORM\Column(type="datetime")

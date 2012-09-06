@@ -1,3 +1,10 @@
+
+sc_engine_hello:
+    pattern: /hi/
+    defaults:
+        _controller: SmartCoreEngineBundle:Hello:index
+
+
 # ADMIN
 sc_engine_admin_index:
     pattern: /admin/

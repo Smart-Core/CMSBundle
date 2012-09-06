@@ -22,7 +22,7 @@ class SiteDomains
     protected $domain;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Site", inversedBy="siteDomains")
+     * @ORM\ManyToOne(targetEntity="Site", inversedBy="site_domains")
      * @ORM\JoinColumn(name="site_id", referencedColumnName="site_id")
      */
     protected $site_id;
