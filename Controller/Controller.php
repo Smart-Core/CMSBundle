@@ -18,8 +18,18 @@ class Controller extends BaseController
      * Constructor.
      * 
      * Вызывается как parent::__construct(); из дочерних классов.
+     * 
+     * @todo пересмотреть логикугу... ненравится мне эта инициализация вида...
      */
     public function __construct()
+    {
+        $this->initView();
+    }    
+    
+    /**
+     * NewFunction
+     */
+    public function initView()
     {
         //$this->View = $this->Templating->getView();
         $this->View = new View();
@@ -37,7 +47,7 @@ class Controller extends BaseController
 //            $this->engine('env')->dir_app . 'views/' . $namespace,
             realpath(dirname($reflector->getFileName()) . '/../Resources/views'),
         ));        
-    }    
+    }
     
     /**
      * Магическое обращение к сервисам.

@@ -11,7 +11,6 @@ use Doctrine\ORM\Mapping as ORM;
  *          @ORM\UniqueConstraint(name="block_folder_site", columns={"block_id", "folder_id", "site_id"}),
  *      }
  * )
- * 
  */
 class BlockInherit
 {

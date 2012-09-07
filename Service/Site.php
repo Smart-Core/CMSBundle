@@ -5,13 +5,28 @@ use SmartCore\Bundle\EngineBundle\Controller\Controller;
 
 class Site extends Controller
 {
-    protected $id               = false;
-    protected $create_datetime  = null;
-    protected $properties       = array();
-    protected $domains_list     = array();
+    protected $id;
+    protected $create_datetime;
+    protected $properties;
+    protected $domains_list;
+    
+    protected $booted;
 
     // @todo подумать, может быть убрать http_theme в другой сервис, например env или theme.
     protected $http_theme       = ''; // ??? HTTP путь к теме оформления.
+
+    /**
+     * Хак: игнорирование конструктора котроллера, в котором инициализируется View.
+     */
+    public function __construct()
+    {
+        $this->id = false;
+        $this->create_datetime = null;
+        $this->properties = array();
+        $this->domains_list = array();
+        
+        $this->booted = false;
+    }
 
     /**
      * Инициализация сайта.
@@ -20,6 +35,10 @@ class Site extends Controller
      */
     public function init()
     {
+        if (true === $this->booted) {
+            return;
+        }        
+        
         $dir_sites = $this->engine('env')->get('dir_sites');
         
         if (empty($dir_sites)) {
@@ -55,6 +74,7 @@ class Site extends Controller
             $this->http_theme = $this->engine('env')->get('base_path') . $dir_sites . $site_id . '/' . $$this->properties['dir_themes'];
         }
                 
+        $this->booted = true;
         return true;
     }
 
@@ -65,9 +85,7 @@ class Site extends Controller
      */
     public function getProperties()
     {
-        if ($this->id === false) {
-            $this->init();
-        }
+        $this->init();
         
         return $this->properties;
     }
@@ -79,9 +97,7 @@ class Site extends Controller
      */
     public function getProperty($name)
     {
-        if ($this->id === false) {
-            $this->init();
-        }
+        $this->init();
         
         if (isset($this->properties[$name])) {
             return $this->properties[$name];
@@ -97,9 +113,7 @@ class Site extends Controller
      */
     public function getDomainsList()
     {
-        if ($this->id === false) {
-            $this->init();
-        }
+        $this->init();
 
         if (empty($this->domains_list)) {
             $this->domains_list = $this->DQL("SELECT d FROM SmartCoreEngineBundle:SiteDomains d WHERE d.site_id = '{$this->id}'")->getResult();
@@ -115,9 +129,7 @@ class Site extends Controller
      */
     public function getCreateDatetime()
     {
-        if ($this->id === false) {
-            $this->init();
-        }
+        $this->init();
 
         return $this->create_datetime;
     }
@@ -129,9 +141,7 @@ class Site extends Controller
      */
     public function getId()
     {
-        if ($this->id === false) {
-            $this->init();
-        }
+        $this->init();
 
         return $this->id;
     }

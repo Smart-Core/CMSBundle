@@ -8,15 +8,15 @@ use Doctrine\Common\Collections\ArrayCollection;
 /**
  * @ORM\Entity
  * @ORM\Table(name="engine_folders",
- *         indexes={
- *             @ORM\Index(name="is_active", columns={"is_active"}),
- *             @ORM\Index(name="is_deleted", columns={"is_deleted"}),
- *             @ORM\Index(name="pos", columns={"pos"})
- *         },
- *         uniqueConstraints={
- *             @ORM\UniqueConstraint(name="pid_uri_part", columns={"pid", "uri_part", "site_id"}),
- *             @ORM\UniqueConstraint(name="id_site", columns={"folder_id", "site_id"}),
- *         }
+ *      indexes={
+ *          @ORM\Index(name="is_active", columns={"is_active"}),
+ *          @ORM\Index(name="is_deleted", columns={"is_deleted"}),
+ *          @ORM\Index(name="pos", columns={"pos"})
+ *      },
+ *      uniqueConstraints={
+ *          @ORM\UniqueConstraint(name="pid_uri_part", columns={"pid", "uri_part", "site_id"}),
+ *          @ORM\UniqueConstraint(name="id_site", columns={"folder_id", "site_id"}),
+ *      }
  * )
  */
 class Folder

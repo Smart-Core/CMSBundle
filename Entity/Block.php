@@ -7,15 +7,14 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * @ORM\Entity
  * @ORM\Table(name="engine_blocks",
- *         indexes={
- *             @ORM\Index(name="pos", columns={"pos"}),
- *         },
- *         uniqueConstraints={
- *             @ORM\UniqueConstraint(name="block_site", columns={"block_id", "site_id"}),
- *             @ORM\UniqueConstraint(name="name_site", columns={"name", "site_id"}),
- *         }
+ *      indexes={
+ *          @ORM\Index(name="pos", columns={"pos"}),
+ *      },
+ *      uniqueConstraints={
+ *          @ORM\UniqueConstraint(name="block_site", columns={"block_id", "site_id"}),
+ *          @ORM\UniqueConstraint(name="name_site", columns={"name", "site_id"}),
+ *      }
  * )
- * 
  */
 class Block
 {

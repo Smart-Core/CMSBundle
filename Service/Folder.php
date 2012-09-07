@@ -14,6 +14,13 @@ class Folder extends Controller
     protected $_tree_level = 0;
 
     /**
+     * Хак: игнорирование конструктора котроллера, в котором инициализируется View.
+     */
+    public function __construct()
+    {
+    }
+
+    /**
      * Получить данные о папке по её ID.
      *
      * @param int $folder_id

@@ -9,7 +9,7 @@ use SmartCore\Bundle\EngineBundle\Entity\Site;
  * @ORM\Entity
  * @ORM\Table(name="engine_sites_domains",
  *      indexes={
- *          @ORM\Index(name="site_id", columns={"site_id"})
+ *          @ORM\Index(name="site_id", columns={"site_id"}),
  *      }
  * )
  */
