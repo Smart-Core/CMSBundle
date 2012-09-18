@@ -12,8 +12,10 @@ class User
     {
         $this->DB = $container->get('engine.db');
 
-        foreach ($container->get('security.context')->getToken()->getRoles() as $Role) {
-            $this->roles[] = $Role->getRole();
+        if ($container->get('security.context')->getToken() !== null) {
+            foreach ($container->get('security.context')->getToken()->getRoles() as $Role) {
+                $this->roles[] = $Role->getRole();
+            }
         }
 
         if (empty($this->roles)) {
