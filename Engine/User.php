@@ -12,7 +12,7 @@ class User
     {
         $this->DB = $container->get('engine.db');
 
-        if ($container->get('security.context')->getToken() !== null) {
+        if ($container->has('security.context') and $container->get('security.context')->getToken() !== null) {
             foreach ($container->get('security.context')->getToken()->getRoles() as $Role) {
                 $this->roles[] = $Role->getRole();
             }
