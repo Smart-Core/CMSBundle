@@ -1,0 +1,16 @@
+{
+    "name": "smart-core/engine-bungle",
+    "keywords": ["cmf", "cms", "bundle"],
+    "type": "symfony-bundle",
+    "homepage": "http://smart-core.org",
+    "require": {
+        "php": ">=5.3.3",
+        "symfony/framework-bundle": ">=2.1,<2.3-dev"
+    },                
+    "autoload": {
+        "psr-0": {
+            "SmartCore\\Bundle\\EngineBundle": ""
+        }
+    },                
+    "target-dir": "SmartCore/Bundle/EngineBundle"
+}
