@@ -1,5 +1,5 @@
 {
-    "name": "smart-core/engine-bungle",
+    "name": "smart-core/engine-bundle",
     "description": "Core of Smart Core CMF.",
     "keywords": ["cmf", "cms", "bundle"],
     "type": "symfony-bundle",
