@@ -14,10 +14,9 @@ use Doctrine\ORM\Mapping as ORM;
  *             @ORM\Index(name="module_id", columns={"module_id"})
  *         },
  *         uniqueConstraints={
- *             @ORM\UniqueConstraint(name="node_folder_site", columns={"node_id", "folder_id", "site_id"}),
+ *             @ORM\UniqueConstraint(name="node_folder", columns={"node_id", "folder_id"}),
  *         }
  * )
- * 
  */
 class Node
 {
@@ -27,11 +26,6 @@ class Node
      * @ORM\GeneratedValue(strategy="AUTO")
      */
     protected $node_id;
-
-    /**
-     * @ORM\Column(type="integer")
-     */
-    protected $site_id = 0;
 
     /**
      * @ORM\Column(type="boolean")

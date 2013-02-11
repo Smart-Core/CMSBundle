@@ -15,8 +15,7 @@ class SiteDomainCommand extends ContainerAwareCommand
     {
         $this
             ->setName('engine:site:domain')
-            ->setDescription('@todo| Add/Remove domain to specific site.')
-            ->addArgument('site_id', InputArgument::OPTIONAL, 'Default domain')
+            ->setDescription('@todo| Add/Remove domain alias.')
             ->addArgument('domain', InputArgument::OPTIONAL, 'Default domain')
             ->addOption('descr', null, InputOption::VALUE_NONE, 'Description')
 //            ->addOption('yell', null, InputOption::VALUE_NONE, 'If set, the task will yell in uppercase letters')

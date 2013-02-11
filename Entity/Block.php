@@ -11,8 +11,7 @@ use Doctrine\ORM\Mapping as ORM;
  *          @ORM\Index(name="pos", columns={"pos"}),
  *      },
  *      uniqueConstraints={
- *          @ORM\UniqueConstraint(name="block_site", columns={"block_id", "site_id"}),
- *          @ORM\UniqueConstraint(name="name_site", columns={"name", "site_id"}),
+ *          @ORM\UniqueConstraint(name="name", columns={"name"}),
  *      }
  * )
  */
@@ -24,11 +23,6 @@ class Block
      * @ORM\GeneratedValue(strategy="AUTO")
      */
     protected $block_id;
-
-    /**
-     * @ORM\Column(type="smallint")
-     */
-    protected $site_id;
 
     /**
      * @ORM\Column(type="smallint")
@@ -59,7 +53,6 @@ class Block
     {
         $this->create_by_user_id = 0;
         $this->create_datetime = new \DateTime();
-        $this->site_id = 0;
         $this->pos = 0;
         $this->descr = null;
     }    

@@ -8,7 +8,7 @@ use SmartCore\Bundle\EngineBundle\Entity\SiteDomains;
 
 /**
  * @ORM\Entity
- * @ORM\Table(name="engine_sites")
+ * @ORM\Table(name="engine_site")
  */
 class Site
 {

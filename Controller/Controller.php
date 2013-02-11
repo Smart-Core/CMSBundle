@@ -19,12 +19,12 @@ class Controller extends BaseController
      * 
      * Вызывается как parent::__construct(); из дочерних классов.
      * 
-     * @todo пересмотреть логикугу... ненравится мне эта инициализация вида...
+     * @todo пересмотреть логику... ненравится мне эта инициализация вида...
      */
     public function __construct()
     {
         $this->initView();
-    }    
+    }
     
     /**
      * NewFunction

@@ -11,6 +11,9 @@ class NodeMapperController extends Controller
 {
     public function indexAction($slug)
     {
+//        ld($this->get('request')->getPathInfo());
+//        ld($this->get('request')->getBasePath());
+//        ld($this->get('request')->getBaseUrl());
 //        sc_dump($user = $this->container->get('security.context')->getToken()->getUser());
 //        sc_dump($this->container->getParameterBag());
 //        sc_dump($this->container->getParameter('security.role_hierarchy.roles'));

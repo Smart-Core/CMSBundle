@@ -25,7 +25,7 @@ class Block extends Controller
 
         $this->blocks[$site_id] = array();
         
-        $sql = "SELECT * FROM {$this->DB->prefix()}engine_blocks WHERE site_id = '$site_id' ORDER BY pos ASC";
+        $sql = "SELECT * FROM {$this->DB->prefix()}engine_blocks ORDER BY pos ASC";
         $result = $this->DB->query($sql);
         while ($row = $result->fetchObject()) {
             $this->blocks[$site_id][$row->block_id] = array(

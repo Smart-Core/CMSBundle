@@ -31,9 +31,8 @@ class Folder extends Controller
     {
         $sql = "SELECT *
             FROM {$this->DB->prefix()}engine_folders
-            WHERE site_id = '{$this->engine('site')->getId()}'
+            WHERE is_deleted = 0
             {$this->_sql_is_active}
-            AND is_deleted = 0
             AND folder_id = '{$folder_id}' ";
 
         return $this->DB->fetchObject($sql);
@@ -51,9 +50,8 @@ class Folder extends Controller
     {
         $sql = "SELECT *
             FROM {$this->DB->prefix()}engine_folders
-            WHERE site_id = '{$this->engine('site')->getId()}'
+            WHERE is_deleted = 0
             {$this->_sql_is_active}
-            AND is_deleted = 0
             AND uri_part = '{$uri_part}'
             AND pid = '{$pid}' ";
 
@@ -128,9 +126,8 @@ class Folder extends Controller
     { 
         $sql = "SELECT *
             FROM {$this->DB->prefix()}engine_folders
-            WHERE site_id = '{$this->engine('site')->getId()}'
+            WHERE is_deleted = 0
             {$this->_sql_is_active}
-            AND is_deleted = 0
             AND pid = '{$parent_id}'
             ORDER BY pos ";
         $result = $this->DB->query($sql);

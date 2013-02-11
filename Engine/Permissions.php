@@ -6,7 +6,6 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 class Permissions
 {
     private $DB;
-    private $site_id;    
     private $permissions = array();
     private $user_roles = array();
 
@@ -27,10 +26,8 @@ class Permissions
     {
         $this->DB = $container->get('engine.db');
         $this->user_roles = $container->get('engine.user')->getRoles();
-        $this->site_id = $container->get('engine.site')->getId();
 
 //        sc_dump($this->user_roles);
-
 //        sc_dump($container->getParameter('security.role_hierarchy.roles'));
 
         // @todo вычисление какие группы прав присущи заданному сайту.
@@ -55,7 +52,6 @@ class Permissions
             $sql = "SELECT permission, max(access) AS access
                 FROM {$this->DB->prefix()}engine_permissions_defaults
                 $where
-                AND site_id = '{$this->site_id}' 
                 GROUP BY permission";
             $result = $this->DB->query($sql);
             while ($row = $result->fetchObject()) {

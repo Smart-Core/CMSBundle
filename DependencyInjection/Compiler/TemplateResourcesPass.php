@@ -14,6 +14,7 @@ use Liip\ThemeBundle\DependencyInjection\Compiler\TemplateResourcesPass as BaseT
  */
 class TemplateResourcesPass extends BaseTemplateResourcesPass
 {
+    // @todo убрать
     protected $site_id = '/1';
     
     public function process(ContainerBuilder $container)
@@ -48,11 +49,7 @@ class TemplateResourcesPass extends BaseTemplateResourcesPass
 
         $resources = $container->getDefinition('assetic.'.$engine.'_directory_resource.'.$bundleName)->getArgument(0);
         
-//        sc_dump($resources);
-        
         $themes = $container->getParameter('liip_theme.themes');
-        
-//        sc_dump($themes);
         
         foreach ($themes as $theme) {
             $resources[] = new DirectoryResourceDefinition(
@@ -65,9 +62,6 @@ class TemplateResourcesPass extends BaseTemplateResourcesPass
             );
         }
 
-//        sc_dump($resources);        
-//        exit;
-        
         $container->getDefinition('assetic.'.$engine.'_directory_resource.'.$bundleName)->replaceArgument(0, $resources);
     }
 
@@ -79,14 +73,10 @@ class TemplateResourcesPass extends BaseTemplateResourcesPass
 
         $themes = $container->getParameter('liip_theme.themes');
         
-        sc_dump($themes);
-        
         foreach ($themes as $key => $theme) {
             $themes[$key] = $container->getParameter('kernel.root_dir') . $this->site_id . '/Resources/themes/'.$theme;
         }
         $themes[] = $container->getParameter('kernel.root_dir') . $this->site_id . '/Resources/views';
-
-//        sc_dump($themes);exit;
 
 //        sc_dump($container->getDefinition('assetic.'.$engine.'_directory_resource.kernel')); exit;
 
@@ -94,8 +84,5 @@ class TemplateResourcesPass extends BaseTemplateResourcesPass
             'assetic.'.$engine.'_directory_resource.kernel',
             new DirectoryResourceDefinition('', $engine, $themes)
         );
-        
-//        sc_dump($container->getDefinition('assetic.'.$engine.'_directory_resource.kernel')); exit;
-        
     }
 }
