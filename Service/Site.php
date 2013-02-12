@@ -9,7 +9,6 @@ class Site extends Controller
     protected $create_datetime;
     protected $properties;
     protected $domains_list;
-    
     protected $booted;
 
     // @todo подумать, может быть убрать http_theme в другой сервис, например env или theme.
@@ -24,7 +23,6 @@ class Site extends Controller
         $this->create_datetime = null;
         $this->properties = array();
         $this->domains_list = array();
-        
         $this->booted = false;
     }
 
@@ -144,16 +142,6 @@ class Site extends Controller
         $this->init();
 
         return $this->id;
-    }
-
-    /**
-     * Получить robots.txt
-     * 
-     * @return string
-     */
-    public function getRobotsTxt()
-    {
-        return $this->getProperty('robots_txt');
     }
 
     /**
