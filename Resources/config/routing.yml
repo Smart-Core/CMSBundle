@@ -78,11 +78,6 @@ sc_engine_ajax:
         slug: ""
     requirements:
         slug: ".+"
-# robots.txt
-sc_engine_robots_txt:
-    path: /robots.txt
-    defaults:
-        _controller: SmartCoreEngineBundle:RobotsTxt:index
 # NODE MAPPER
 sc_engine_node_mapper:
     path: /{slug}
