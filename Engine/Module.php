@@ -21,7 +21,6 @@ class Module extends Controller
             while ($row = $result->fetchObject()) {
                 $this->modules[$row->module_id] = array(
                     'class'             => $row->class,
-                    'descr'             => $row->descr,
                     'install_datetime'  => $row->install_datetime,
                     'user_id'           => $row->user_id,
                 );

@@ -13,31 +13,23 @@ class Block extends Controller
      * @param int $site_id
      * @return array
      */
-    public function all($site_id = false)
+    public function all()
     {
-        if (!$site_id) {
-            $site_id = $this->engine('site')->getId();
-        }
-
-        if (isset($this->blocks[$site_id])) {
-            return $this->blocks[$site_id];
-        }
-
-        $this->blocks[$site_id] = array();
+        $this->blocks = array();
         
         $sql = "SELECT * FROM {$this->DB->prefix()}engine_blocks ORDER BY pos ASC";
         $result = $this->DB->query($sql);
         while ($row = $result->fetchObject()) {
-            $this->blocks[$site_id][$row->block_id] = array(
+            $this->blocks[$row->block_id] = array(
                 'name'      => $row->name,
                 'descr'     => $row->descr,
                 'pos'       => $row->pos,
                 'owner_id'  => $row->owner_id,
-                'create_datetime'    => $row->create_datetime,
+                'create_datetime' => $row->create_datetime,
             );
         }
 
-        return $this->blocks[$site_id];
+        return $this->blocks;
     }
 
     /**

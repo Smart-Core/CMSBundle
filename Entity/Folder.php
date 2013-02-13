@@ -98,9 +98,9 @@ class Folder
     protected $lockout_nodes;
 
     /**
-     * @ORM\Column(type="string", nullable=TRUE)
+     * @ORM\Column(type="string", length=30, nullable=TRUE)
      */
-    protected $layout;
+    protected $template;
 
     /**
      * @ORM\Column(type="integer")
@@ -124,7 +124,7 @@ class Folder
         $this->is_file = 0;
         $this->is_inherit_nodes = 0;
         $this->uri_part = '';
-        $this->layout = null;
+        $this->template = null;
         $this->redirect_to = null;
         $this->router_node_id = null;
         $this->pid = 0;
