@@ -223,7 +223,7 @@ class Folder extends Controller
         $folder_pid = 0;
 
         $path_parts = explode('/', $slug);
-        
+
         foreach ($path_parts as $key => $segment) {
             // Проверка строки запроса на допустимые символы.
             // @todo сделать проверку на разрешение круглых скобок.

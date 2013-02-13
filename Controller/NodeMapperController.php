@@ -11,26 +11,19 @@ class NodeMapperController extends Controller
 {
     public function indexAction($slug)
     {
-//        ld($this->get('request')->getPathInfo());
-//        ld($this->get('request')->getBasePath());
-//        ld($this->get('request')->getBaseUrl());
-//        sc_dump($user = $this->container->get('security.context')->getToken()->getUser());
-//        sc_dump($this->container->getParameterBag());
-//        sc_dump($this->container->getParameter('security.role_hierarchy.roles'));
+//        ld($user = $this->container->get('security.context')->getToken()->getUser());
+//        ld($this->container->getParameterBag());
+//        ld($this->container->getParameter('security.role_hierarchy.roles'));
 
         /*
         if ($this->get('security.context')->isGranted('IS_AUTHENTICATED_ANONYMOUSLY')) {
             echo "123<br />";
-        }
-        */
-        
-        //$em = $this->getDoctrine()->getEntityManager();
-        //$item = $this->getDoctrine()->getRepository('SmartCoreTexterModule:Item')->find(1);
+        }*/
 
         // @todo вынести router в другое место... можно сделать в виде отдельного сервиса, например 'engine.folder_router'.
         $router_data = $this->engine('folder')->router($this->get('request')->getPathInfo());
 
-//        ladybug_dump($router_data);
+//        ld($router_data);
 
         foreach ($router_data['folders'] as $folder) {
             $this->engine('breadcrumbs')->add($folder['uri'], $folder['title'], $folder['descr']);
