@@ -2,9 +2,9 @@
 
 namespace SmartCore\Bundle\EngineBundle\Engine;
 
-use SmartCore\Bundle\EngineBundle\Controller\Controller;
+use Symfony\Component\DependencyInjection\ContainerAware;
 
-class JavaScriptLibrary extends Controller
+class JavaScriptLibrary extends ContainerAware
 {
     /**
      * Список всех прописаных скриптов.
@@ -35,21 +35,20 @@ class JavaScriptLibrary extends Controller
     /**
      * Constructor.
      */
-    public function __construct($DB)
+    public function __construct($db)
     {
-//        parent::__construct();
-        $this->DB = $DB;
+        $this->db = $db;
         
         // @todo пока принимается только один профиль, далее надо сделать перебор...
         $this->default_profile  = 'local';
         //$this->profiles = $this->Settings->getParam('scripts_profiles');
         $this->profiles         = 'local';
         $this->scripts          = array();
-        $this->table_libs       = $this->DB->prefix() . 'javascript_library';
-        $this->table_paths      = $this->DB->prefix() . 'javascript_library_paths';
+        $this->table_libs       = $this->db->prefix() . 'javascript_library';
+        $this->table_paths      = $this->db->prefix() . 'javascript_library_paths';
         
         $sql = "SELECT script_id, name, related_by, current_version, default_profile, files FROM {$this->table_libs} ORDER BY pos DESC ";
-        $result = $this->DB->query($sql);
+        $result = $this->db->query($sql);
         while($row = $result->fetchObject()) {
             $this->scripts[$row->name] = array(
                 'script_id' => $row->script_id,
@@ -61,7 +60,7 @@ class JavaScriptLibrary extends Controller
                 //'title' => $row->title,
                 //'homepage' => $row->homepage,
                 //'descr' => $row->descr,
-                );
+            );
         }
     }
     
@@ -112,17 +111,17 @@ class JavaScriptLibrary extends Controller
                 WHERE script_id = '" . $this->scripts[$name]['script_id'] . "'
                 AND profile = '{$this->profiles}'
                 $sql_version ";                
-            $result = $this->DB->query($sql);
+            $result = $this->db->query($sql);
             if ($result->rowCount() == 1) {
                 $row = $result->fetchObject();
-                $path = strpos($row->path, 'http://') === 0 ? $row->path : $this->engine('env')->global_assets . $row->path; // @todo https://  и просто //
+                $path = strpos($row->path, 'http://') === 0 ? $row->path : $this->container->get('engine.env')->global_assets . $row->path; // @todo https://  и просто //
             } else {
                 $sql = "SELECT path 
                     FROM {$this->table_paths}
                     WHERE script_id = '" . $this->scripts[$name]['script_id'] . "'
                     AND profile = '{$this->default_profile}'
                     $sql_version ";
-                $path = $this->engine('env')->global_assets . $this->DB->fetchObject($sql)->path;
+                $path = $this->container->get('engine.env')->global_assets . $this->db->fetchObject($sql)->path;
             }
             
             foreach (explode(',', $this->scripts[$name]['files']) as $file) {

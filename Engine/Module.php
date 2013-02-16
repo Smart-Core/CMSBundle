@@ -2,10 +2,10 @@
 
 namespace SmartCore\Bundle\EngineBundle\Engine;
 
-use SmartCore\Bundle\EngineBundle\Controller\Controller;
+use Symfony\Component\DependencyInjection\ContainerAware;
 use SmartCore\Bundle\EngineBundle\Container;
 
-class Module extends Controller
+class Module extends ContainerAware
 {
     protected $modules = array();
     private $initialized = false;
@@ -16,7 +16,7 @@ class Module extends Controller
     private function initialize()
     {
         if (empty($this->modules)) {
-            $sql = "SELECT * FROM {$this->container->get('engine.db')->prefix()}engine_modules";
+            $sql = "SELECT * FROM engine_modules";
             $result = $this->container->get('engine.db')->query($sql);
             while ($row = $result->fetchObject()) {
                 $this->modules[$row->module_id] = array(
@@ -55,8 +55,8 @@ class Module extends Controller
         
         if (isset($this->modules[$name])) {
             return $this->modules[$name];
-        } else {
-            return null;
         }
+
+        return null;
     }
 }

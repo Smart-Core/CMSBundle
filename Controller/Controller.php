@@ -31,7 +31,6 @@ class Controller extends BaseController
      */
     public function initView()
     {
-        //$this->View = $this->Templating->getView();
         $this->View = new View();
         // По умолчанию устанавливается имя шаблона, как короткое имя контроллера.
         $reflector = new \ReflectionClass(get_class($this));
@@ -59,7 +58,7 @@ class Controller extends BaseController
         if (!is_object($this->container)) {
             throw new \Exception('SmartCore\EngineBundle: Container is not accesible. Service "engine.' . $name . '" fail.');
         }
-        
+
         if ($name == 'DB') {
             return $this->container->get('engine.db');
         }

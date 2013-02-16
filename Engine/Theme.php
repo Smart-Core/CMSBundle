@@ -2,9 +2,9 @@
 
 namespace SmartCore\Bundle\EngineBundle\Engine;
 
-use SmartCore\Bundle\EngineBundle\Controller\Controller;
+use Symfony\Component\DependencyInjection\ContainerAware;
 
-class Theme extends Controller
+class Theme extends ContainerAware
 {
     protected $paths;
     protected $template;
@@ -22,7 +22,6 @@ class Theme extends Controller
      */
     public function __construct($path = '/')
     {
-//        parent::__construct();
         $this->theme_path   = $path;
         $this->css_path     = $path . 'css/';
         $this->js_path      = $path . 'js/';
@@ -75,8 +74,6 @@ class Theme extends Controller
 
         $this->parseIni($this->template);
 
-//        sc_dump($this->ini);
-
         if (isset($this->ini['img_path'])) {
             $this->img_path = $this->theme_path . $this->ini['img_path'];
         }
@@ -92,7 +89,7 @@ class Theme extends Controller
         foreach ($this->ini as $key => $value) {
             switch ($key) {
                 case 'doctype':
-                    $this->engine('html')->doctype($value);
+                    $this->container->get('engine.html')->doctype($value);
                     break;
                 case 'css':
                     $css_list = explode(',', $value);
@@ -105,7 +102,7 @@ class Theme extends Controller
                                 $css = $this->css_path . $css;
                             }
 
-                            $this->engine('html')->css($css);
+                            $this->container->get('engine.html')->css($css);
                         }
                     }
                     break;
@@ -114,14 +111,14 @@ class Theme extends Controller
                     foreach ($js_list as $js_filename) {
                         $tmp = trim($js_filename);
                         if ( ! empty($tmp) ) {
-                            $this->engine('html')->js($this->js_path . $tmp);
+                            $this->container->get('engine.html')->js($this->js_path . $tmp);
                         }
                     }
                     break;
                 case 'js_lib': // @todo 
                     $js_libs = explode(',', $value);
                     foreach ($js_libs as $js_lib) {
-                        $this->engine('JsLib')->request(trim($js_lib));
+                        $this->container->get('engine.JsLib')->request(trim($js_lib));
                     }
                     break;
                 case 'icon':
@@ -147,7 +144,7 @@ class Theme extends Controller
                             $value = str_replace('{IMG_PATH}', $this->img_path, $value);
                         }
 
-                        $this->engine('html')->link($value, $attr);
+                        $this->container->get('engine.html')->link($value, $attr);
                     }
                     break;
                 default;

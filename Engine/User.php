@@ -5,13 +5,10 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 
 class User
 {
-    protected $DB;
     protected $roles = array();
 
     public function __construct(ContainerInterface $container)
     {
-        $this->DB = $container->get('engine.db');
-
         if ($container->has('security.context') and $container->get('security.context')->getToken() !== null) {
             foreach ($container->get('security.context')->getToken()->getRoles() as $Role) {
                 $this->roles[] = $Role->getRole();

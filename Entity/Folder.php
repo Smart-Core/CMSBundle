@@ -85,7 +85,7 @@ class Folder
     /**
      * @ORM\Column(type="boolean")
      */
-    protected $is_inherit_nodes;
+    protected $has_inherit_nodes = 0;
     
     /**
      * @ORM\Column(type="array")
@@ -122,7 +122,7 @@ class Folder
         $this->is_active = 1;
         $this->is_deleted = 0;
         $this->is_file = 0;
-        $this->is_inherit_nodes = 0;
+        $this->has_inherit_nodes = 0;
         $this->uri_part = '';
         $this->template = null;
         $this->redirect_to = null;

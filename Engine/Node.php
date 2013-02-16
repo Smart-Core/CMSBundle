@@ -2,11 +2,12 @@
 
 namespace SmartCore\Bundle\EngineBundle\Engine;
 
-use SmartCore\Bundle\EngineBundle\Controller\Controller;
-use SmartCore\Bundle\EngineBundle\Container;
+use Symfony\Component\DependencyInjection\ContainerAware;
 
-class Node extends Controller
+class Node extends ContainerAware
 {
+    protected $db;
+
     /**
      * Список всех нод, запрошенных через роутинг.
      * Строится методом buildNodesListByFolders().
@@ -25,10 +26,10 @@ class Node extends Controller
             return $this->nodes_list[$node_id];
         }
 
-        $sql = "SELECT *
-            FROM {$this->DB->prefix()}engine_nodes
-            WHERE node_id = '$node_id'";
-        $result = $this->DB->query($sql);
+        $db = $this->container->get('engine.db');
+
+        $sql = "SELECT * FROM engine_nodes WHERE node_id = '$node_id' ";
+        $result = $db->query($sql);
         if ($result->rowCount() == 1) {
             return $this->getPropertiesByRow($result->fetchObject());
         } else {
@@ -45,15 +46,15 @@ class Node extends Controller
      */
     protected function getPropertiesByRow($row)
     {
-        $module = $this->container->get('engine.module')->get($row->module_id);
-        
+        $module = $this->container->get('kernel')->getBundle($row->module_id . 'Module');
+
         if (!empty($row->controller)) {
             $tmp = explode(':', $row->controller);
             $controller = $tmp[0];
             $action = $tmp[1];
         } else {
-            $controller = $this->container->get('kernel')->getBundle($row->module_id . 'Module')->getDefaultController();
-            $action = $this->container->get('kernel')->getBundle($row->module_id . 'Module')->getDefaultAction();
+            $controller = $module->getDefaultController();
+            $action = $module->getDefaultAction();
         }
 
         return array (
@@ -68,7 +69,7 @@ class Node extends Controller
             'descr'         => $row->descr,
             
             'module_id'     => $row->module_id,
-            'module_class'  => $module['class'],
+            'module_class'  => get_class($module),
             'controller'    => $controller,
             'action'        => $action,
             'arguments'     => array(),
@@ -128,7 +129,6 @@ class Node extends Controller
             $class .= '_Admin';
         }
 
-//        return new $class($this->container->get('service_container'), $node_id);
         return new $class($this->container->get('service_container'), $node_id);
     }
     
@@ -146,6 +146,8 @@ class Node extends Controller
             return false;
         }
 
+        $this->db = $this->container->get('engine.db');
+
         // Вычисление максимальной позиции, чтобы поместить новую ноду в конец внутри блока.
         /*
         $sql = "SELECT max(pos) as max_pos 
@@ -158,19 +160,20 @@ class Node extends Controller
         */
         $pos            = is_numeric($pd['pos']) ? $pd['pos'] : 0;
         $database_id    = (isset($pd['database_id']) and is_numeric($pd['database_id'])) ? $pd['database_id'] : 0;
-        $is_active        = (isset($pd['is_active']) and is_numeric($pd['is_active'])) ? $pd['is_active'] : 1;
-        $is_cached        = is_numeric($pd['is_cached']) ? $pd['is_cached'] : 1;
-        $folder_id        = is_numeric($pd['folder_id']) ? $pd['folder_id'] : 1;
+        $is_active      = (isset($pd['is_active']) and is_numeric($pd['is_active'])) ? $pd['is_active'] : 1;
+        $is_cached      = is_numeric($pd['is_cached']) ? $pd['is_cached'] : 1;
+        $folder_id      = is_numeric($pd['folder_id']) ? $pd['folder_id'] : 1;
         $permissions    = strlen(trim($pd['permissions'])) == 0 ? 'NULL' : $this->DB->quote(trim($pd['permissions']));
         
-        $descr = $this->DB->quote(trim($pd['descr']));
+        $descr = $this->db->quote(trim($pd['descr']));
+        $user_id = $this->engine('env')->user_id;
         $sql = "
-            INSERT INTO {$this->DB->prefix()}engine_nodes
+            INSERT INTO engine_nodes
                 (folder_id, descr, block_id, module_id, database_id, params, is_active, is_cached, pos, permissions, create_datetime, owner_id)
             VALUES
-                ('$folder_id', $descr, '$block_id', '$pd[module_id]', '$database_id', NULL, '$is_active', '$is_cached', '$pos', $permissions, NOW(), '{$this->engine('env')->user_id}') ";
-        $this->DB->query($sql);
-        $node_id = $this->DB->lastInsertId();
+                ('$folder_id', $descr, '$block_id', '$pd[module_id]', '$database_id', NULL, '$is_active', '$is_cached', '$pos', $permissions, NOW(), '$user_id') ";
+        $this->db->query($sql);
+        $node_id = $this->db->lastInsertId();
 
         $Node = new Node();
         $Module = $Node->getModuleInstance($node_id, true);
@@ -181,10 +184,10 @@ class Node extends Controller
         }
 
         $sql = "
-            UPDATE {$this->DB->prefix()}engine_nodes SET
+            UPDATE engine_nodes SET
                 params = $params
             WHERE node_id = '$node_id'";
-        $this->DB->exec($sql);
+        $this->db->exec($sql);
         $this->Cache->updateFolder($folder_id);
 
         return true;
@@ -198,7 +201,7 @@ class Node extends Controller
      * 
      * @todo постраничность.
      */
-    public function getList($items_per_page = false, $page_num = 1)
+    public function __getList($items_per_page = false, $page_num = 1)
     {
         return $this->getListInFolder();
     }
@@ -209,7 +212,7 @@ class Node extends Controller
      * @param int $folder_id - если false, то возвращается список всех нод.
      * @return array
      */
-    public function getListInFolder($folder_id = false)
+    public function __getListInFolder($folder_id = false)
     {
         $sql_folder = $folder_id === false ? '' : " WHERE folder_id = '$folder_id' ";
 
@@ -247,7 +250,7 @@ class Node extends Controller
      * @param string $module
      * @return array
      */
-    public function getListByModule($module)
+    public function __getListByModule($module)
     {
         $data = array();
         $sql = "SELECT node_id 
@@ -327,17 +330,19 @@ class Node extends Controller
      * Создание списка всех запрошеных нод, в каких блоках они находятся и с какими 
      * параметрами запускаются модули.
      * 
-     * @access protected
+     * @access public
      * 
      * @param array     $parsed_uri
-     * @return array     $nodes_list
+     * @return array    $nodes_list
      */
     public function buildNodesListByFolders(array $folders)
     {
         if (!empty($this->nodes_list)) {
             return $this->nodes_list;
         }
-        
+
+        $this->db = $this->container->get('engine.db');
+
         $used_nodes = array();
         $lockout_nodes = array(
             'single'  => array(), // Блокировка нод в папке, без наследования.
@@ -382,10 +387,10 @@ class Node extends Controller
             }
 
             $sql = false;
-            if ($parsed_uri_value['is_inherit_nodes'] == 1) { // в этой папке есть ноды, которые наследуются...
+            if ($parsed_uri_value['has_inherit_nodes'] == 1) { // в этой папке есть ноды, которые наследуются...
                 $sql = "SELECT n.*
-                    FROM {$this->DB->prefix()}engine_nodes AS n,
-                        {$this->DB->prefix()}engine_blocks_inherit AS bi
+                    FROM engine_nodes AS n,
+                        engine_blocks_inherit AS bi
                     WHERE n.block_id = bi.block_id 
                         AND is_active = 1
                         AND n.folder_id = '{$folder_id}'
@@ -395,8 +400,8 @@ class Node extends Controller
             }
 
             // Обрабатываем последнюю папку т.е. текущую.
-            if ($folder_id == $this->engine('env')->get('current_folder_id')) { // @todo убрать Env
-                $sql = "SELECT * FROM {$this->DB->prefix()}engine_nodes WHERE folder_id = '{$folder_id}' AND is_active = '1'";
+            if ($folder_id == $this->container->get('engine.env')->get('current_folder_id')) { // @todo убрать Env
+                $sql = "SELECT * FROM engine_nodes WHERE folder_id = '{$folder_id}' AND is_active = '1' ";
                 // исключаем ранее включенные ноды.
                 foreach ($used_nodes as $used_nodes_value) {
                     $sql .= " AND node_id != '{$used_nodes_value}'";
@@ -409,16 +414,15 @@ class Node extends Controller
                 continue;
             }
 
-            $result = $this->DB->query($sql);
+            $result = $this->db->query($sql);
             while ($row = $result->fetchObject()) {
                 /*
                 if ($this->Permissions->isAllowed('node', 'read', $row->permissions) == 0) {
                     continue;
-                }
-                */
+                }*/
 
                 // Создаётся список нод, которые уже в включены.
-                if ($parsed_uri_value['is_inherit_nodes'] == 1) { 
+                if ($parsed_uri_value['has_inherit_nodes'] == 1) {
                     $used_nodes[] = $row->node_id; 
                 }
 

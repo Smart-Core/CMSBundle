@@ -17,8 +17,6 @@ class Environment extends ParameterBag
         $kernel    = $container->get('kernel');
         $base_path = $container->get('request')->getBasePath() . '/';
 
-        // @todo сделать поддержку мультисайтовости.
-
         parent::__construct(array(
             'base_path'             => $base_path,
             'base_url'              => $container->get('request')->getBaseUrl() . '/',
@@ -27,7 +25,6 @@ class Environment extends ParameterBag
             'dir_app'               => $kernel->getRootDir()  . '/',
             'dir_backup'            => $kernel->getRootDir()  . '/var/backup/',
             'dir_cache'             => $kernel->getCacheDir() . '/',
-//            'dir_log'               => $kernel->getLogDir()   . '/', // !!! Сейчас нельзя тут вызывать $kernel->getLogDir() потому что образуется циклический вызов т.к. метод getLogDir() юзает 'engine.site', который в свою очередь юзает 'engine.env'
             'dir_var'               => $kernel->getRootDir()  . '/var/',
             'dir_tmp'               => $kernel->getRootDir()  . '/var/tmp/',
             'dir_web_root'          => getcwd() . DIRECTORY_SEPARATOR,

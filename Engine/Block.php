@@ -1,24 +1,22 @@
 <?php
 namespace SmartCore\Bundle\EngineBundle\Engine;
 
-use SmartCore\Bundle\EngineBundle\Controller\Controller;
+use Symfony\Component\DependencyInjection\ContainerAware;
 
-class Block extends Controller
+class Block extends ContainerAware
 {
     protected $blocks = array();
     
     /**
      * Получить список всех блоков.
      * 
-     * @param int $site_id
      * @return array
      */
     public function all()
     {
         $this->blocks = array();
-        
-        $sql = "SELECT * FROM {$this->DB->prefix()}engine_blocks ORDER BY pos ASC";
-        $result = $this->DB->query($sql);
+
+        $result = $this->container->get('engine.db')->query("SELECT * FROM engine_blocks ORDER BY pos ASC");
         while ($row = $result->fetchObject()) {
             $this->blocks[$row->block_id] = array(
                 'name'      => $row->name,
@@ -37,7 +35,7 @@ class Block extends Controller
      * 
      * @return array
      */
-    public function getHtmlSelectOptionsArray()
+    public function __getHtmlSelectOptionsArray()
     {
         $multi_options = array();
         foreach ($this->all() as $key => $value) {

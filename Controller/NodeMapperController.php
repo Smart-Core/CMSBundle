@@ -2,6 +2,7 @@
 
 namespace SmartCore\Bundle\EngineBundle\Controller;
 
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use SmartCore\Bundle\EngineBundle\Engine\Theme;
 use SmartCore\Bundle\EngineBundle\Templater\View;
@@ -9,7 +10,7 @@ use SmartCore\Bundle\EngineBundle\Container;
 
 class NodeMapperController extends Controller
 {
-    public function indexAction($slug)
+    public function indexAction(Request $request, $slug)
     {
 //        ld($user = $this->container->get('security.context')->getToken()->getUser());
 //        ld($this->container->getParameterBag());
@@ -21,8 +22,7 @@ class NodeMapperController extends Controller
         }*/
 
         // @todo вынести router в другое место... можно сделать в виде отдельного сервиса, например 'engine.folder_router'.
-        $router_data = $this->engine('folder')->router($this->get('request')->getPathInfo());
-
+        $router_data = $this->engine('folder')->router($request->getPathInfo());
 //        ld($router_data);
 
         foreach ($router_data['folders'] as $folder) {
@@ -37,14 +37,7 @@ class NodeMapperController extends Controller
 
         $this->View->setOptions(array(
             'comment'       => 'Базовый шаблон',
-            //'engine'        => 'twig',
             'template'      => $router_data['template'],
-            'environment'   => array(
-                'cache'         => $this->engine('env')->dir_cache . 'twig',
-                'auto_reload'   => true,
-                'autoescape'    => false,
-                //'debug'          => true,
-            ),
         ));
 
         $this->View->setPaths(array(
@@ -52,8 +45,7 @@ class NodeMapperController extends Controller
             $this->engine('env')->dir_app . 'Resources/views',
             $this->container->get('kernel')->getBundle('SmartCoreEngineBundle')->getPath() . '/Resources/views',
         ));
-        
-        $this->View->html = $this->Html;
+
         $this->engine('html')->title('Smart Core CMS (based on Symfony2 Framework)');
 
         $theme_path = $this->engine('env')->base_path . $this->engine('env')->theme_path;
@@ -67,7 +59,7 @@ class NodeMapperController extends Controller
 
         $this->engine('theme')->processConfig($this->View);
 
-        foreach ($this->engine('JsLib')->all() as $lib => $res) {
+        foreach ($this->engine('JsLib')->all() as $res) {
             if (isset($res['js']) and is_array($res['js'])) {
                 foreach ($res['js'] as $js) {
                     $this->engine('html')->js($js, 200);
@@ -80,21 +72,16 @@ class NodeMapperController extends Controller
             }
         }
 
-        $this->View->block = new View();
+        $this->View->blocks = new View();
+        $this->View->blocks->setOptions(array('comment' => 'Блоки'));
         //$this->View->block->setRenderMethod('echoProperties');
-        $this->View->block->setOptions(array('comment' => 'Блоки'));
 
         $nodes_list = $this->engine('node')->buildNodesListByFolders($router_data['folders']);
-//        $this->Node->buildNodesListByFolders($router_data['folders']);
-
-//        sc_dump($nodes_list);
+//        ld($nodes_list);
 
         $this->buildModulesData($nodes_list);
         
-//        sc_dump($this->View->block);
-        
-//        sc_dump($this->View->block);
-//        sc_dump($this->Html);
+//        sc_dump($this->View->blocks);
 
 //        sc_dump($this->renderView("SmartCoreTexterModule::texter.html.twig", array('text' => 777)));
 //        sc_dump($this->forward('SmartCoreTexterModule:Test:hello', array('text' => 'yahoo :)'))->getContent());
@@ -104,36 +91,20 @@ class NodeMapperController extends Controller
 //        $tmp = $this->forward('SmartCoreMenuModule:Menu:index');
 //        sc_dump(get_class($tmp));
 //        sc_dump($tmp->getContentRaw());
-        
 //        echo $tmp->getContent();
         
-//        exit;
-
-//        $Test = $this->forward('SmartCoreTexterModule:Test:test', array('text' => 'test!!'))->getContent();
-//        $Test = $this->forward('SmartCoreTexterModule:Test:test', array('text' => 'test!!'));
-        
-//        sc_dump($Test);
-        
-//        sc_dump($this->forward('SmartCoreTexterModule:Test:test', array('text' => 'test!!'))->getContent());
-
-//        sc_dump($this->container->get('kernel')->getLogDir());
-
         if ($this->container->has('smart_core_engine.active_theme')) {
             $activeTheme = $this->container->get('smart_core_engine.active_theme');
             $activeTheme->setThemes(array('web', 'tablet', 'phone'));
-//            $activeTheme->setName('tablet');
+            //$activeTheme->setName('tablet');
         }
 
-        $View = $this->container->get('templating')->render("::{$this->View->getTemplateName()}.html.twig", array(
-            'html' => $this->engine('Html'),
-            'block' => $this->View->block,
-        ));
-                
-//        sc_dump($this->engine('breadcrumbs'));
-//        sc_dump($this->engine('env'));
-//        sc_dump($this->engine('site')->getId());
-//        sc_dump($this->getUser());
-        return new Response($View, $router_data['status']);
+        return new Response($this->container->get('templating')->render("::{$this->View->getTemplateName()}.html.twig", array(
+                'html'  => $this->engine('Html'),
+                'block' => $this->View->blocks,
+            )),
+            $router_data['status']
+        );
     }
     
     /**
@@ -145,9 +116,9 @@ class NodeMapperController extends Controller
         $blocks = $this->engine('block')->all();
         
         // Каждый "блок" является объектом вида.
-        foreach ($blocks as $block_id => $block) {
-            $this->View->block->$block['name'] = new View();
-            $this->View->block->$block['name']->setRenderMethod('echoProperties');
+        foreach ($blocks as $block) {
+            $this->View->blocks->$block['name'] = new View();
+            $this->View->blocks->$block['name']->setRenderMethod('echoProperties');
         }
 
         define('_IS_CACHE_NODES', false); // @todo remove
@@ -213,13 +184,9 @@ class NodeMapperController extends Controller
                 }
                 */
                 
-//                sc_dump($node_properties);
-
                 $Module = $this->forward($node_id, array(
                     '_eip' => true,
                 ));
-                
-//                sc_dump(get_class($Module));
 
                 // Указать шаблонизатору, что надо сохранить эту ноду как html.
                 // @todo ПЕРЕДЕЛАТЬ!!! подумать где выполнять кеширование, внутри объекта View или где-то снаружи.
@@ -234,7 +201,6 @@ class NodeMapperController extends Controller
                 
                 //if ($this->Permissions->isAllowed('node', 'write', $node_properties['permissions']) and $this->Cookie->sc_frontend_mode == 'edit') {
                 if ( false ) {
-
                     $front_controls = $Module->getFrontControls();
                     
                     // Для рута добавляется пунктик "свойства ноды"
@@ -268,9 +234,9 @@ class NodeMapperController extends Controller
             }
             
             if (method_exists($Module, 'getContentRaw')) {
-                $this->View->block->$block_name->$node_id = $Module->getContentRaw();
+                $this->View->blocks->$block_name->$node_id = $Module->getContentRaw();
             } else {
-                $this->View->block->$block_name->$node_id = $Module->getContent();
+                $this->View->blocks->$block_name->$node_id = $Module->getContent();
             }
 
             unset($Module);

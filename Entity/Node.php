@@ -9,7 +9,7 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Table(name="engine_nodes",
  *         indexes={
  *             @ORM\Index(name="is_active", columns={"is_active"}),
- *             @ORM\Index(name="pos", columns={"pos"}),
+ *             @ORM\Index(name="position", columns={"position"}),
  *             @ORM\Index(name="block_id", columns={"block_id"}),
  *             @ORM\Index(name="module_id", columns={"module_id"})
  *         },
@@ -43,9 +43,18 @@ class Node
     protected $block_id = 0;
 
     /**
+     * Позиция в внутри блока.
+     *
      * @ORM\Column(type="smallint")
      */
-    protected $pos = 0;
+    protected $position = 0;
+
+    /**
+     * Приоритет порядка выполнения.
+     *
+     * @ORM\Column(type="smallint")
+     */
+    protected $priority = 0;
 
     /**
      * @ORM\Column(type="string", length=50)
@@ -67,7 +76,7 @@ class Node
      * 
      * @todo !!! Убрать !!! это временное поле...
      */
-    protected $cache_params_yaml;
+//    protected $cache_params_yaml;
 
     /**
      * @ORM\Column(type="text", nullable=TRUE)
@@ -112,4 +121,11 @@ class Node
      * @ORM\Column(type="datetime")
      */
     protected $create_datetime;
+
+    public function __construct()
+    {
+        $this->create_by_user_id = 0;
+        $this->create_datetime = new \DateTime();
+
+    }
 }

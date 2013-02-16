@@ -5,8 +5,9 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 
 class Permissions
 {
-    private $DB;
+    private $db;
     private $permissions = array();
+    private $user_id = 0;
     private $user_roles = array();
 
     // @todo remove!
@@ -14,25 +15,28 @@ class Permissions
 
     /**
      * Constructor.
-     * 
-     * - Заполняется массив со значениями прав доступа по умолчанию для всех объектов
-     * 
-     * @todo сейчас для инициализации массива выполняется 2 запроса в БД, в будущем надо предусмотреть возможность кеширования.
-     * т.е. кешироваться будут массивы для каждой группы пользователей, а сброс кеша надо будет производить при каждом изменении,
-     * связанными с группами пользователей (добавление, удаление, изменении связей) а также с правами (добавление, удаление 
-     * действий, изменения значений по умолчанию, )
      */
     public function __construct(ContainerInterface $container)
     {
-        $this->DB = $container->get('engine.db');
+        $this->db = $container->get('engine.db');
+        $this->user_id = $container->get('engine.env')->get('user_id');
         $this->user_roles = $container->get('engine.user')->getRoles();
+        $this->init();
+    }
 
-//        sc_dump($this->user_roles);
-//        sc_dump($container->getParameter('security.role_hierarchy.roles'));
-
+    /**
+     * - Заполняется массив со значениями прав доступа по умолчанию для всех объектов
+     *
+     * @todo сейчас для инициализации массива выполняется 2 запроса в БД, в будущем надо предусмотреть возможность кеширования.
+     * т.е. кешироваться будут массивы для каждой группы пользователей, а сброс кеша надо будет производить при каждом изменении,
+     * связанными с группами пользователей (добавление, удаление, изменении связей) а также с правами (добавление, удаление
+     * действий, изменения значений по умолчанию, )
+     */
+    protected  function init()
+    {
         // @todo вычисление какие группы прав присущи заданному сайту.
-        $sql = "SELECT group_id, name, default_access FROM {$this->DB->prefix()}engine_permissions";
-        $result = $this->DB->query($sql);
+        $sql = "SELECT group_id, name, default_access FROM engine_permissions";
+        $result = $this->db->query($sql);
         while ($row = $result->fetchObject()) {
             $this->permissions[$row->group_id][$row->name] = $row->default_access;
         }
@@ -50,10 +54,10 @@ class Permissions
 
         if ($begin === false) {
             $sql = "SELECT permission, max(access) AS access
-                FROM {$this->DB->prefix()}engine_permissions_defaults
+                FROM engine_permissions_defaults
                 $where
                 GROUP BY permission";
-            $result = $this->DB->query($sql);
+            $result = $this->db->query($sql);
             while ($row = $result->fetchObject()) {
                 $temp = explode(':', $row->permission);
                 $this->permissions[$temp[0]][$temp[1]] = $row->access;
@@ -66,7 +70,7 @@ class Permissions
      */
     public function rebuild()
     {
-        $this->__construct();
+        $this->init();
     }
 
     /**
@@ -94,8 +98,6 @@ class Permissions
     /**
      * Метод получения разрешения на доступ
      * 
-     * @return 1 | 0
-     * 
      * @param $object - объект (ресурс в ZF) к которому запрашивается право на дейсвие. по этому
      *        параметру берется значения по умолчанию. [folder / node / news / comments ... ]
      *        @todo скорее всего будет только 3 типа объектов, это [folder / node / module ]
@@ -106,9 +108,10 @@ class Permissions
      *        ли применять действие $action, к объекту $object.
      * 
      * @param $user_id = null, по умолчанию рассматривается активный юзер @todo сделать для разных юзеров.
-     * 
-     * @todo может переименовать в isGranted()?
-     * 
+     *
+     * @return bool
+     *
+     * @todo переименовать в isGranted()?
      */
     public function isAllowed($object, $action, $permissions, $user_id = null) 
     {
@@ -151,7 +154,7 @@ class Permissions
                         $t4 = explode(':', $value);
                         $permissions[$t2[0]][$t4[0]] = $t4[1];
                     }
-                } elseif (substr($t2[0], 0, 1) == 'u' and substr($t2[0], 1) == $this->engine('env')->user_id) { // отдельные права для юзера
+                } elseif (substr($t2[0], 0, 1) == 'u' and substr($t2[0], 1) == $this->user_id) { // отдельные права для юзера
                     $t3 = explode(',', $t2[1]);
                     foreach ($t3 as $key => $value) {
                         $t4 = explode(':', $value);

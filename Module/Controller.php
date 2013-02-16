@@ -10,21 +10,18 @@ abstract class Controller extends BaseController
 {
     /**
      * Действие по умолчанию.
-     * @access protected
      * @var string|false
      */
     protected $default_action = false;
     
     /**
      * Фронтальные элементы управления для всего модуля.
-     * @access protected
      * @var array|false
      */
     protected $frontend_controls = false;
     
     /**
      * Фронтальные элементы управления для внутренних элементов модуля.
-     * @access protected
      * @var array|false
      */
     protected $frontend_inner_controls = false;
@@ -38,13 +35,14 @@ abstract class Controller extends BaseController
     /**
      * Базовый конструктор. Модули используют в качестве конструктора метод init();
      * 
-     * @access public
      * @param int $node_id
      */
     final public function __construct()
     {
         parent::__construct();
-        
+
+        $this->container = Container::getContainer();
+
         // Запуск метода init(), который является заменой конструктора для модулей.
         if (method_exists($this, 'init')) {
             $this->init();
@@ -52,8 +50,6 @@ abstract class Controller extends BaseController
         
         // ------------------------------------------
         /*
-//        $this->container = Container::getContainer();
-
         //$this->NodeProperties = new NodeProperties($node_id);
         $this->node = Container::get('engine.node')->getProperties($node_id);
         $this->node['id'] = $node_id;
@@ -89,7 +85,6 @@ abstract class Controller extends BaseController
             }
             */
         }
-
     }
     
     /**

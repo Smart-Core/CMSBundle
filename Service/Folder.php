@@ -3,9 +3,14 @@
 namespace SmartCore\Bundle\EngineBundle\Service;
 
 use SmartCore\Bundle\EngineBundle\Controller\Controller;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 class Folder extends Controller
 {
+    protected $container;
+    protected $db;
+    protected $env;
+
     protected $_sql_is_active = ' AND is_active = 1 ';
     
     protected $_folder_tree_list_arr = array();
@@ -14,10 +19,13 @@ class Folder extends Controller
     protected $_tree_level = 0;
 
     /**
-     * Хак: игнорирование конструктора котроллера, в котором инициализируется View.
+     * Constructor.
      */
-    public function __construct()
+    public function __construct(ContainerInterface $container)
     {
+        $this->container = $container;
+        $this->db  = $container->get('engine.db');
+        $this->env = $container->get('engine.env');
     }
 
     /**
@@ -25,17 +33,18 @@ class Folder extends Controller
      *
      * @param int $folder_id
      * @param string $language - указать извлекаемый язык (пока не испольузется.)
+     *
      * @return object
      */
     public function getDataById($folder_id, $language = false)
     {
         $sql = "SELECT *
-            FROM {$this->DB->prefix()}engine_folders
+            FROM engine_folders
             WHERE is_deleted = 0
             {$this->_sql_is_active}
             AND folder_id = '{$folder_id}' ";
 
-        return $this->DB->fetchObject($sql);
+        return $this->db->fetchObject($sql);
     }
 
     /**
@@ -49,13 +58,13 @@ class Folder extends Controller
     public function getData($uri_part, $pid, $language = false)
     {
         $sql = "SELECT *
-            FROM {$this->DB->prefix()}engine_folders
+            FROM engine_folders
             WHERE is_deleted = 0
             {$this->_sql_is_active}
             AND uri_part = '{$uri_part}'
             AND pid = '{$pid}' ";
 
-        return $this->DB->fetchObject($sql);
+        return $this->db->fetchObject($sql);
     }
 
     /**
@@ -98,14 +107,14 @@ class Folder extends Controller
      */
     private function _getTreeList($data)
     {
-        foreach ($data as $key => $value) {
+        foreach ($data as $value) {
             $this->_folder_tree_list_arr[$value['folder_id']] = array(
-                'title'        => $value['title'],
-                'link'        => $value['link'],
-                'is_active'    => $value['is_active'],
-                'pos'        => $value['pos'],
-                'level'        => $this->_tree_level,
-                );
+                'title'     => $value['title'],
+                'link'      => $value['link'],
+                'is_active' => $value['is_active'],
+                'pos'       => $value['pos'],
+                'level'     => $this->_tree_level,
+            );
             
             if (count($value['folders']) > 0) {
                 $this->_tree_level++;
@@ -125,12 +134,12 @@ class Folder extends Controller
     public function buildTree($parent_id, $max_depth = false, &$tree = false)
     { 
         $sql = "SELECT *
-            FROM {$this->DB->prefix()}engine_folders
+            FROM engine_folders
             WHERE is_deleted = 0
             {$this->_sql_is_active}
             AND pid = '{$parent_id}'
             ORDER BY pos ";
-        $result = $this->DB->query($sql);
+        $result = $this->db->query($sql);
         if ($result->rowCount() > 0) {
             $this->_tree_level++;
             
@@ -139,7 +148,7 @@ class Folder extends Controller
                     $this->_tree_link[$this->_tree_level] = $row->uri_part;
                 }
                 
-                $uri = $this->engine('env')->get('base_url');
+                $uri = $this->env->get('base_url');
                 foreach ($this->_tree_link as $value) {
                     $uri .= $value . '/';
                 }
@@ -178,12 +187,12 @@ class Folder extends Controller
     public function getUri($folder_id = false)
     {
         if ($folder_id === false) {
-            $folder_id = $this->engine('env')->get('current_folder_id');
+            $folder_id = $this->env->get('current_folder_id');
         }
 
-        $uri_parts = array();
         $uri = '';
-        
+        $uri_parts = array();
+
         while($folder_id != 1) {
             $folder = $this->getDataById($folder_id);
             if ($folder !== false) {
@@ -199,7 +208,7 @@ class Folder extends Controller
             $uri .= $value . '/';
         }
     
-        return $this->engine('env')->get('base_url') . $uri;
+        return $this->env->get('base_url') . $uri;
     }
     
     /**
@@ -215,12 +224,13 @@ class Folder extends Controller
             'meta' => array(),
             'status' => 200,
             'template' => 'index',
+            'node_route' => null, // @todo
         );
         
         // @todo при обращении к фронт-контроллеру /web/app.php не коррекнтно определяется активные пункты меню.
-        $current_folder_path = $this->engine('env')->get('base_path');
-        $router_node_id = null;
+        $current_folder_path = $this->env->get('base_url');
         $folder_pid = 0;
+        $router_node_id = null;
 
         $path_parts = explode('/', $slug);
 
@@ -243,13 +253,13 @@ class Folder extends Controller
             if ($router_node_id !== null) {
                 // выполняется часть URI парсером модуля и возвращается результат работы, в дальнейшем он будет передан самой ноде.
                 $ModuleRouter = $this->forward($router_node_id . '::router', array(
-                    'slug' => str_replace($current_folder_path, '', substr($this->engine('env')->base_path, 0, -1) . $slug))
+                    'slug' => str_replace($current_folder_path, '', substr($this->env->base_url, 0, -1) . $slug))
                 );
-                
+
                 // Роутер модуля вернул положительный ответ.
                 if ($ModuleRouter->isOk()) {
                     $data['folders'][$folder->folder_id]['router_response'] = $ModuleRouter;
-                    $data['folders'][$folder->folder_id]['router_node_id'] = $router_node_id;
+                    $data['folders'][$folder->folder_id]['router_node_id']  = $router_node_id;
                     // В случае успешного завершения роутера модуля, роутинг ядром прекращается.
                     break; 
                 }
@@ -285,11 +295,11 @@ class Folder extends Controller
                         'uri' => $current_folder_path,
                         'title' => $folder->title,
                         'descr' => $folder->descr,
-                        'is_inherit_nodes' => $folder->is_inherit_nodes,
+                        'has_inherit_nodes' => $folder->is_inherit_nodes,
                         'lockout_nodes' => unserialize($folder->lockout_nodes),
                     );
-                    $this->engine('env')->set('current_folder_id', $folder->folder_id);
-                    $this->engine('env')->set('current_folder_path', $current_folder_path);
+                    $this->env->set('current_folder_id', $folder->folder_id);
+                    $this->env->set('current_folder_path', $current_folder_path);
                 } else {
                     $data['status'] = 403;
                 }

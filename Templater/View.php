@@ -20,15 +20,15 @@ class View
         $this->__options = array(
             'comment'       => null,        // Служебный комментарий
             'engine'        => 'twig',      // Шаблонный движок.
-            'environment'   => array(),     // Окружение для шаблонного движка.
-            'paths'         => array(),     // Пути в которых ищется файл шаблона.
-            'template'      => null,        // Путь к файлу шаблона.
+//            'environment'   => array(),     // Окружение для шаблонного движка.
+//            'paths'         => array(),     // Пути в которых ищется файл шаблона.
+            'template'      => null,        // Имя файла шаблона.
             'template_ext'  => '.twig',     // Расширение имени файла шаблона. @todo
             'method'        => 'includeTpl',// echoProperties - метод вызываемый для отрисовки.
             'decorators'    => null,        // Декораторы - отображаются до и после рендеринга.
             'properties_count' => 0,        // Счетчик свойств. @todo скорее всего убрать.
             //'controller'=> false, // $this
-            );
+        );
         $this->__options = $options + $this->__options;
     }
     
@@ -221,6 +221,7 @@ class View
      */
     public function includeTpl()
     {
+        /*
         if (empty($this->__options['paths'])) {
             die('Не указаны пути для шаблонов.');
 //            throw new \Exception('Не указаны пути для шаблонов.');
@@ -230,7 +231,8 @@ class View
             die('Не указано имя шаблона.');
 //            throw new \Exception('Не указано имя шаблона.');
         }
-        
+        */
+
         switch (strtolower($this->__options['engine'])) {
             case 'twig':
                 $template = new Engine\Twig\Twig($this->__options);
@@ -258,7 +260,7 @@ class View
         $this->{$this->__options['method']}();
         
         if (!empty($this->__options['decorators'])) {
-            echo $this->__options['decorators'][1];
+           echo $this->__options['decorators'][1];
         }
     }
 }

@@ -10,6 +10,3 @@ smart_core_engine:
         connection: @engine.db
         # настройки для 'filesystem'
         path: %smart_core_engine_data_dir%
-    # использовать ли мультисайтовый режим, если пустое значение - то нет.
-    dir_sites: site/
-    default_site_id: 1
