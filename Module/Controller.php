@@ -85,6 +85,9 @@ abstract class Controller extends BaseController
             }
             */
         }
+
+        $reflector = new \ReflectionClass($this->node['module_class']);
+        $this->View->setOptions(array('bundle' => $reflector->getShortName() . '::'));
     }
     
     /**

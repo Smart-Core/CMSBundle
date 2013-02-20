@@ -36,14 +36,8 @@ class NodeMapperController extends Controller
         }
 
         $this->View->setOptions(array(
-            'comment'       => 'Базовый шаблон',
-            'template'      => $router_data['template'],
-        ));
-
-        $this->View->setPaths(array(
-            $this->engine('env')->dir_web_root . 'theme/views', // @todo сделать через настройки.
-            $this->engine('env')->dir_app . 'Resources/views',
-            $this->container->get('kernel')->getBundle('SmartCoreEngineBundle')->getPath() . '/Resources/views',
+            'comment'   => 'Базовый шаблон',
+            'template'  => $router_data['template'],
         ));
 
         $this->engine('html')->title('Smart Core CMS (based on Symfony2 Framework)');
@@ -73,22 +67,27 @@ class NodeMapperController extends Controller
         }
 
         $this->View->blocks = new View();
-        $this->View->blocks->setOptions(array('comment' => 'Блоки'));
-        //$this->View->block->setRenderMethod('echoProperties');
+        $this->View->blocks->setOptions(array(
+            'comment'   => 'Блоки',
+            'method'    => 'echoProperties',
+            'engine'    => null,
+        ));
 
         $nodes_list = $this->engine('node')->buildNodesListByFolders($router_data['folders']);
 //        ld($nodes_list);
 
         $this->buildModulesData($nodes_list);
-        
+
 //        sc_dump($this->View->blocks);
 
-//        sc_dump($this->renderView("SmartCoreTexterModule::texter.html.twig", array('text' => 777)));
-//        sc_dump($this->forward('SmartCoreTexterModule:Test:hello', array('text' => 'yahoo :)'))->getContent());
+
+//        sc_dump($this->renderView("MenuModule::menu.html.twig", array()));
+//        sc_dump($this->renderView("TexterModule::texter.html.twig", array('text' => 777)));
+//        sc_dump($this->forward('TexterModule:Test:hello', array('text' => 'yahoo :)'))->getContent());
 //        sc_dump($this->forward('2:Test:index')->getContent());
 
 //        $tmp = $this->forward(8);
-//        $tmp = $this->forward('SmartCoreMenuModule:Menu:index');
+//        $tmp = $this->forward('MenuModule:Menu:index');
 //        sc_dump(get_class($tmp));
 //        sc_dump($tmp->getContentRaw());
 //        echo $tmp->getContent();
@@ -118,7 +117,6 @@ class NodeMapperController extends Controller
         // Каждый "блок" является объектом вида.
         foreach ($blocks as $block) {
             $this->View->blocks->$block['name'] = new View();
-            $this->View->blocks->$block['name']->setRenderMethod('echoProperties');
         }
 
         define('_IS_CACHE_NODES', false); // @todo remove

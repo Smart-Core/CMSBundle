@@ -2,6 +2,8 @@
 
 namespace SmartCore\Bundle\EngineBundle\Templater;
 
+use SmartCore\Bundle\EngineBundle\Container;
+
 class View
 {
     /**
@@ -19,15 +21,10 @@ class View
     {
         $this->__options = array(
             'comment'       => null,        // Служебный комментарий
-            'engine'        => 'twig',      // Шаблонный движок.
-//            'environment'   => array(),     // Окружение для шаблонного движка.
-//            'paths'         => array(),     // Пути в которых ищется файл шаблона.
+            'engine'        => 'echo',      // Движок отрисовки. ('twig', 'php', 'echo' - простое отображение всех свойств.)
             'template'      => null,        // Имя файла шаблона.
-            'template_ext'  => '.twig',     // Расширение имени файла шаблона. @todo
-            'method'        => 'includeTpl',// echoProperties - метод вызываемый для отрисовки.
+            'bundle'        => '::',        // Имя бандла или модуля.
             'decorators'    => null,        // Декораторы - отображаются до и после рендеринга.
-            'properties_count' => 0,        // Счетчик свойств. @todo скорее всего убрать.
-            //'controller'=> false, // $this
         );
         $this->__options = $options + $this->__options;
     }
@@ -41,60 +38,6 @@ class View
     {
         $this->__options = $options + $this->__options;
     }
-    
-    /**
-     * Получить глобальные пути в которых производится поиск шаблонов.
-     * 
-     * @return array
-     */
-    public function getPaths()
-    {
-        return $this->__options['paths'];
-    }
-    
-    /**
-     * Установить глобальные пути в которых производится поиск шаблонов.
-     * 
-     * @param array $paths
-     */
-    public function setPaths($paths)
-    {
-        $this->__options['paths'] = $paths;
-    }
-    
-    /**
-     * Добавить глобальный путь в конец списка.
-     * 
-     * @param string $path
-     */
-    public function appendPath($path)
-    {
-        $this->__options['paths'][] = $path;
-    }
-        
-    /**
-     * Добавить глобальный путь в начало списка.
-     * 
-     * @param string $path
-     */
-    public function prependPath($path)
-    {
-        array_unshift($this->__options['paths'], $path);
-    }
-        
-    /**
-     * Отобразить все свойства.
-     */
-    public function echoProperties()
-    {
-        foreach ($this as $property => $__dummy) {
-            if ($property == '__options' or $property === '__properties') {
-                continue;
-            }
-            
-            echo $this->$property;
-        }
-    }
 
     /**
      * Получить данные свойств.
@@ -104,7 +47,7 @@ class View
     {
         $properties = array();
         foreach ($this as $property => $data) {
-            if ($property === '__options' or $property === '__properties') {
+            if ($property === '__options') {
                 continue;
             }            
             $properties[$property] = $data;
@@ -114,9 +57,8 @@ class View
     
     /**
      * Получить имя шаблона, по умолчанию при инициализации модуля устанавливается такое же как
-     * имя класса, но в результате работы, модуль может установить другой шаблон.
+     * имя контроллера, но в результате работы, модуль может установить другой шаблон.
      * 
-     * @access public
      * @final
      * @return string
      */
@@ -125,25 +67,16 @@ class View
         return $this->__options['template'];
     }    
     
-    /**
-     * NewFunction
-     */
-    public function setRenderMethod($method)
+    public function setEngine($method)
     {
-        $this->__options['method'] = $method;
+        $this->__options['engine'] = $method;
     }
     
-    /**
-     * NewFunction
-     */
     public function setDecorators($before, $after)
     {
         $this->__options['decorators'] = array($before, $after);
     }
     
-    /**
-     * NewFunction
-     */
     public function setTemplateName($name)
     {
         $this->__options['template'] = strtolower($name);
@@ -157,7 +90,6 @@ class View
      */
     public function set($name, $value)
     {
-        $this->__options['properties_count']++;
         $this->$name = $value;
     }
     
@@ -217,38 +149,6 @@ class View
     }
 
     /**
-     * Базовый метод отрисовки шаблона с помощью включения файла шаблона.
-     */
-    public function includeTpl()
-    {
-        /*
-        if (empty($this->__options['paths'])) {
-            die('Не указаны пути для шаблонов.');
-//            throw new \Exception('Не указаны пути для шаблонов.');
-        }
-        
-        if (empty($this->__options['template'])) {
-            die('Не указано имя шаблона.');
-//            throw new \Exception('Не указано имя шаблона.');
-        }
-        */
-
-        switch (strtolower($this->__options['engine'])) {
-            case 'twig':
-                $template = new Engine\Twig\Twig($this->__options);
-                break;
-            case 'simple':
-                $template = new Engine\Simple\Simple($this->__options);
-                break;
-            default;
-                die('Неопознанный шаблонный движок.');
-//                throw new \Exception('Неопознанный шаблонный движок.');
-        }
-        
-        $template->display($this->all());
-    }
-    
-    /**
      * Отображение данных вида.
      */
     public function display()
@@ -256,9 +156,27 @@ class View
         if (!empty($this->__options['decorators'])) {
             echo $this->__options['decorators'][0];
         }
-        
-        $this->{$this->__options['method']}();
-        
+
+        switch (strtolower($this->__options['engine'])) {
+            case 'twig':
+                echo Container::get('templating')->render($this->__options['bundle'] . $this->__options['template'] . '.html.twig' , $this->all());
+                break;
+            case 'php':
+                echo Container::get('templating')->render($this->__options['bundle'] . $this->__options['template'] . '.html.php' , $this->all());
+                break;
+            case 'echo':
+                foreach ($this as $property => $__dummy) {
+                    if ($property == '__options') {
+                        continue;
+                    }
+
+                    echo $this->$property;
+                }
+                break;
+            default;
+                echo 'Неопознанный шаблонный движок.';
+        }
+
         if (!empty($this->__options['decorators'])) {
            echo $this->__options['decorators'][1];
         }

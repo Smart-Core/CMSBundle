@@ -12,7 +12,7 @@ class Controller extends BaseController
      * View object
      * @var View
      */
-    public $View; // @todo переделать в protected.
+    protected $View;
 
     /**
      * Constructor.
@@ -31,21 +31,19 @@ class Controller extends BaseController
      */
     public function initView()
     {
-        $this->View = new View();
         // По умолчанию устанавливается имя шаблона, как короткое имя контроллера.
         $reflector = new \ReflectionClass(get_class($this));
         
         if (substr($reflector->getShortName(), -10) == 'Controller') {
-            $this->View->setTemplateName(substr($reflector->getShortName(), 0, strlen($reflector->getShortName()) - 10));
+            $template = substr($reflector->getShortName(), 0, strlen($reflector->getShortName()) - 10);
         } else {
-            $this->View->setTemplateName($reflector->getShortName());
+            $template = $reflector->getShortName();
         }
-        
-        $this->View->setPaths(array(
-//            $this->engine('env')->dir_web_root . $this->engine('env')->dir_themes . 'views/' . $namespace,
-//            $this->engine('env')->dir_app . 'views/' . $namespace,
-            realpath(dirname($reflector->getFileName()) . '/../Resources/views'),
-        ));        
+
+        $this->View = new View(array(
+            'template' => strtolower($template),
+            'engine' => 'twig',
+        ));
     }
     
     /**

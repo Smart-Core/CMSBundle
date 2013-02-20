@@ -6,7 +6,7 @@ use Symfony\Component\DependencyInjection\ContainerAware;
 
 class Theme extends ContainerAware
 {
-    protected $paths;
+    protected $paths = array();
     protected $template;
     protected $theme_path;
 
@@ -62,7 +62,12 @@ class Theme extends ContainerAware
 
     public function processConfig($View)
     {
-        $this->paths        = $View->getPaths();
+        // @todo продумать подключение ini-шников!!!
+        $this->paths        = array(
+            $this->container->get('engine.env')->dir_web_root . 'theme/views',
+            $this->container->get('engine.env')->dir_app . 'Resources/views',
+            $this->container->get('kernel')->getBundle('SmartCoreEngineBundle')->getPath() . '/Resources/views',
+        );
         $this->template     = $View->getTemplateName();
         $this->vendor_path  = $View->assets['vendor'];
         $this->theme_path   = $View->assets['theme_path'];
