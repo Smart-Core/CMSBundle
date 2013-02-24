@@ -116,7 +116,13 @@ class Theme extends ContainerAware
                     foreach ($js_list as $js_filename) {
                         $tmp = trim($js_filename);
                         if ( ! empty($tmp) ) {
-                            $this->container->get('engine.html')->js($this->js_path . $tmp);
+                            if (false !== strpos($tmp, '{VENDOR}')) {
+                                $tmp = str_replace('{VENDOR}', $this->vendor_path, $tmp);
+                            } else {
+                                $tmp = $this->js_path . $tmp;
+                            }
+
+                            $this->container->get('engine.html')->js($tmp);
                         }
                     }
                     break;

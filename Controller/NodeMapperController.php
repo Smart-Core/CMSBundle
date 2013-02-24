@@ -42,6 +42,9 @@ class NodeMapperController extends Controller
 
         $this->engine('html')->title('Smart Core CMS (based on Symfony2 Framework)');
 
+        // @todo убрать в ini-шник шаблона.
+        $this->engine('html')->meta('viewport', 'width=device-width, initial-scale=1.0');
+
         $theme_path = $this->engine('env')->base_path . $this->engine('env')->theme_path;
         $this->View->assets = array(
             'theme_path'        => $theme_path,
@@ -79,7 +82,6 @@ class NodeMapperController extends Controller
         $this->buildModulesData($nodes_list);
 
 //        sc_dump($this->View->blocks);
-
 
 //        sc_dump($this->renderView("MenuModule::menu.html.twig", array()));
 //        sc_dump($this->renderView("TexterModule::texter.html.twig", array('text' => 777)));

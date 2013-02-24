@@ -50,11 +50,6 @@ services:
             - [ setContainer, [ @service_container ] ]
     engine.html:
         class: SmartCore\Bundle\EngineBundle\Templater\Helper\Html
-    engine.site:
-        class: SmartCore\Bundle\EngineBundle\Service\Site
-        calls:
-            - [ setContainer, [ @service_container ] ]
-            - [ init ]
     engine.settings:
         alias: service_container        
     engine.user:

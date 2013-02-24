@@ -7,6 +7,7 @@ namespace SmartCore\Bundle\EngineBundle\Templater\Helper;
  * @todo document_ready
  * @todo Безопасные скрипты: //<![CDATA[' .... //]]>
  * @todo продумать приоритеты подключения LESS и CSS, а то сейчас LESS подключается только через тег link, а он выводится вперед всех. возможно это и не так важно ;)
+ * @todo поддержка тега lang внутри <html>
  */
 class Html
 {
@@ -291,8 +292,8 @@ class Html
     {
         $this->$name = array();
         krsort($this->sorted[$name]);
-        foreach ($this->sorted[$name] as $key => $value) {
-            foreach ($value as $key2 => $value2) {
+        foreach ($this->sorted[$name] as $value) {
+            foreach ($value as $value2) {
                 array_push($this->$name, $value2);
             }
         }

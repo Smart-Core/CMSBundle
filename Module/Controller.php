@@ -89,27 +89,48 @@ abstract class Controller extends BaseController
         $reflector = new \ReflectionClass($this->node['module_class']);
         $this->View->setOptions(array('bundle' => $reflector->getShortName() . '::'));
     }
-    
+
+    /**
+     * Проверка, включен ли тулбар.
+     *
+     * @return bool
+     */
+    public function isToolbar()
+    {
+        return true;
+    }
+
+    /**
+     * Проверка, включен ли режим Edit-in-place.
+     *
+     * @return bool
+     */
+    public function isEip()
+    {
+        return true;
+    }
+
+    // @todo пересмотреть нижеописанные методы!
+    // -------------------------------------------------------------------------------------
+
     /**
      * Ajax.
      *
      * @param string $uri_path - часть URI, адресованная модулю.
      * @return ?
      */
-    public function ajax($uri_path)
+    public function __ajax($uri_path)
     {
         return null;
     }
     
-    // Ниже описаны административные методы, они должны быть описаны в классе Module_*_Admin.
-
     /**
      * Метод управления модулем.
      *
      * @param string $uri_path
      * @return array
      */
-    public function admin($uri_path)
+    public function __admin($uri_path)
     {
         return false;
     }
@@ -120,7 +141,7 @@ abstract class Controller extends BaseController
      * @access public
      * @return array $params
      */
-    public function getParams()
+    public function __getParams()
     {
         return array();
     }
@@ -131,7 +152,7 @@ abstract class Controller extends BaseController
      * @access public
      * @return array $params
      */
-    public function getCacheParams($cache_params = array())
+    public function __getCacheParams($cache_params = array())
     {
         $params = array();
         foreach ($cache_params as $key => $value) {
@@ -146,7 +167,7 @@ abstract class Controller extends BaseController
      * @access public
      * @return array $params
      */
-    public function createNode()
+    public function __createNode()
     {
         $params = $this->Node->getDefaultParams();
         return empty($params) ? 'NULL' : $params;
@@ -161,7 +182,7 @@ abstract class Controller extends BaseController
      * 
      * @todo определиться какое значение лучше возвращать 0 или false.
      */
-    public function getFrontControls()
+    public function __getFrontControls()
     {
         return $this->frontend_controls;
     }
@@ -172,7 +193,7 @@ abstract class Controller extends BaseController
      * @access public
      * @returns array|false
      */
-    public function getFrontControlsInner()
+    public function __getFrontControlsInner()
     {
         return $this->frontend_inner_controls;
     }
@@ -183,7 +204,7 @@ abstract class Controller extends BaseController
      * @access public
      * @returns string|false
      */
-    public function getFrontControlsDefaultAction()
+    public function __getFrontControlsDefaultAction()
     {
         return $this->default_action;
     }
@@ -194,7 +215,7 @@ abstract class Controller extends BaseController
      * @access public
      * @return bool|null
      */
-    public function cron()
+    public function __cron()
     {
         return null;
     }
