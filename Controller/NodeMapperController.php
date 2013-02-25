@@ -46,14 +46,14 @@ class NodeMapperController extends Controller
                     'right' => [
                         'eip_toggle' => ["Просмотр", "Редактирование"],
                         'user' => [
-                            'title' => "Админстратор",
+                            'title' => $this->container->get('security.context')->getToken()->getUser()->getUserName(),
                             'icon' => 'cog',
                             'items' => [
                                 'profile' => [
                                     'title' => "Мой профиль",
                                     'uri' => $this->container->get('router')->generate('fos_user_profile_show'),
                                     'icon' => "user",
-                                    'overalay' => false,
+                                    'overalay' => true,
                                 ],
                                 'diviver_1' => 'diviver',
                                 'logout' => [
@@ -69,14 +69,61 @@ class NodeMapperController extends Controller
                 'node' => array(
                     '__node_3' => array(
                         'edit' => array(
-                            'title' => 'Edit',
-                            'descr' => 'Edit text block',
-                            'uri' => '__node_3.html',
+                            'title' => 'Редактировать',
+                            'descr' => 'Текстовый блок',
+                            'uri' => $request->getBasePath() . '/',
                             'default' => true,
                         ),
                         'cmf_node_properties' => array(
-                            'title' => 'Node Properties',
-                            'uri' => '__node_3.html',
+                            'title' => 'Свойства ноды',
+                            'uri' => $request->getBaseUrl() . '/',
+                        ),
+                    ),
+                    '__node_1' => array(
+                        'edit' => array(
+                            'title' => 'Редактировать',
+                            'descr' => 'Текстовый блок',
+                            'uri' => $request->getBasePath() . '/',
+                            'default' => true,
+                        ),
+                        'cmf_node_properties' => array(
+                            'title' => 'Свойства ноды',
+                            'uri' => $request->getBaseUrl() . '/',
+                        ),
+                    ),
+                    '__node_5' => array(
+                        'edit' => array(
+                            'title' => 'Редактировать',
+                            'descr' => 'Меню',
+                            'uri' => $request->getBasePath() . '/',
+                            'default' => true,
+                        ),
+                        'add' => array(
+                            'title' => 'Добавить пункт меню',
+                            'uri' => $request->getBasePath() . '/',
+                        ),
+                        'cmf_node_properties' => array(
+                            'title' => 'Свойства ноды',
+                            'uri' => $request->getBaseUrl() . '/',
+                        ),
+                    ),
+                    '__node_6' => array(
+                        'edit' => array(
+                            'title' => 'Редактировать',
+                            'descr' => 'Хлебные крошки',
+                            'uri' => $request->getBasePath() . '/',
+                            'default' => true,
+                        ),
+                        'cmf_node_properties' => array(
+                            'title' => 'Свойства ноды',
+                            'uri' => $request->getBaseUrl() . '/',
+                        ),
+                    ),
+                    '__node_2' => array(
+                        'cmf_node_properties' => array(
+                            'title' => 'Свойства ноды',
+                            'uri' => $request->getBaseUrl() . '/',
+                            'default' => true,
                         ),
                     ),
                 ),
@@ -283,7 +330,9 @@ class NodeMapperController extends Controller
             }
 
             // @todo пока так выставляются декораторы обрамления ноды.
-            $this->View->blocks->$block_name->$node_id->setDecorators("<div class=\"cmf-frontadmin-node\" id=\"_node$node_id\">", "</div>");
+            if ($this->get('security.context')->isGranted('ROLE_ADMIN') && !$this->get('request')->isXmlHttpRequest()) {
+                $this->View->blocks->$block_name->$node_id->setDecorators("<div class=\"cmf-frontadmin-node\" id=\"__node_{$node_id}\">", "</div>");
+            }
 
             unset($Module);
         }
