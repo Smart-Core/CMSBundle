@@ -16,11 +16,6 @@ class NodeMapperController extends Controller
 //        ld($this->container->getParameterBag());
 //        ld($this->container->getParameter('security.role_hierarchy.roles'));
 
-        /*
-        if ($this->get('security.context')->isGranted('IS_AUTHENTICATED_ANONYMOUSLY')) {
-            echo "123<br />";
-        }*/
-
         // @todo вынести router в другое место... можно сделать в виде отдельного сервиса, например 'engine.folder_router'.
         $router_data = $this->engine('folder')->router($request->getPathInfo());
 //        ld($router_data);
@@ -44,6 +39,56 @@ class NodeMapperController extends Controller
 
         // @todo убрать в ini-шник шаблона.
         $this->engine('html')->meta('viewport', 'width=device-width, initial-scale=1.0');
+
+        if ($this->get('security.context')->isGranted('ROLE_ADMIN') && !$request->isXmlHttpRequest()) {
+            $cmf_front_controls = array(
+                'toolbar' => array(
+                    'right' => [
+                        'eip_toggle' => ["Просмотр", "Редактирование"],
+                        'user' => [
+                            'title' => "Админстратор",
+                            'icon' => 'cog',
+                            'items' => [
+                                'profile' => [
+                                    'title' => "Мой профиль",
+                                    'uri' => $this->container->get('router')->generate('fos_user_profile_show'),
+                                    'icon' => "user",
+                                    'overalay' => false,
+                                ],
+                                'diviver_1' => 'diviver',
+                                'logout' => [
+                                    'title' => "Выход",
+                                    'uri' => $this->container->get('router')->generate('fos_user_security_logout'),
+                                    'icon' => "off",
+                                    'overalay' => false,
+                                ],
+                            ],
+                        ],
+                    ],
+                ),
+                'node' => array(
+                    '__node_3' => array(
+                        'edit' => array(
+                            'title' => 'Edit',
+                            'descr' => 'Edit text block',
+                            'uri' => '__node_3.html',
+                            'default' => true,
+                        ),
+                        'cmf_node_properties' => array(
+                            'title' => 'Node Properties',
+                            'uri' => '__node_3.html',
+                        ),
+                    ),
+                ),
+            );
+
+            $this->engine('JsLib')->request('bootstrap');
+            $this->engine('html')->css($this->engine('env')->global_assets . 'cmf/frontend.css');
+            $this->engine('html')->js($this->engine('env')->global_assets . 'cmf/frontend.js');
+            $this->engine('html')->js($this->engine('env')->global_assets . 'cmf/jquery.ba-hashchange.min.js');
+            // @todo продумать как называть "general_data".
+            $this->engine('html')->general_data = '<script type="text/javascript">var cmf_front_controls = ' . json_encode($cmf_front_controls, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT) . ';</script>';
+        }
 
         $theme_path = $this->engine('env')->base_path . $this->engine('env')->theme_path;
         $this->View->assets = array(
@@ -69,11 +114,9 @@ class NodeMapperController extends Controller
             }
         }
 
-        $this->View->blocks = new View();
-        $this->View->blocks->setOptions(array(
+        $this->View->blocks = new View(array(
             'comment'   => 'Блоки',
-            'method'    => 'echoProperties',
-            'engine'    => null,
+            'engine'    => 'echo',
         ));
 
         $nodes_list = $this->engine('node')->buildNodesListByFolders($router_data['folders']);
@@ -228,9 +271,9 @@ class NodeMapperController extends Controller
                         );
                     }
 
-                    // @todo пока так выставляются декораторы обрамления ноды.
                     $Module->View->setDecorators("<div class=\"cmf-frontadmin-node\" id=\"_node$node_id\">", "</div>");
                 }
+
             }
             
             if (method_exists($Module, 'getContentRaw')) {
@@ -238,6 +281,9 @@ class NodeMapperController extends Controller
             } else {
                 $this->View->blocks->$block_name->$node_id = $Module->getContent();
             }
+
+            // @todo пока так выставляются декораторы обрамления ноды.
+            $this->View->blocks->$block_name->$node_id->setDecorators("<div class=\"cmf-frontadmin-node\" id=\"_node$node_id\">", "</div>");
 
             unset($Module);
         }

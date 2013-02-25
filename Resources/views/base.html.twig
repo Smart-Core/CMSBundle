@@ -47,7 +47,9 @@
 {% endfor %}
 {% endblock html_head_scripts %}
 {% block html_head_general_data %}
-{% if html.document_ready %}{{ html.document_ready }}{% endif %}
+    <!-- general_data -->
+    {{ html.general_data }}
+{% if html.document_ready %}<!-- document_ready -->{{ html.document_ready }}{% endif %}
 {% endblock html_head_general_data %}
 </head>
 <body{% block html_body_attributes %}{% for attr, value in html.body_attributes %} {{ attr }}="{{ value | raw }}"{% endfor %}{% endblock html_body_attributes %}>
