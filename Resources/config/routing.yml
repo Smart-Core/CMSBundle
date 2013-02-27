@@ -8,6 +8,20 @@ sc_engine_admin_index:
     path: /admin/
     defaults:
         _controller: SmartCoreEngineBundle:Admin:index
+sc_engine_admin_node_index:
+    path: /admin/node/{id}/
+    defaults:
+        _controller: SmartCoreEngineBundle:Admin:node
+        slug: ""
+    requirements:
+        id: \d+
+sc_engine_admin_node_arguments:
+    path: /admin/node/{id}/{slug}
+    defaults:
+        _controller: SmartCoreEngineBundle:Admin:node
+    requirements:
+        id: \d+
+        slug: ".+"
 sc_engine_admin:
     path: /admin/{slug}
     defaults:
@@ -16,68 +30,69 @@ sc_engine_admin:
     requirements:
         slug: ".+"
 # ACTION        
-sc_engine_action_index:
-    path: /action/{node_id}/
-    defaults:
-        _controller: SmartCoreEngineBundle:Action:run
-    requirements:
-        node_id: \d+
-sc_engine_action:
-    path: /action/{node_id}/{slug}
-    defaults:
-        _controller: SmartCoreEngineBundle:Action:run
-    defaults:
-        slug: ""
-    requirements:
-        slug: ".+"
-        node_id: \d+
-sc_engine_action_invalid_index:
-    path: /action/
-    defaults:
-        _controller: SmartCoreEngineBundle:Action:invalid
-sc_engine_action_invalid:
-    path: /action/{slug}
-    defaults:
-        _controller: SmartCoreEngineBundle:Action:invalid
-        slug: ""
-    requirements:
-        slug: ".+"
+#sc_engine_action_index:
+#    path: /action/{node_id}/
+#    defaults:
+#        _controller: SmartCoreEngineBundle:Action:run
+#    requirements:
+#        node_id: \d+
+#sc_engine_action:
+#    path: /action/{node_id}/{slug}
+#    defaults:
+#        _controller: SmartCoreEngineBundle:Action:run
+#    defaults:
+#        slug: ""
+#    requirements:
+#        slug: ".+"
+#        node_id: \d+
+#sc_engine_action_invalid_index:
+#    path: /action/
+#    defaults:
+#        _controller: SmartCoreEngineBundle:Action:invalid
+#sc_engine_action_invalid:
+#    path: /action/{slug}
+#    defaults:
+#        _controller: SmartCoreEngineBundle:Action:invalid
+#        slug: ""
+#    requirements:
+#        slug: ".+"
 # AJAX
-sc_engine_ajax_invalid:
-    path: /ajax
-    defaults:
-        _controller: SmartCoreEngineBundle:Ajax:invalid
-sc_engine_ajax_invalid2:
-    path: /ajax/
-    defaults:
-        _controller: SmartCoreEngineBundle:Ajax:invalid
-sc_engine_ajax_node_index:
-    path: /ajax/{node_id}/
-    defaults:
-        _controller: SmartCoreEngineBundle:Ajax:node
-        slug: ""
-    requirements:
-        slug: ".+"
-        node_id: \d+
-sc_engine_ajax_node:
-    path: /ajax/{node_id}/{slug}
-    defaults:
-        _controller: SmartCoreEngineBundle:Ajax:node
-        slug: ""
-    requirements:
-        slug: ".+"
-        node_id: \d+
-sc_engine_ajax_index:
-    path: /ajax/{object}/
-    defaults:
-        _controller: SmartCoreEngineBundle:Ajax:run
-sc_engine_ajax:
-    path: /ajax/{object}/{slug}
-    defaults:
-        _controller: SmartCoreEngineBundle:Ajax:run
-        slug: ""
-    requirements:
-        slug: ".+"
+#sc_engine_ajax_invalid:
+#    path: /ajax
+#    defaults:
+#        _controller: SmartCoreEngineBundle:Ajax:invalid
+#sc_engine_ajax_invalid2:
+#    path: /ajax/
+#    defaults:
+#        _controller: SmartCoreEngineBundle:Ajax:invalid
+#sc_engine_ajax_node_index:
+#    path: /ajax/{node_id}/
+#    defaults:
+#        _controller: SmartCoreEngineBundle:Ajax:node
+#        slug: ""
+#    requirements:
+#        slug: ".+"
+#        node_id: \d+
+#sc_engine_ajax_node:
+#    path: /ajax/{node_id}/{slug}
+#    defaults:
+#        _controller: SmartCoreEngineBundle:Ajax:node
+#        slug: ""
+#    requirements:
+#        slug: ".+"
+#        node_id: \d+
+#sc_engine_ajax_index:
+#    path: /ajax/{object}/
+#    defaults:
+#        _controller: SmartCoreEngineBundle:Ajax:run
+#sc_engine_ajax:
+#    path: /ajax/{object}/{slug}
+#    defaults:
+#        _controller: SmartCoreEngineBundle:Ajax:run
+#        slug: ""
+#    requirements:
+#        slug: ".+"
+
 # NODE MAPPER
 sc_engine_node_mapper:
     path: /{slug}

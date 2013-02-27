@@ -1,5 +1,7 @@
 {% block html_head_doctype %}
-{{ html.doctype | raw }}
+{% if html.doctype %}{{ html.doctype | raw }}{% else %}<!DOCTYPE html>
+<html>
+{% endif %}
 {% endblock html_head_doctype %}
 <head>
 {% block html_head_title %}

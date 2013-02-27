@@ -47,12 +47,12 @@ class NodeMapperController extends Controller
                         'eip_toggle' => ["Просмотр", "Редактирование"],
                         'user' => [
                             'title' => $this->container->get('security.context')->getToken()->getUser()->getUserName(),
-                            'icon' => 'cog',
+                            'icon' => 'user',
                             'items' => [
                                 'profile' => [
-                                    'title' => "Мой профиль",
+                                    'title' => 'Мой профиль',
                                     'uri' => $this->container->get('router')->generate('fos_user_profile_show'),
-                                    'icon' => "user",
+                                    'icon' => 'cog',
                                     'overalay' => true,
                                 ],
                                 'diviver_1' => 'diviver',
@@ -71,7 +71,7 @@ class NodeMapperController extends Controller
                         'edit' => array(
                             'title' => 'Редактировать',
                             'descr' => 'Текстовый блок',
-                            'uri' => $request->getBasePath() . '/',
+                            'uri' => $request->getBasePath() . '/admin/node/3/',
                             'default' => true,
                         ),
                         'cmf_node_properties' => array(

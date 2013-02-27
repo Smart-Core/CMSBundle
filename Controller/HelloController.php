@@ -2,12 +2,11 @@
 
 namespace SmartCore\Bundle\EngineBundle\Controller;
 
-use Symfony\Bundle\FrameworkBundle\Controller\Controller as BaseController;
+//use Symfony\Bundle\FrameworkBundle\Controller\Controller as BaseController;
 use Symfony\Component\HttpFoundation\Response;
 use SmartCore\Bundle\EngineBundle\Controller;
-use JMS\AopBundle\JMSAopBundle;
 
-class HelloController extends BaseController
+class HelloController extends Controller
 {    
     public function indexAction()
     {
