@@ -130,6 +130,7 @@ class NodeMapperController extends Controller
             );
 
             $this->engine('JsLib')->request('bootstrap');
+            $this->engine('JsLib')->request('jquery-cookie');
             $this->engine('html')->css($this->engine('env')->global_assets . 'cmf/frontend.css');
             $this->engine('html')->js($this->engine('env')->global_assets . 'cmf/frontend.js');
             $this->engine('html')->js($this->engine('env')->global_assets . 'cmf/jquery.ba-hashchange.min.js');
