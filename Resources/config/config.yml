@@ -1,3 +1,6 @@
+imports:
+    - { resource: "@HtmlBundle/Resources/config/config.yml" }
+
 # Пример конфигурирования
 smart_core_engine:
     storage: db

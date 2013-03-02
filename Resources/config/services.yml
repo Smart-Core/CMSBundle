@@ -17,7 +17,7 @@ services:
     db.logger:
         class: Doctrine\DBAL\Logging\DebugStack
     engine.breadcrumbs:
-        class: SmartCore\Bundle\EngineBundle\Templater\Helper\Breadcrumbs
+        class: SmartCore\Bundle\EngineBundle\Engine\Breadcrumbs
     engine.env:
         class: SmartCore\Bundle\EngineBundle\Service\Environment
         arguments: [ @service_container ]
@@ -48,8 +48,6 @@ services:
         arguments: [ @engine.db ]
         calls:
             - [ setContainer, [ @service_container ] ]
-    engine.html:
-        class: SmartCore\Bundle\EngineBundle\Templater\Helper\Html
     engine.settings:
         alias: service_container        
     engine.user:

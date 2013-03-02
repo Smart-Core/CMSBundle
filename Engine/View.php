@@ -1,6 +1,6 @@
 <?php
 
-namespace SmartCore\Bundle\EngineBundle\Templater;
+namespace SmartCore\Bundle\EngineBundle\Engine;
 
 use SmartCore\Bundle\EngineBundle\Container;
 

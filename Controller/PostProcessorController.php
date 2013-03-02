@@ -2,13 +2,12 @@
 
 namespace SmartCore\Bundle\EngineBundle\Controller;
 
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use SmartCore\Bundle\EngineBundle\Engine\Theme;
-use SmartCore\Bundle\EngineBundle\Templater\View;
 
 class PostProcessorController extends Controller
 {
-    public function indexAction($slug)
+    public function indexAction(Request $request, $slug)
     {
         // @todo УБРАТЬ, это сейчас тут тесты с регистрацией...
         if (isset($_POST['fos_user_registration_form']) or
@@ -20,7 +19,11 @@ class PostProcessorController extends Controller
         ) {
             return $this->forward('SmartCoreEngineBundle:NodeMapper:index', array('slug' => $slug));
         }
-        
-        return new Response('PostProcessorController END.');
+
+        ob_start();
+        print_r($_POST);
+        $dump = ob_get_clean();
+
+        return new Response("<h1>PostProcessorController</h1><pre>$dump</pre>");
     }
 }

@@ -4,8 +4,7 @@ namespace SmartCore\Bundle\EngineBundle\Controller;
 
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use SmartCore\Bundle\EngineBundle\Engine\Theme;
-use SmartCore\Bundle\EngineBundle\Templater\View;
+use SmartCore\Bundle\EngineBundle\Engine\View;
 use SmartCore\Bundle\EngineBundle\Container;
 
 class NodeMapperController extends Controller
@@ -13,7 +12,6 @@ class NodeMapperController extends Controller
     public function indexAction(Request $request, $slug)
     {
 //        ld($user = $this->container->get('security.context')->getToken()->getUser());
-//        ld($this->container->getParameterBag());
 //        ld($this->container->getParameter('security.role_hierarchy.roles'));
 
         // @todo вынести router в другое место... можно сделать в виде отдельного сервиса, например 'engine.folder_router'.
@@ -35,10 +33,10 @@ class NodeMapperController extends Controller
             'template'  => $router_data['template'],
         ));
 
-        $this->engine('html')->title('Smart Core CMS (based on Symfony2 Framework)');
+        $this->get('html')->title('Smart Core CMS (based on Symfony2 Framework)');
 
         // @todo убрать в ini-шник шаблона.
-        $this->engine('html')->meta('viewport', 'width=device-width, initial-scale=1.0');
+        $this->get('html')->meta('viewport', 'width=device-width, initial-scale=1.0');
 
         if ($this->get('security.context')->isGranted('ROLE_ADMIN') && !$request->isXmlHttpRequest()) {
             $cmf_front_controls = array(
@@ -131,11 +129,13 @@ class NodeMapperController extends Controller
 
             $this->engine('JsLib')->request('bootstrap');
             $this->engine('JsLib')->request('jquery-cookie');
-            $this->engine('html')->css($this->engine('env')->global_assets . 'cmf/frontend.css');
-            $this->engine('html')->js($this->engine('env')->global_assets . 'cmf/frontend.js');
-            $this->engine('html')->js($this->engine('env')->global_assets . 'cmf/jquery.ba-hashchange.min.js');
-            // @todo продумать как называть "general_data".
-            $this->engine('html')->general_data = '<script type="text/javascript">var cmf_front_controls = ' . json_encode($cmf_front_controls, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT) . ';</script>';
+            $this->get('html')
+                ->css($this->engine('env')->global_assets . 'cmf/frontend.css')
+                ->js($this->engine('env')->global_assets . 'cmf/frontend.js')
+                ->js($this->engine('env')->global_assets . 'cmf/jquery.ba-hashchange.min.js')
+                // @todo продумать как называть "general_data".
+                ->general_data = '<script type="text/javascript">var cmf_front_controls = ' . json_encode($cmf_front_controls, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT) . ';</script>'
+            ;
         }
 
         $theme_path = $this->engine('env')->base_path . $this->engine('env')->theme_path;
@@ -152,12 +152,12 @@ class NodeMapperController extends Controller
         foreach ($this->engine('JsLib')->all() as $res) {
             if (isset($res['js']) and is_array($res['js'])) {
                 foreach ($res['js'] as $js) {
-                    $this->engine('html')->js($js, 200);
+                    $this->get('html')->js($js, 200);
                 }
             }
             if (isset($res['css']) and is_array($res['css'])) {
                 foreach ($res['css'] as $css) {
-                    $this->engine('html')->css($css, 200);
+                    $this->get('html')->css($css, 200);
                 }
             }
         }
@@ -192,7 +192,6 @@ class NodeMapperController extends Controller
         }
 
         return new Response($this->container->get('templating')->render("::{$this->View->getTemplateName()}.html.twig", array(
-                'html'  => $this->engine('Html'),
                 'block' => $this->View->blocks,
             )),
             $router_data['status']
@@ -321,7 +320,6 @@ class NodeMapperController extends Controller
 
                     $Module->View->setDecorators("<div class=\"cmf-frontadmin-node\" id=\"_node$node_id\">", "</div>");
                 }
-
             }
             
             if (method_exists($Module, 'getContentRaw')) {

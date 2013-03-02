@@ -4,8 +4,10 @@ namespace SmartCore\Bundle\EngineBundle\Module;
 
 use SmartCore\Bundle\EngineBundle\Controller\Controller as BaseController;
 use SmartCore\Bundle\EngineBundle\Container;
+use SmartCore\Bundle\EngineBundle\Response;
 use Symfony\Component\DependencyInjection\ContainerInterface;
- 
+use Symfony\Component\HttpFoundation\Request;
+
 abstract class Controller extends BaseController
 {
     /**
@@ -108,6 +110,18 @@ abstract class Controller extends BaseController
     public function isEip()
     {
         return true;
+    }
+
+    /**
+     * Обработчик POST данных.
+     *
+     * @return Response
+     */
+    public function postAction(Request $request)
+    {
+        $Response = new Response();
+        $Response->setStatusCode(404);
+        return $Response;
     }
 
     // @todo пересмотреть нижеописанные методы!

@@ -94,7 +94,7 @@ class Theme extends ContainerAware
         foreach ($this->ini as $key => $value) {
             switch ($key) {
                 case 'doctype':
-                    $this->container->get('engine.html')->doctype($value);
+                    $this->container->get('html')->doctype($value);
                     break;
                 case 'css':
                     $css_list = explode(',', $value);
@@ -107,7 +107,7 @@ class Theme extends ContainerAware
                                 $css = $this->css_path . $css;
                             }
 
-                            $this->container->get('engine.html')->css($css);
+                            $this->container->get('html')->css($css);
                         }
                     }
                     break;
@@ -122,7 +122,7 @@ class Theme extends ContainerAware
                                 $tmp = $this->js_path . $tmp;
                             }
 
-                            $this->container->get('engine.html')->js($tmp);
+                            $this->container->get('html')->js($tmp);
                         }
                     }
                     break;
@@ -155,7 +155,7 @@ class Theme extends ContainerAware
                             $value = str_replace('{IMG_PATH}', $this->img_path, $value);
                         }
 
-                        $this->container->get('engine.html')->link($value, $attr);
+                        $this->container->get('html')->link($value, $attr);
                     }
                     break;
                 default;

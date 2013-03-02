@@ -9,9 +9,13 @@ class HelloController extends Controller
 {    
     public function indexAction()
     {
+        $this->get('html')
+            ->doctype('xhtml')
+            ->lang('en')
+            ->title('hi :)')
+        ;
 
-//        $data = $this->get('http_kernel')->
-
-        return new Response("<!DOCTYPE html>\n<html>\n<body>\nHello World!\n</body>\n</html>");
+        //return new Response("<!DOCTYPE html>\n<html>\n<body>\nHello World!\n</body>\n</html>");
+        return $this->render('HtmlBundle::test.html.twig', ['hello' => 'Hello World!']);
     }
 }

@@ -1,6 +1,6 @@
 <?php 
 
-namespace SmartCore\Bundle\EngineBundle\Templater\Helper;
+namespace SmartCore\Bundle\EngineBundle\Engine;
 
 class Breadcrumbs implements \Iterator, \Countable
 {
