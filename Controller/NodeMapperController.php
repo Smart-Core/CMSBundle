@@ -184,12 +184,12 @@ class NodeMapperController extends Controller
 //        sc_dump(get_class($tmp));
 //        sc_dump($tmp->getContentRaw());
 //        echo $tmp->getContent();
-        
-        if ($this->container->has('smart_core_engine.active_theme')) {
-            $activeTheme = $this->container->get('smart_core_engine.active_theme');
-            $activeTheme->setThemes(array('web', 'tablet', 'phone'));
-            //$activeTheme->setName('tablet');
-        }
+
+        /*
+        $activeTheme = $this->get('liip_theme.active_theme');
+        $activeTheme->setThemes(array('web', 'tablet', 'phone'));
+        $activeTheme->setName('phone');
+        */
 
         return new Response($this->container->get('templating')->render("::{$this->View->getTemplateName()}.html.twig", array(
                 'block' => $this->View->blocks,
