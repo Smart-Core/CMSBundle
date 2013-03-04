@@ -47,105 +47,105 @@ class NodeMapperController extends Controller
         if ($this->get('security.context')->isGranted('ROLE_ADMIN') && !$request->isXmlHttpRequest()) {
             $cmf_front_controls = array(
                 'toolbar' => array(
-                    'left' => [
-                        'setings' => [
+                    'left' => array(
+                        'setings' => array(
                             'title' => '',
                             'descr' => 'Настройки',
                             'icon' => 'wrench',
-                            'items' => [
-                                'blocks' => [
+                            'items' => array(
+                                'blocks' => array(
                                     'title' => 'Блоки',
                                     'icon' => 'th',
                                     'uri' => $request->getBasePath() . '/admin/structure/blocks/',
-                                ],
-                                'appearance' => [
+                                ),
+                                'appearance' => array(
                                     'title' => 'Оформление',
                                     'icon' => 'picture',
                                     'uri' => $request->getBasePath() . '/admin/appearance/',
-                                ],
-                                'users' => [
+                                ),
+                                'users' => array(
                                     'title' => 'Пользователи',
                                     'icon' => 'user',
                                     'uri' => $request->getBasePath() . '/admin/users/',
-                                ],
-                                'modules' => [
+                                ),
+                                'modules' => array(
                                     'title' => 'Модули',
                                     'icon' => 'cog',
                                     'uri' => $request->getBasePath() . '/admin/module/',
-                                ],
-                                'config' => [
+                                ),
+                                'config' => array(
                                     'title' => 'Конфигруация',
                                     'icon' => 'tasks',
                                     'uri' => $request->getBasePath() . '/admin/config/',
-                                ],
-                                'reports' => [
+                                ),
+                                'reports' => array(
                                     'title' => 'Отчеты',
                                     'icon' => 'warning-sign',
                                     'uri' => $request->getBasePath() . '/admin/reports/',
-                                ],
-                                'help' => [
+                                ),
+                                'help' => array(
                                     'title' => 'Справка',
                                     'icon' => 'question-sign',
                                     'uri' => $request->getBasePath() . '/admin/help/',
-                                ],
-                            ],
-                        ],
-                        'structure' => [
+                                ),
+                            ),
+                        ),
+                        'structure' => array(
                             'title' => 'Структура',
                             'descr' => '',
                             'icon' => 'folder-open',
-                            'items' => [
-                                'folder_edit' => [
+                            'items' => array(
+                                'folder_edit' => array(
                                     'title' => 'Редактировать раздел',
                                     'icon' => 'edit',
                                     'uri' => $request->getBasePath() . '/admin/structure/folder/edit/2/',
-                                ],
-                                'folder_new' => [
+                                ),
+                                'folder_new' => array(
                                     'title' => 'Добавить раздел',
                                     'icon' => 'plus',
                                     'uri' => $request->getBasePath() . '/admin/structure/folder/create/2/',
-                                ],
-                                'folder_all' => [
+                                ),
+                                'folder_all' => array(
                                     'title' => 'Вся структура',
                                     'icon' => 'book',
                                     'uri' => $request->getBasePath() . '/admin/structure/folder/',
-                                ],
+                                ),
                                 'diviver_1' => 'diviver',
-                                'node_new' => [
+                                'node_new' => array(
                                     'title' => 'Добавить модуль',
                                     'icon' => 'plus',
                                     'uri' => $request->getBasePath() . '/admin/structure/node/create/2/',
-                                ],
-                                'node_all' => [
+                                ),
+                                'node_all' => array(
                                     'title' => 'Все модули на странице',
                                     'icon' => 'list-alt',
                                     'uri' => $request->getBasePath() . '/admin/structure/node/in_folder/2/',
-                                ],
-                            ],
-                        ],
-                    ],
-                    'right' => [
-                        'eip_toggle' => ["Просмотр", "Редактирование"],
-                        'user' => [
+                                ),
+                            ),
+                        ),
+                    ),
+                    'right' => array(
+                        'eip_toggle' => array("Просмотр", "Редактирование"),
+                        'user' => array(
                             'title' => $this->container->get('security.context')->getToken()->getUser()->getUserName(),
                             'icon' => 'user',
-                            'items' => [
-                                'profile' => [
+                            'items' => array(
+                                'profile' => array(
                                     'title' => 'Мой профиль',
                                     'uri' => $this->container->get('router')->generate('fos_user_profile_show'),
                                     'icon' => 'cog',
                                     'overalay' => true,
-                                ],
+                                ),
                                 'diviver_1' => 'diviver',
-                                'logout' => [
+                                'logout' => array(
                                     'title' => "Выход",
                                     'uri' => $this->container->get('router')->generate('fos_user_security_logout'),
                                     'icon' => "off",
                                     'overalay' => false,
-                                ],
-                            ],
-                        ],
-                    ],
+                                ),
+                            ),
+                        ),
+                    ),
                 ),
                 'node' => array(
                     '__node_3' => array(

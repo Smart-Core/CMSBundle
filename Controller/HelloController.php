@@ -16,6 +16,6 @@ class HelloController extends Controller
         ;
 
         //return new Response("<!DOCTYPE html>\n<html>\n<body>\nHello World!\n</body>\n</html>");
-        return $this->render('HtmlBundle::test.html.twig', ['hello' => 'Hello World!']);
+        return $this->render('HtmlBundle::test.html.twig',array('hello' => 'Hello World!'));
     }
 }
