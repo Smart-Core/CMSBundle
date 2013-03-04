@@ -4,6 +4,7 @@ namespace SmartCore\Bundle\EngineBundle\Controller;
 
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 
 class PostProcessorController extends Controller
 {
@@ -18,6 +19,22 @@ class PostProcessorController extends Controller
             $this->container->get('request')->getBaseUrl() . '/' . $slug === $this->container->get('router')->generate('fos_user_resetting_check_email')
         ) {
             return $this->forward('SmartCoreEngineBundle:NodeMapper:index', array('slug' => $slug));
+        }
+
+        if ($request->request->get('submit') === 'cancel') {
+            return new RedirectResponse($request->server->get('HTTP_REFERER') . '#');
+        }
+
+        $node_id = $request->request->getInt('_node_id');
+
+        $response = $this->forward("$node_id:Texter:post");
+        $json_response = json_decode($response->getContent());
+        if ($json_response->status === 'OK') {
+            if (isset($json_response->message)) {
+                $request->getSession()->getFlashBag()->add('texter_info', $json_response->message);
+            }
+
+            return new RedirectResponse($request->server->get('HTTP_REFERER') . '#');
         }
 
         ob_start();

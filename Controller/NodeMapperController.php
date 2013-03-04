@@ -14,6 +14,12 @@ class NodeMapperController extends Controller
 //        ld($user = $this->container->get('security.context')->getToken()->getUser());
 //        ld($this->container->getParameter('security.role_hierarchy.roles'));
 
+        // @todo убрать, это здесь на время отладки.
+        $flashes = $request->getSession()->getFlashBag()->all();
+        if (!empty($flashes)) {
+            //ld($flashes);
+        }
+
         // @todo вынести router в другое место... можно сделать в виде отдельного сервиса, например 'engine.folder_router'.
         $router_data = $this->engine('folder')->router($request->getPathInfo());
 //        ld($router_data);
@@ -41,6 +47,83 @@ class NodeMapperController extends Controller
         if ($this->get('security.context')->isGranted('ROLE_ADMIN') && !$request->isXmlHttpRequest()) {
             $cmf_front_controls = array(
                 'toolbar' => array(
+                    'left' => [
+                        'setings' => [
+                            'title' => '',
+                            'descr' => 'Настройки',
+                            'icon' => 'wrench',
+                            'items' => [
+                                'blocks' => [
+                                    'title' => 'Блоки',
+                                    'icon' => 'th',
+                                    'uri' => $request->getBasePath() . '/admin/structure/blocks/',
+                                ],
+                                'appearance' => [
+                                    'title' => 'Оформление',
+                                    'icon' => 'picture',
+                                    'uri' => $request->getBasePath() . '/admin/appearance/',
+                                ],
+                                'users' => [
+                                    'title' => 'Пользователи',
+                                    'icon' => 'user',
+                                    'uri' => $request->getBasePath() . '/admin/users/',
+                                ],
+                                'modules' => [
+                                    'title' => 'Модули',
+                                    'icon' => 'cog',
+                                    'uri' => $request->getBasePath() . '/admin/module/',
+                                ],
+                                'config' => [
+                                    'title' => 'Конфигруация',
+                                    'icon' => 'tasks',
+                                    'uri' => $request->getBasePath() . '/admin/config/',
+                                ],
+                                'reports' => [
+                                    'title' => 'Отчеты',
+                                    'icon' => 'warning-sign',
+                                    'uri' => $request->getBasePath() . '/admin/reports/',
+                                ],
+                                'help' => [
+                                    'title' => 'Справка',
+                                    'icon' => 'question-sign',
+                                    'uri' => $request->getBasePath() . '/admin/help/',
+                                ],
+                            ],
+                        ],
+                        'structure' => [
+                            'title' => 'Структура',
+                            'descr' => '',
+                            'icon' => 'folder-open',
+                            'items' => [
+                                'folder_edit' => [
+                                    'title' => 'Редактировать раздел',
+                                    'icon' => 'edit',
+                                    'uri' => $request->getBasePath() . '/admin/structure/folder/edit/2/',
+                                ],
+                                'folder_new' => [
+                                    'title' => 'Добавить раздел',
+                                    'icon' => 'plus',
+                                    'uri' => $request->getBasePath() . '/admin/structure/folder/create/2/',
+                                ],
+                                'folder_all' => [
+                                    'title' => 'Вся структура',
+                                    'icon' => 'book',
+                                    'uri' => $request->getBasePath() . '/admin/structure/folder/',
+                                ],
+                                'diviver_1' => 'diviver',
+                                'node_new' => [
+                                    'title' => 'Добавить модуль',
+                                    'icon' => 'plus',
+                                    'uri' => $request->getBasePath() . '/admin/structure/node/create/2/',
+                                ],
+                                'node_all' => [
+                                    'title' => 'Все модули на странице',
+                                    'icon' => 'list-alt',
+                                    'uri' => $request->getBasePath() . '/admin/structure/node/in_folder/2/',
+                                ],
+                            ],
+                        ],
+                    ],
                     'right' => [
                         'eip_toggle' => ["Просмотр", "Редактирование"],
                         'user' => [
@@ -174,9 +257,9 @@ class NodeMapperController extends Controller
 
 //        sc_dump($this->View->blocks);
 
-//        sc_dump($this->renderView("MenuModule::menu.html.twig", array()));
-//        sc_dump($this->renderView("TexterModule::texter.html.twig", array('text' => 777)));
-//        sc_dump($this->forward('TexterModule:Test:hello', array('text' => 'yahoo :)'))->getContent());
+//        sc_dump($this->renderView("Menu::menu.html.twig", array()));
+//        sc_dump($this->renderView("Texter::texter.html.twig", array('text' => 777)));
+//        sc_dump($this->forward('Texter:Test:hello', array('text' => 'yahoo :)'))->getContent());
 //        sc_dump($this->forward('2:Test:index')->getContent());
 
 //        $tmp = $this->forward(8);
@@ -330,6 +413,7 @@ class NodeMapperController extends Controller
 
             // @todo пока так выставляются декораторы обрамления ноды.
             if ($this->get('security.context')->isGranted('ROLE_ADMIN') && !$this->get('request')->isXmlHttpRequest()) {
+                //ld($this->View->blocks->$block_name->$node_id);
                 $this->View->blocks->$block_name->$node_id->setDecorators("<div class=\"cmf-frontadmin-node\" id=\"__node_{$node_id}\">", "</div>");
             }
 
