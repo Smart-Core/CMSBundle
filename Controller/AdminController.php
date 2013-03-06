@@ -19,7 +19,7 @@ class AdminController extends Controller
         ));
     }
 
-    public function nodeAction(Request $request, $id, $slug)
+    public function nodeAction(Request $request, $id, $slug = null)
     {
         return $this->forward("$id:Admin:index", array('slug' => $slug));
         //return new Response($id);

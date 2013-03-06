@@ -1,61 +1,13 @@
 
-sc_engine_hello:
+cmf_hello:
     path: /hi/
     defaults:
         _controller: SmartCoreEngineBundle:Hello:index
-# ADMIN
-sc_engine_admin_index:
-    path: /admin/
-    defaults:
-        _controller: SmartCoreEngineBundle:Admin:index
-sc_engine_admin_node_index:
-    path: /admin/node/{id}/
-    defaults:
-        _controller: SmartCoreEngineBundle:Admin:node
-        slug: ""
-    requirements:
-        id: \d+
-sc_engine_admin_node_arguments:
-    path: /admin/node/{id}/{slug}
-    defaults:
-        _controller: SmartCoreEngineBundle:Admin:node
-    requirements:
-        id: \d+
-        slug: ".+"
-sc_engine_admin:
-    path: /admin/{slug}
-    defaults:
-        _controller: SmartCoreEngineBundle:Admin:run
-        slug: ""
-    requirements:
-        slug: ".+"
-# ACTION        
-#sc_engine_action_index:
-#    path: /action/{node_id}/
-#    defaults:
-#        _controller: SmartCoreEngineBundle:Action:run
-#    requirements:
-#        node_id: \d+
-#sc_engine_action:
-#    path: /action/{node_id}/{slug}
-#    defaults:
-#        _controller: SmartCoreEngineBundle:Action:run
-#    defaults:
-#        slug: ""
-#    requirements:
-#        slug: ".+"
-#        node_id: \d+
-#sc_engine_action_invalid_index:
-#    path: /action/
-#    defaults:
-#        _controller: SmartCoreEngineBundle:Action:invalid
-#sc_engine_action_invalid:
-#    path: /action/{slug}
-#    defaults:
-#        _controller: SmartCoreEngineBundle:Action:invalid
-#        slug: ""
-#    requirements:
-#        slug: ".+"
+
+cmf_admin:
+    resource: "routing_admin.yml"
+    prefix: /admin/
+
 # AJAX
 #sc_engine_ajax_invalid:
 #    path: /ajax
@@ -94,7 +46,7 @@ sc_engine_admin:
 #        slug: ".+"
 
 # NODE MAPPER
-sc_engine_node_mapper:
+cmf_node_mapper:
     path: /{slug}
     methods: GET
     defaults:
@@ -102,7 +54,7 @@ sc_engine_node_mapper:
         slug: ""
     requirements:
         slug: ".+"
-sc_engine_node_postprocessor:
+cmf_node_postprocessor:
     path: /{slug}
     methods: POST
     defaults:

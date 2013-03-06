@@ -1,0 +1,117 @@
+
+cmf_admin_index:
+    path: /
+    defaults:
+        _controller: SmartCoreEngineBundle:Admin:index
+cmf_admin_structure:
+    path: /structure/
+    defaults:
+        _controller: SmartCoreEngineBundle:Admin:index
+cmf_admin_structure_blocks:
+    path: /structure/blocks/
+    defaults:
+        _controller: SmartCoreEngineBundle:Admin:index
+cmf_admin_structure_folder_create:
+    path: /structure/folder/create/
+    defaults:
+        _controller: SmartCoreEngineBundle:Admin:index
+cmf_admin_structure_folder_create_in_folder:
+    path: /structure/folder/create/{folder_pid}/
+    defaults:
+        _controller: SmartCoreEngineBundle:Admin:index
+cmf_admin_structure_folder:
+    path: /structure/folder/{id}/
+    defaults:
+        _controller: SmartCoreEngineBundle:Admin:folder
+    requirements:
+        id: \d+
+cmf_admin_structure_node_create:
+    path: /structure/node/create/
+    defaults:
+        _controller: SmartCoreEngineBundle:Admin:node
+cmf_admin_structure_node_create_in_folder:
+    path: /structure/node/create/{folder_pid}/
+    defaults:
+        _controller: SmartCoreEngineBundle:Admin:node
+cmf_admin_structure_node_all:
+    path: /structure/node/
+    defaults:
+        _controller: SmartCoreEngineBundle:Admin:node
+cmf_admin_structure_node_properties:
+    path: /structure/node/properties/{id}/
+    defaults:
+        _controller: SmartCoreEngineBundle:Admin:node
+    requirements:
+        id: \d+
+cmf_admin_structure_node:
+    path: /structure/node/{id}/
+    defaults:
+        _controller: SmartCoreEngineBundle:Admin:node
+    requirements:
+        id: \d+
+cmf_admin_structure_node_w_args:
+    path: /structure/node/{id}/{slug}
+    defaults:
+        _controller: SmartCoreEngineBundle:Admin:node
+    requirements:
+        id: \d+
+        slug: ".+"
+cmf_admin_appearance:
+    path: /appearance/
+    defaults:
+        _controller: SmartCoreEngineBundle:Admin:index
+cmf_admin_users:
+    path: /users/
+    defaults:
+        _controller: SmartCoreEngineBundle:Admin:index
+cmf_admin_module:
+    path: /module/
+    defaults:
+        _controller: SmartCoreEngineBundle:Admin:index
+cmf_admin_config:
+    path: /config/
+    defaults:
+        _controller: SmartCoreEngineBundle:Admin:index
+cmf_admin_reports:
+    path: /reports/
+    defaults:
+        _controller: SmartCoreEngineBundle:Admin:index
+cmf_admin_help:
+    path: /help/
+    defaults:
+        _controller: SmartCoreEngineBundle:Admin:index
+cmf_admin:
+    path: /{slug}
+    defaults:
+        _controller: SmartCoreEngineBundle:Admin:run
+        slug: ""
+    requirements:
+        slug: ".+"
+
+# ACTION
+#sc_engine_action_index:
+#    path: /action/{node_id}/
+#    defaults:
+#        _controller: SmartCoreEngineBundle:Action:run
+#    requirements:
+#        node_id: \d+
+#sc_engine_action:
+#    path: /action/{node_id}/{slug}
+#    defaults:
+#        _controller: SmartCoreEngineBundle:Action:run
+#    defaults:
+#        slug: ""
+#    requirements:
+#        slug: ".+"
+#        node_id: \d+
+#sc_engine_action_invalid_index:
+#    path: /action/
+#    defaults:
+#        _controller: SmartCoreEngineBundle:Action:invalid
+#sc_engine_action_invalid:
+#    path: /action/{slug}
+#    defaults:
+#        _controller: SmartCoreEngineBundle:Action:invalid
+#        slug: ""
+#    requirements:
+#        slug: ".+"
