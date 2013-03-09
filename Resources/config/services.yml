@@ -64,3 +64,10 @@ services:
         alias: database_connection        
     engine.environment:
         alias: engine.env
+
+    cmf_admin.menu.voter.request:
+        class: SmartCore\Bundle\EngineBundle\Menu\RequestVoter
+        arguments:
+            - @service_container
+        tags:
+            - { name: knp_menu.voter }

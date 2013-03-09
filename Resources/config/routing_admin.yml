@@ -6,29 +6,29 @@ cmf_admin_index:
 cmf_admin_structure:
     path: /structure/
     defaults:
-        _controller: SmartCoreEngineBundle:Admin:index
+        _controller: SmartCoreEngineBundle:AdminStructure:index
 cmf_admin_structure_blocks:
     path: /structure/blocks/
     defaults:
-        _controller: SmartCoreEngineBundle:Admin:index
+        _controller: SmartCoreEngineBundle:AdminStructure:block
 cmf_admin_structure_folder_create:
     path: /structure/folder/create/
     defaults:
-        _controller: SmartCoreEngineBundle:Admin:index
+        _controller: SmartCoreEngineBundle:AdminStructure:folderCreate
 cmf_admin_structure_folder_create_in_folder:
     path: /structure/folder/create/{folder_pid}/
     defaults:
-        _controller: SmartCoreEngineBundle:Admin:index
+        _controller: SmartCoreEngineBundle:AdminStructure:folderCreate
 cmf_admin_structure_folder:
     path: /structure/folder/{id}/
     defaults:
-        _controller: SmartCoreEngineBundle:Admin:folder
+        _controller: SmartCoreEngineBundle:AdminStructure:folder
     requirements:
         id: \d+
 cmf_admin_structure_node_create:
     path: /structure/node/create/
     defaults:
-        _controller: SmartCoreEngineBundle:Admin:node
+        _controller: SmartCoreEngineBundle:AdminStructure:nodeCreate
 cmf_admin_structure_node_create_in_folder:
     path: /structure/node/create/{folder_pid}/
     defaults:

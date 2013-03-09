@@ -4,15 +4,6 @@
 {{ parent() }}
     <style media="all" type="text/css"> @import url({{ app.request.basePath }}/assets/cmf/docs.css); </style>
     <style media="all" type="text/css">
-        ul.dynatree-container {
-            border: 0px;
-        }
-        #treecontrol a {
-            font-size: 80%;
-        }
-        #treecontrol {
-            margin-bottom: 5px;
-        }
         .form-horizontal .control-group {
             margin-bottom: 15px;
         }
@@ -25,362 +16,58 @@
     </style>
 {% endblock html_head_styles %}
 
-{% block html_head_general_data %}
-{{ parent() }}
-    <script type="text/javascript">
-        $(function(){
-            $("#btnCollapseAll").click(function(){
-                $("#tree").dynatree("getRoot").visit(function(node){
-                    node.expand(false);
-                });
-                return false;
-            });
-            $("#btnExpandAll").click(function(){
-                $("#tree").dynatree("getRoot").visit(function(node){
-                    node.expand(true);
-                });
-                return false;
-            });
-            $("#tree").dynatree({
-                persist: true,
-                minExpandLevel: 2,
-                clickFolderMode: 1,
-                _onClick: function(node) {
-                    // Use <a> href and target attributes to load the content:
-                    if( node.data.href ){
-                        // Open target
-                        //window.open(node.data.href, node.data.target);
-                        window.location = node.data.href;
-                        // or open target in iframe
-//                $("[name=contentFrame]").attr("src", node.data.href);
-                    }
-                },
-
-                fx: { height: "toggle", duration: 100 },
-                onDblClick: function(node, event) {
-                    logMsg("onDblClick(%o, %o)", node, event);
-                    node.toggleExpand();
-                },
-
-                dnd: {
-                    onDragStart: function(node) {
-                        /** This function MUST be defined to enable dragging for the tree.
-                         *  Return false to cancel dragging of node.
-                         */
-                        logMsg("tree.onDragStart(%o)", node);
-                        return true;
-                    },
-                    onDragStop: function(node) {
-                        // This function is optional.
-                        logMsg("tree.onDragStop(%o)", node);
-                    },
-                    autoExpandMS: 1000,
-                    preventVoidMoves: true, // Prevent dropping nodes 'before self', etc.
-                    onDragEnter: function(node, sourceNode) {
-                        /** sourceNode may be null for non-dynatree droppables.
-                         *  Return false to disallow dropping on node. In this case
-                         *  onDragOver and onDragLeave are not called.
-                         *  Return 'over', 'before, or 'after' to force a hitMode.
-                         *  Return ['before', 'after'] to restrict available hitModes.
-                         *  Any other return value will calc the hitMode from the cursor position.
-                         */
-                        logMsg("tree.onDragEnter(%o, %o)", node, sourceNode);
-//                        return true;
-                        // Don't allow dropping *over* a node (would create a child)
-                        if( node.data.isFolder){
-                            return "over";
-                        } else {
-                            return ["before", "after"];
-                        }
-                    },
-                    onDragOver: function(node, sourceNode, hitMode) {
-                        /** Return false to disallow dropping this node.
-                         *
-                         */
-                        logMsg("tree.onDragOver(%o, %o, %o)", node, sourceNode, hitMode);
-                        // Prevent dropping a parent below it's own child
-                        if(node.isDescendantOf(sourceNode)){
-                            return false;
-                        }
-                        // Prohibit creating childs in non-folders (only sorting allowed)
-                        if( !node.data.isFolder && hitMode === "over" ){
-                            return "after";
-                        }
-                    },
-                    onDrop: function(node, sourceNode, hitMode, ui, draggable) {
-                        /** This function MUST be defined to enable dropping of items on
-                         * the tree.
-                         */
-                        logMsg("tree.onDrop(%o, %o, %s)", node, sourceNode, hitMode);
-                        sourceNode.move(node, hitMode);
-                        // expand the drop target
-                        sourceNode.expand(true);
-                    },
-                    onDragLeave: function(node, sourceNode) {
-                        /** Always called if onDragEnter was called.
-                         */
-                        logMsg("tree.onDragLeave(%o, %o)", node, sourceNode);
-                    }
-                }
-            });
-        });
-    </script>
-{% endblock html_head_general_data %}
-
 {% block body %}
+{% block navbar %}
 <div class="navbar navbar-inverse navbar-fixed-top">
     <div class="navbar-inner">
         <div class="container">
-                <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+            <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
             <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </a>
 
+            {% block navbar_inner %}
             <!-- Be sure to leave the brand out there if you want it shown -->
-            <a class="brand" href="{{ app.request.basePath }}/" title="Перейти на сайт"><i class="icon-home icon-white"></i>{#Smart Core Demo#}</a>
+            <a class="brand" href="{{ app.request.basePath }}/" title="Перейти на сайт"><i class="icon-home icon-white"></i>{#Smart Core CMF#}</a>
 
             <!-- Everything you want hidden at 940px or less, place within here -->
             <div class="nav-collapse collapse">
                 <!-- .nav, .navbar-search, .navbar-form, etc -->
-                <ul class="nav">
-                    <li class="active"><a href="{{ app.request.basePath }}/admin/structure/">Структура</a></li>
-                    {#<li class=""><a href="{{ app.request.basePath }}/admin/structure/blocks/">Блоки</a></li>#}
-                    <li class=""><a href="{{ app.request.basePath }}/admin/appearance/">Оформление</a></li>
-                    <li class=""><a href="{{ app.request.basePath }}/admin/users/">Пользователи</a></li>
-                    <li class=""><a href="{{ app.request.basePath }}/admin/module/">Модули</a></li>
-                    <li class=""><a href="{{ app.request.basePath }}/admin/config/">Конфигруация</a></li>
-                    <li class=""><a href="{{ app.request.basePath }}/admin/reports/">Отчеты</a></li>
-                    <li class=""><a href="{{ app.request.basePath }}/admin/help/">Справка</a></li>
-                </ul>
+                {#{% set admin_main_menu = knp_menu_get('SmartCoreEngineBundle:AdminMenu:main' , [], {'class': 'nav'}) %}#}
+                {#{{ knp_menu_render('admin_main_menu', {'currentClass': 'active'})  }}#}
+                {{ knp_menu_render('SmartCoreEngineBundle:AdminMenu:main', {'currentClass': 'active', 'clear_matcher': false})  }}
+
                 <ul class="nav pull-right">
-                    <li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="icon-user icon-white"></i> Admin<b class="caret"></b></a>
+                    <li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="icon-user icon-white"></i> {{ app.user.userName }} <b class="caret"></b></a>
                         <ul class="dropdown-menu">
                             <li class=""><a href="#"><i class="icon-cog"></i> Мой профиль</a></li>
                             <li class="divider"></li>
                             <li class=""><a href="{{ path('fos_user_security_logout') }}"><i class="icon-off"></i> Выход</a></li>
                         </ul>
                     </li>
-
                 </ul>
-
             </div>
+            {% endblock navbar_inner %}
         </div>
     </div>
 </div>
+{% endblock navbar %}
 
 <div class="container">
     <div class="row-fluid">
-        <!--Body content-->
 
-        <div class="span3">
+        {% block content %}
+            {% block subnav %}
+            {% endblock subnav %}
+        {% endblock content %}
 
-            <div id="treecontrol">
-                <a href="#" id="btnCollapseAll">Свернуть все</a> |
-                <a href="#" id="btnExpandAll">Развернуть все</a>
-            </div>
+        {% block nav %}
+        {% endblock nav %}
 
-            <div id="tree">
-            <ul id="browser" class="filetree">
-                <li class="folder" id="root_folder"><a href="?1.0" title="">Главная</a>
-                    <ul>
-                        <li class="folder"><a href="?1.0" title="Texter (6)">О компании</a>
-                            <ul>
-                                <li><a href="?1.0">Описание компании</a></li>
-                            </ul>
-                        </li>
-                        <li class="folder"><a href="?4">Аккаунт пользователя</a>
-                            <ul>
-                                <li class="folder"><a href="?1.0">Регистрация</a>
-                                </li>
-                                <li><a href="?1.0" title="Texter (5)">Текстовка</a></li>
-                            </ul>
-                        </li>
-                        <li><a href="?1.0" title="Texter (4)">Текстовка на главной</a></li>
-                        <li><a href="?1.0" title="Menu (1)">Меню</a></li>
-                        <li><a href="?1.0" title="Breadcrumps (3)">Хлебные крошки</a></li>
-                        <li><a href="?1.0" title="Texter (2)">Футер</a></li>
-                    </ul>
-                </li>
-            </ul>
-            </div>
-
-        </div>
-        <div class="span9">
-
-            <ul class="nav nav-tabs {#nav-pills#}">
-                <li class="active"><a href="#">Редактировать</a></li>
-                <li><a href="#">Добавить раздел</a></li>
-                <li><a href="#">Подключить модуль</a></li>
-                <li><a href="#">Блоки</a></li>
-                {#
-                <li class="dropdown">
-                    <a class="dropdown-toggle" data-toggle="dropdown" href="#">Dropdown<b class="caret"></b></a>
-                    <ul class="dropdown-menu">
-                        <!-- links -->
-                    </ul>
-                </li>#}
-            </ul>
-
-            <div class="well well-small">
-
-                <form class="form-horizontal" _method="post">
-                    <div class="control-group">
-                        <label class="control-label" for="inputEnable">Включено</label>
-                        <div class="controls">
-                            <input type="checkbox" id="inputEnable" value="1" checked="checked"  />
-                        </div>
-                    </div>
-                    <div class="control-group">
-                        <label class="control-label" for="inputCreated">Папка создана</label>
-                        <div class="controls">
-                            <input class="span5" type="text" id="inputCreated" value="2013-03-02 09:23:51" disabled/>
-                             (<a href="#">Администратор</a>)
-                        </div>
-                    </div>
-                    <div class="control-group">
-                        <label class="control-label" for="inputTitle">Заголовок</label>
-                        <div class="controls">
-                            <input class="input-block-level focused" type="text" id="inputTitle" value="Главная" />
-                            <script type="text/javascript">document.getElementById('inputTitle').focus();</script>
-                        </div>
-                    </div>
-                    <div class="control-group">
-                        <label class="control-label" for="inputUriPart">Часть URI</label>
-                        <div class="controls">
-                            <input class="input-block-level" type="text" id="inputUriPart" disabled />
-                        </div>
-                    </div>
-                    <div class="control-group">
-                        <label class="control-label" for="inputDescr">Описание</label>
-                        <div class="controls">
-                            <input class="input-block-level" type="text" id="inputDescr" />
-                        </div>
-                    </div>
-                    <div class="control-group">
-                        <label class="control-label" for="inputPos">Позиция</label>
-                        <div class="controls">
-                            <input class="input-block-level" type="text" id="inputPos" />
-                        </div>
-                    </div>
-                    <div class="control-group">
-                        <label class="control-label" for="inputPid">Родительская папка</label>
-                        <div class="controls">
-                            <select class="input-block-level"  id="inputPid">
-                                <option value="1" selected="selected">Главная</option>
-                                <option value="45">.. Файловый менеджер</option>
-                                <option value="50">.. CAPTCHA</option>
-                                <option value="51">.. Каталог OLD</option>
-                                <option value="53">.. 2gis</option>
-                                <option value="55">.. Аккаунт пользователя</option>
-                                <option value="29">.. .. Регистрация</option>
-                                <option value="30">.. .. Профили</option>
-                                <option value="28">.. .. Восстановление пароля</option>
-                                <option value="6">.. Скачать</option>
-                                <option value="19">.. О системе</option>
-                                <option value="20">.. .. Характеристики</option>
-                                <option value="33">.. .. .. Требования</option>
-                                <option value="34">.. .. .. .. php</option>
-                                <option value="21">.. .. Лицензия</option>
-                                <option value="11">.. .. Скриншоты ;)</option>
-                                <option value="32">.. Фотогалерея</option>
-                                <option value="47">.. lag</option>
-                                <option value="48">.. Новости old</option>
-                                <option value="52">.. Тэги</option>
-                                <option value="54">.. zzz2</option>
-                                <option value="56">.. Каталог</option>
-                                <option value="57">.. Новости</option>
-                                <option value="23">.. .. В мире технологий</option>
-                                <option value="41">.. .. zzz</option>
-                                <option value="18">.. Документация</option>
-                                <option value="13">.. .. Глоссарий</option>
-                                <option value="31">.. .. Введение</option>
-                                <option value="3" disabled="disabled">.. Обратная связь</option>
-                                <option value="22">.. Блог</option>
-                                <option value="5">.. Форум</option>
-                                <option value="35">.. system</option>
-                                <option value="40">.. .. Kernel</option>
-                                <option value="36">.. 11</option>
-                                <option value="43">.. .. 111-12</option>
-                                <option value="46">.. Рассылка</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="control-group">
-                        <label class="control-label" for="inputRedirect">Редирект</label>
-                        <div class="controls">
-                            <input class="input-block-level" type="text" id="inputRedirect" disabled />
-                        </div>
-                    </div>
-                    <div class="control-group">
-                        <label class="control-label" for="inputIsFile">Является файлом</label>
-                        <div class="controls">
-                            <input type="checkbox" id="inputIsFile" disabled />
-                        </div>
-                    </div>
-                    <div class="control-group">
-                        <label class="control-label" for="inputInheritNodes">Наследование нод</label>
-                        <div class="controls">
-                            <input type="checkbox" id="inputInheritNodes" />
-                        </div>
-                    </div>
-                    <div class="control-group">
-                        <label class="control-label" for="inputRouteNode">Парсер нода ID</label>
-                        <div class="controls">
-                            <select class="input-block-level" id="inputRouteNode">
-                                <option value="0">-</option>
-                                <option value="3">[3] - Комменты для обратной связи (Texter) </option>
-                                <option value="45">[45] - WebForm (WebForm) </option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="control-group">
-                        <label class="control-label" for="inputPermissions">Права доступа</label>
-                        <div class="controls">
-                            <input class="input-block-level" type="text" id="inputPermissions" />
-                        </div>
-                    </div>
-                    <div class="control-group">
-                        <label class="control-label" for="inputTpl">Макет</label>
-                        <div class="controls">
-                            <input class="input-block-level" type="text" id="inputTpl" value="main" />
-                        </div>
-                    </div>
-                    <div class="control-group">
-                        <label class="control-label" for="inputLockoutNodesSingle">Блокировка нод single</label>
-                        <div class="controls">
-                            <input class="input-block-level" type="text" id="inputLockoutNodesSingle" />
-                        </div>
-                    </div>
-                    <div class="control-group">
-                        <label class="control-label" for="inputLockoutNodesInherit">Блокировка нод inherit</label>
-                        <div class="controls">
-                            <input class="input-block-level" type="text" id="inputLockoutNodesInherit" disabled />
-                        </div>
-                    </div>
-                    <div class="control-group">
-                        <label class="control-label" for="inputLockoutNodesExcept">Блокировка нод except</label>
-                        <div class="controls">
-                            <input class="input-block-level" type="text" id="inputLockoutNodesExcept" />
-                        </div>
-                    </div>
-
-                    <div class="control-group">
-                        <div class="controls">
-                            <button type="submit" class="btn btn-primary">Сохранить</button>
-                            <button type="submit" class="btn btn-link">Отменить</button>
-                        </div>
-                    </div>
-                </form>
-
-            </div>
-
-            {#<div class="well well-small">#}
-            {#</div>#}
-
-
-        </div>
+        {#<div class="well well-small">#}
+        {#</div>#}
     </div>
 </div>
 {% endblock body %}

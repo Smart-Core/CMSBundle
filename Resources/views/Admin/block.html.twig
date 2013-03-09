@@ -1,0 +1,12 @@
+{% extends '@SmartCoreEngine/Admin/index.html.twig' %}
+
+{% block subnav %}
+    {{ knp_menu_render('SmartCoreEngineBundle:AdminMenu:structure', {'currentClass': 'active'})  }}
+{% endblock subnav %}
+
+{% block content %}
+{{ parent() }}
+
+    @todo Редактирование блоков.
+
+{% endblock content %}
