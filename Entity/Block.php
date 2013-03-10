@@ -3,6 +3,8 @@
 namespace SmartCore\Bundle\EngineBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity
@@ -14,6 +16,8 @@ use Doctrine\ORM\Mapping as ORM;
  *          @ORM\UniqueConstraint(name="name", columns={"name"}),
  *      }
  * )
+ * -UniqueEntity("name")
+ * @UniqueEntity(fields="name", message="Блок с таким именем уже используется")
  */
 class Block
 {
@@ -25,12 +29,16 @@ class Block
     protected $block_id;
 
     /**
-     * @ORM\Column(type="smallint")
+     * @ORM\Column(type="smallint", nullable=TRUE)
+     * -ORM\Column(type="string", nullable=TRUE)
+     * -Assert\Type(type="integer", message="bad :(")
+     * -Assert\Regex(pattern="/\d+/", match=FALSE, message="BAD!" )
      */
     protected $pos;
 
     /**
      * @ORM\Column(type="string", length=50, nullable=FALSE)
+     * @Assert\NotBlank()
      */
     protected $name;
 
@@ -55,5 +63,54 @@ class Block
         $this->create_datetime = new \DateTime();
         $this->pos = 0;
         $this->descr = null;
-    }    
+    }
+
+    public function getId()
+    {
+        return $this->block_id;
+    }
+
+    public function setDescr($descr)
+    {
+        $this->descr = $descr;
+    }
+
+    public function getDescr()
+    {
+        return $this->descr;
+    }
+
+    public function setName($name)
+    {
+        $this->name = $name;
+    }
+
+    public function getName()
+    {
+        return $this->name;
+    }
+
+    public function setPos($pos)
+    {
+        if (empty($pos)) {
+            $pos = 0;
+        }
+
+        $this->pos = $pos;
+    }
+
+    public function getPos()
+    {
+        return $this->pos;
+    }
+
+    public function setCreateByUserId($create_by_user_id)
+    {
+        $this->create_by_user_id = $create_by_user_id;
+    }
+
+    public function getCreateByUserId()
+    {
+        return $this->create_by_user_id;
+    }
 }

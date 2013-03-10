@@ -7,6 +7,56 @@
 {% block content %}
 {{ parent() }}
 
-    @todo Редактирование блоков.
+{#{% form_theme form 'SmartCoreEngineBundle:Form:bootstrap.html.twig' %}#}
+{#{% form_theme form 'MopaBootstrapBundle:Form:fields.html.twig' %}#}
+
+{% if all_blocks %}
+    <table class="table table-bordered table-hover">
+        <thead><tr>
+            <th>#</th>
+            <th>Имя</th>
+            <th>Описание</th>
+            <th>Позиция</th>
+            <th>Наследование в папках</th>
+            <th>Кол-во нод</th>
+        </tr></thead>
+        <tbody>
+        {% for block in all_blocks %}
+        <tr>
+            <td>{{ block.id }}</td>
+            <td><a href="{{ path('cmf_admin_structure_block_edit', {'id': block.id}) }}">{{ block.name }}</a></td>
+            <td><a href="{{ path('cmf_admin_structure_block_edit', {'id': block.id}) }}">{{ block.descr }}</a></td>
+            <td>{{ block.pos }}</td>
+            <td>@todo</td>
+            <td>@todo</td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% endif %}
+
+<div class="well well-small">
+    {% if form_create %}
+    <form action="{{ path('cmf_admin_structure_block') }}" {{ form_enctype(form_create) }} method="post" class="form-horizontal">
+        {{ form_widget(form_create) }}
+        <div class="control-group">
+            <div class="controls">
+                <button type="submit" name="create" class="btn btn-primary">Добавить</button>
+            </div>
+        </div>
+    </form>
+    {% elseif form_edit %}
+    <form action="{{ path('cmf_admin_structure_block_edit', {'id': block_id}) }}" {{ form_enctype(form_edit) }} method="post" class="form-horizontal">
+        {{ form_widget(form_edit) }}
+        <div class="control-group">
+            <div class="controls">
+                <button type="submit" name="update" class="btn btn-primary">Сохранить</button>
+                <button type="submit" name="delete" class="btn btn-danger">Удалить</button>
+                <a class="btn" href="{{ path('cmf_admin_structure_block') }}">Отменить</a>
+            </div>
+        </div>
+    </form>
+    {% endif %}
+</div>
 
 {% endblock content %}

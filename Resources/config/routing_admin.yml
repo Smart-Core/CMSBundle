@@ -7,10 +7,16 @@ cmf_admin_structure:
     path: /structure/
     defaults:
         _controller: SmartCoreEngineBundle:AdminStructure:index
-cmf_admin_structure_blocks:
-    path: /structure/blocks/
+cmf_admin_structure_block:
+    path: /structure/block/
     defaults:
         _controller: SmartCoreEngineBundle:AdminStructure:block
+cmf_admin_structure_block_edit:
+    path: /structure/block/{id}/
+    defaults:
+        _controller: SmartCoreEngineBundle:AdminStructure:block
+    requirements:
+        id: \d+
 cmf_admin_structure_folder_create:
     path: /structure/folder/create/
     defaults:

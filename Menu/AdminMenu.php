@@ -40,7 +40,7 @@ class AdminMenu extends ContainerAware
 
         $menu->addChild('Добавить раздел',      array('route' => 'cmf_admin_structure_folder_create'));
         $menu->addChild('Подключить модуль',    array('route' => 'cmf_admin_structure_node_create'));
-        $menu->addChild('Блоки',                array('route' => 'cmf_admin_structure_blocks'));
+        $menu->addChild('Блоки',                array('route' => 'cmf_admin_structure_block'));
 
         return $menu;
     }

@@ -81,34 +81,28 @@ class Controller extends BaseController
         }
     }
 
+    /**
+     * @return \Doctrine\ORM\EntityManager
+     */
     public function EM()
     {
         return $this->getDoctrine()->getManager();
     }
-    
 
+    /**
+     * @return \Doctrine\ORM\Query
+     */
     public function DQL($dql)
     {
         return $this->EM()->createQuery($dql);
     }
-    
 
+    /**
+     * @return \Doctrine\ORM\EntityRepository
+     */
     public function getRepo($name)
     {
         return $this->getDoctrine()->getRepository($name);
     }
-    
-    /**
-     * Жесткий редирект.
-     *
-     * @param string  $url    The URL to redirect to
-     * @param integer $status The status code to use for the Response
-     */
-    public function redirect($url, $status = 302) // @todo переделать!!!
-    {
-        $str = (empty($url)) ? $_SERVER['REQUEST_URI'] : $url;
-        header(sprintf('%s %s %s', $_SERVER['SERVER_PROTOCOL'], $status, Response::$statusTexts[$status]));
-        header('Location: ' . $str);
-        exit;
-    }
+
 }

@@ -4,6 +4,12 @@
 {{ parent() }}
     <style media="all" type="text/css"> @import url({{ app.request.basePath }}/assets/cmf/docs.css); </style>
     <style media="all" type="text/css">
+        label span {
+            color: red;
+        }
+        .form-horizontal {
+            margin: 5px 0 5px;
+        }
         .form-horizontal .control-group {
             margin-bottom: 15px;
         }
