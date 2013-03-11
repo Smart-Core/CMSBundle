@@ -95,22 +95,21 @@ class AdminStructureController extends Controller
         $form = $this->createForm(new FolderFormType(), $folder);
 
         if ($request->isMethod('POST')) {
+
             if ($request->request->has('create')) {
                 $form->bind($request);
                 if ($form->isValid()) {
                     $em = $this->EM();
                     $em->persist($form->getData());
                     $em->flush();
-                    $notice = 'Папка создана.';
+
+                    $this->get('session')->getFlashBag()->add('notice', 'Папка создана.');
+                    return new RedirectResponse($this->generateUrl('cmf_admin_structure'));
                 }
             } else if ($request->request->has('delete')) {
                 die('@todo');
             }
-
-            $this->get('session')->getFlashBag()->add('notice', $notice);
-            return new RedirectResponse($this->generateUrl('cmf_admin_structure'));
         }
-
 
         return $this->renderView('SmartCoreEngineBundle:Admin:folder.html.twig', array(
             'title' => 'Добавить раздел',
@@ -148,15 +147,17 @@ class AdminStructureController extends Controller
                     } else if ($request->request->has('update')) {
                         $notice = 'Блок обновлён.';
                     }
+
+                    $this->get('session')->getFlashBag()->add('notice', $notice);
+                    return new RedirectResponse($this->generateUrl('cmf_admin_structure_block'));
                 }
             } else if ($request->request->has('delete')) {
                 $em->remove($form->getData());
                 $em->flush();
-                $notice = 'Блок удалён.';
-            }
 
-            $this->get('session')->getFlashBag()->add('notice', $notice);
-            return new RedirectResponse($this->generateUrl('cmf_admin_structure_block'));
+                $this->get('session')->getFlashBag()->add('notice', 'Блок удалён.');
+                return new RedirectResponse($this->generateUrl('cmf_admin_structure_block'));
+            }
         }
 
         if ($id) {
