@@ -2,8 +2,10 @@
 
 namespace SmartCore\Bundle\EngineBundle\Entity;
 
+//use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
-use Doctrine\Common\Collections\ArrayCollection;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity
@@ -14,9 +16,10 @@ use Doctrine\Common\Collections\ArrayCollection;
  *          @ORM\Index(name="pos", columns={"pos"})
  *      },
  *      uniqueConstraints={
- *          @ORM\UniqueConstraint(name="pid_uri_part", columns={"pid", "uri_part"}),
+ *          @ORM\UniqueConstraint(name="folder_pid_uri_part", columns={"folder_pid", "uri_part"}),
  *      }
  * )
+ * @UniqueEntity(fields={"uri_part", "folder_pid"}, message="в каждой подпапке должен быть уникальный сегмент URI")
  */
 class Folder
 {
@@ -30,45 +33,46 @@ class Folder
     /**
      * @ORM\Column(type="integer")
      */
-    protected $pid;
-    
+    protected $folder_pid;
+
+    /**
+     * @ORM\Column(type="string")
+     * @Assert\NotBlank()
+     */
+    protected $title;
+
+    /**
+     * @ORM\Column(type="boolean", nullable=TRUE)
+     */
+    protected $is_file;
+
     /**
      * @ORM\Column(type="smallint")
      */
     protected $pos;
     
     /**
-     * @ORM\Column(type="string")
+     * @ORM\Column(type="string", nullable=TRUE)
      */
     protected $uri_part;
     
     /**
-     * @ORM\Column(type="boolean")
+     * @ORM\Column(type="boolean", nullable=TRUE)
      */
     protected $is_active;
     
     /**
-     * @ORM\Column(type="boolean")
+     * @ORM\Column(type="boolean", nullable=TRUE)
      */
     protected $is_deleted;
     
     /**
-     * @ORM\Column(type="boolean")
-     */
-    protected $is_file;
-    
-    /**
-     * @ORM\Column(type="string")
-     */
-    protected $title;
-    
-    /**
-     * @ORM\Column(type="string")
+     * @ORM\Column(type="string", nullable=TRUE)
      */
     protected $descr;
     
     /**
-     * @ORM\Column(type="array")
+     * @ORM\Column(type="array", nullable=TRUE)
      */
     protected $meta;
 
@@ -83,17 +87,17 @@ class Folder
     protected $router_node_id;
     
     /**
-     * @ORM\Column(type="boolean")
+     * @ORM\Column(type="boolean", nullable=TRUE)
      */
-    protected $has_inherit_nodes = 0;
+    protected $has_inherit_nodes;
     
     /**
-     * @ORM\Column(type="array")
+     * @ORM\Column(type="array", nullable=TRUE)
      */
     protected $permissions;
 
     /**
-     * @ORM\Column(type="array")
+     * @ORM\Column(type="array", nullable=TRUE)
      */
     protected $lockout_nodes;
 
@@ -116,18 +120,123 @@ class Folder
     {
         $this->create_by_user_id = 0;
         $this->create_datetime = new \DateTime();
-        $this->meta = new ArrayCollection();
-        $this->permissions = new ArrayCollection();
-        $this->lockout_nodes = new ArrayCollection();
-        $this->is_active = 1;
-        $this->is_deleted = 0;
-        $this->is_file = 0;
-        $this->has_inherit_nodes = 0;
+        $this->meta = null;
+        $this->permissions = null;
+        $this->lockout_nodes = null;
+        $this->is_active = true;
+        $this->is_deleted = false;
+        $this->is_file = false;
+        $this->has_inherit_nodes = false;
         $this->uri_part = '';
         $this->template = null;
         $this->redirect_to = null;
         $this->router_node_id = null;
-        $this->pid = 0;
+        $this->folder_pid = 0;
         $this->pos = 0;
+    }
+
+    public function setTitle($title)
+    {
+        $this->title = $title;
+    }
+
+    public function getTitle()
+    {
+        return $this->title;
+    }
+
+    public function setPos($pos)
+    {
+        $this->pos = $pos;
+    }
+
+    public function getPos()
+    {
+        return $this->pos;
+    }
+
+    public function setIsFile($is_file)
+    {
+        $this->is_file = $is_file;
+    }
+
+    public function getIsFile()
+    {
+        return $this->is_file;
+    }
+
+    public function setIsActive($is_active)
+    {
+        $this->is_active = $is_active;
+    }
+
+    public function getIsActive()
+    {
+        return $this->is_active;
+    }
+
+    public function setHasInheritNodes($has_inherit_nodes)
+    {
+        $this->has_inherit_nodes = $has_inherit_nodes;
+    }
+
+    public function getHasInheritNodes()
+    {
+        return $this->has_inherit_nodes;
+    }
+
+    public function setFolderPid($folder_pid)
+    {
+        $this->folder_pid = $folder_pid;
+    }
+
+    public function getFolderPid()
+    {
+        return $this->folder_pid;
+    }
+
+    public function setDescr($descr)
+    {
+        $this->descr = $descr;
+    }
+
+    public function getDescr()
+    {
+        return $this->descr;
+    }
+
+    public function setUriPart($uri_part)
+    {
+        $this->uri_part = $uri_part;
+    }
+
+    public function getUriPart()
+    {
+        return $this->uri_part;
+    }
+
+    public function setMeta($meta)
+    {
+        $this->meta = $meta;
+    }
+
+    public function getMeta()
+    {
+        return $this->meta;
+    }
+
+    public function getId()
+    {
+        return $this->folder_id;
+    }
+
+    public function setCreateByUserId($create_by_user_id)
+    {
+        $this->create_by_user_id = $create_by_user_id;
+    }
+
+    public function getCreateByUserId()
+    {
+        return $this->create_by_user_id;
     }
 }

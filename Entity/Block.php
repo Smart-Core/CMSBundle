@@ -11,9 +11,6 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ORM\Table(name="engine_blocks",
  *      indexes={
  *          @ORM\Index(name="pos", columns={"pos"}),
- *      },
- *      uniqueConstraints={
- *          @ORM\UniqueConstraint(name="name", columns={"name"}),
  *      }
  * )
  * -UniqueEntity("name")
@@ -30,14 +27,15 @@ class Block
 
     /**
      * @ORM\Column(type="smallint", nullable=TRUE)
-     * -ORM\Column(type="string", nullable=TRUE)
+     * -ORM\Column(type="string")
      * -Assert\Type(type="integer", message="bad :(")
      * -Assert\Regex(pattern="/\d+/", match=FALSE, message="BAD!" )
+     * @Assert\Range(min = "-255", minMessage = "Минимальное значение -255.", max = "255", maxMessage = "Максимальное значение 255.")
      */
     protected $pos;
 
     /**
-     * @ORM\Column(type="string", length=50, nullable=FALSE)
+     * @ORM\Column(type="string", length=50, nullable=FALSE, unique=TRUE)
      * @Assert\NotBlank()
      */
     protected $name;

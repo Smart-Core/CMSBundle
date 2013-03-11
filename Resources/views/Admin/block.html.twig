@@ -7,9 +7,6 @@
 {% block content %}
 {{ parent() }}
 
-{#{% form_theme form 'SmartCoreEngineBundle:Form:bootstrap.html.twig' %}#}
-{#{% form_theme form 'MopaBootstrapBundle:Form:fields.html.twig' %}#}
-
 {% if all_blocks %}
     <table class="table table-bordered table-hover">
         <thead><tr>
@@ -37,6 +34,9 @@
 
 <div class="well well-small">
     {% if form_create %}
+
+    {% form_theme form_create 'MopaBootstrapBundle:Form:fields.html.twig' %}
+
     <form action="{{ path('cmf_admin_structure_block') }}" {{ form_enctype(form_create) }} method="post" class="form-horizontal">
         {{ form_widget(form_create) }}
         <div class="control-group">
@@ -46,12 +46,15 @@
         </div>
     </form>
     {% elseif form_edit %}
+
+    {% form_theme form_edit 'MopaBootstrapBundle:Form:fields.html.twig' %}
+
     <form action="{{ path('cmf_admin_structure_block_edit', {'id': block_id}) }}" {{ form_enctype(form_edit) }} method="post" class="form-horizontal">
         {{ form_widget(form_edit) }}
         <div class="control-group">
             <div class="controls">
                 <button type="submit" name="update" class="btn btn-primary">Сохранить</button>
-                <button type="submit" name="delete" class="btn btn-danger">Удалить</button>
+                <button type="submit" name="delete" class="btn btn-danger" onclick="return confirm('Вы уверены, что хотите удалить блок?')">Удалить</button>
                 <a class="btn" href="{{ path('cmf_admin_structure_block') }}">Отменить</a>
             </div>
         </div>

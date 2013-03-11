@@ -16,24 +16,7 @@ class AdminStructureController extends Controller
     public function indexAction(Request $request)
     {
         return $this->renderView('SmartCoreEngineBundle:Admin:structure.html.twig', array(
-            'title' => 'Редактировать раздел',
-        ));
-    }
 
-    public function folderCreateAction(Request $request)
-    {
-        $form = $this->createForm(new FolderFormType());
-
-        return $this->renderView('SmartCoreEngineBundle:Admin:structure.html.twig', array(
-            'title' => 'Добавить раздел',
-            'form'  => $form->createView(),
-        ));
-    }
-
-    public function folderAction(Request $request, $pid = 0)
-    {
-        return $this->renderView('SmartCoreEngineBundle:Admin:structure.html.twig', array(
-            'title' => 'Редактировать раздел',
         ));
     }
 
@@ -48,6 +31,90 @@ class AdminStructureController extends Controller
     {
         return $this->renderView('SmartCoreEngineBundle:Admin:structure.html.twig', array(
 
+        ));
+    }
+
+    /**
+     * Редактирование папки.
+     */
+    public function folderEditAction(Request $request, $id = 1)
+    {
+        $em = $this->EM();
+        $folder = $em->find('SmartCoreEngineBundle:Folder', $id);
+
+        if (empty($folder)) {
+            return new RedirectResponse($this->generateUrl('cmf_admin_structure'));
+        }
+
+        $form = $this->createForm(new FolderFormType(), $folder);
+
+        // Для корневой папки удаляются некоторые поля формы
+        if (1 == $id) {
+            $form
+                ->remove('uri_part')
+                ->remove('folder_pid')
+                ->remove('is_active')
+                ->remove('is_file')
+                ->remove('pos');
+        }
+
+        if ($request->isMethod('POST')) {
+            if ($request->request->has('update')) {
+                $form->bind($request);
+                if ($form->isValid()) {
+                    $em = $this->EM();
+                    $em->persist($form->getData());
+                    $em->flush();
+
+                    $notice = 'Папка обновлена.';
+                }
+            } else if ($request->request->has('delete')) {
+                die('@todo');
+            }
+
+            $this->get('session')->getFlashBag()->add('notice', $notice);
+            return new RedirectResponse($this->generateUrl('cmf_admin_structure'));
+        }
+
+        return $this->renderView('SmartCoreEngineBundle:Admin:folder.html.twig', array(
+            'folder_id' => $id,
+            'title' => 'Редактировать раздел',
+            'form_edit' => $form->createView(),
+        ));
+    }
+
+    /**
+     * Создание папки.
+     */
+    public function folderCreateAction(Request $request, $folder_pid = 1)
+    {
+        $folder = new Folder();
+        $folder->setCreateByUserId($this->getUser()->getId());
+        $folder->setFolderPid($folder_pid);
+
+        $form = $this->createForm(new FolderFormType(), $folder);
+
+        if ($request->isMethod('POST')) {
+            if ($request->request->has('create')) {
+                $form->bind($request);
+                if ($form->isValid()) {
+                    $em = $this->EM();
+                    $em->persist($form->getData());
+                    $em->flush();
+                    $notice = 'Папка создана.';
+                }
+            } else if ($request->request->has('delete')) {
+                die('@todo');
+            }
+
+            $this->get('session')->getFlashBag()->add('notice', $notice);
+            return new RedirectResponse($this->generateUrl('cmf_admin_structure'));
+        }
+
+
+        return $this->renderView('SmartCoreEngineBundle:Admin:folder.html.twig', array(
+            'title' => 'Добавить раздел',
+            'form_create' => $form->createView(),
         ));
     }
 
@@ -69,18 +136,27 @@ class AdminStructureController extends Controller
 
         $form = $this->createForm(new BlockFormType(), $block);
 
-        if ($request->getMethod() == 'POST') {
+        if ($request->isMethod('POST')) {
             if ($request->request->has('create') or $request->request->has('update')) {
                 $form->bind($request);
                 if ($form->isValid()) {
                     $em->persist($form->getData());
                     $em->flush();
 
-                    return new RedirectResponse($this->generateUrl('cmf_admin_structure_block'));
+                    if ($request->request->has('create')) {
+                        $notice = 'Блок создан.';
+                    } else if ($request->request->has('update')) {
+                        $notice = 'Блок обновлён.';
+                    }
                 }
             } else if ($request->request->has('delete')) {
-                die('@todo');
+                $em->remove($form->getData());
+                $em->flush();
+                $notice = 'Блок удалён.';
             }
+
+            $this->get('session')->getFlashBag()->add('notice', $notice);
+            return new RedirectResponse($this->generateUrl('cmf_admin_structure_block'));
         }
 
         if ($id) {
@@ -101,11 +177,10 @@ class AdminStructureController extends Controller
     /**
      * Отображение структуры в виде дерева.
      */
-    public function showTreeAction()
+    public function showTreeAction($id = null)
     {
         return $this->renderView('SmartCoreEngineBundle:Admin:tree.html.twig', array(
-
+            'folder_id' => $id,
         ));
     }
-
 }

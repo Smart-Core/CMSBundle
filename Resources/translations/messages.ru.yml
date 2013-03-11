@@ -1,0 +1,13 @@
+'Hello %name%': Привет %name%
+Is active: Включено
+Is file: Является файлом?
+Title: Заголовок
+Descr: Описание
+Name: Имя
+Pos: Позиция
+Uri part: Часть URI
+Has inherit nodes: Наследование нод
+Permissions: Права доступа
+Lockout nodes: Блокировка нод
+Folder pid: Родительская папка
+Create datetime: Дата создания

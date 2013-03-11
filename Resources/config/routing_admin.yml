@@ -28,7 +28,7 @@ cmf_admin_structure_folder_create_in_folder:
 cmf_admin_structure_folder:
     path: /structure/folder/{id}/
     defaults:
-        _controller: SmartCoreEngineBundle:AdminStructure:folder
+        _controller: SmartCoreEngineBundle:AdminStructure:folderEdit
     requirements:
         id: \d+
 cmf_admin_structure_node_create:

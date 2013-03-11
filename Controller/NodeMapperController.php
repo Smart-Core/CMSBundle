@@ -152,7 +152,7 @@ class NodeMapperController extends Controller
                         'edit' => array(
                             'title' => 'Редактировать',
                             'descr' => 'Текстовый блок',
-                            'uri' => $request->getBasePath() . '/admin/node/3/',
+                            'uri' => $request->getBasePath() . '/admin/structure/node/3/',
                             'default' => true,
                         ),
                         'cmf_node_properties' => array(

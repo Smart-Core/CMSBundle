@@ -1,0 +1,52 @@
+{% extends '@SmartCoreEngine/Admin/index.html.twig' %}
+
+{% block nav %}
+<div class="span3">
+    {{ render(controller('SmartCoreEngineBundle:AdminStructure:showTree', {'id': folder_id})) }}
+</div>
+{% endblock nav %}
+
+{% block content %}
+{{ parent() }}
+
+<div class="span9">
+
+    {{ knp_menu_render('SmartCoreEngineBundle:AdminMenu:structure', {'currentClass': 'active'})  }}
+
+    {% if form_create %}
+        {% form_theme form_create 'SmartCoreEngineBundle:Form:bootstrap.html.twig' %}
+        <div class="well well-small">
+            <form action="{{ path('cmf_admin_structure_folder_create') }}" {{ form_enctype(form_create) }} method="POST" class="form-horizontal">
+                {{ form_widget(form_create) }}
+                <div class="control-group">
+                    <div class="controls">
+                        <button type="submit" name="create" class="btn btn-primary">Добавить</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    {% endif %}
+
+    {% if form_edit %}
+        {% form_theme form_edit 'SmartCoreEngineBundle:Form:bootstrap.html.twig' %}
+        <div class="well well-small">
+            <form action="{{ path('cmf_admin_structure_folder', {'id': folder_id}) }}" {{ form_enctype(form_edit) }} method="post" class="form-horizontal">
+                {{ form_widget(form_edit) }}
+                <div class="control-group">
+                    <div class="controls">
+                        <button type="submit" name="update" class="btn btn-primary">Сохранить</button>
+                        {% if folder_id != 1 %}
+                        <button type="submit" name="delete" class="btn btn-danger" onclick="return confirm('Вы уверены, что хотите удалить папку?')">Удалить</button>
+                        {% endif %}
+                        <a class="btn" href="{{ path('cmf_admin_structure') }}">Отменить</a>
+                    </div>
+                </div>
+            </form>
+        </div>
+    {% endif %}
+
+    {#<div class="well well-small">#}
+    {#{% include '@SmartCoreEngine/Admin/form_folder.html.twig' %}#}
+    {#</div>#}
+</div>
+{% endblock content %}

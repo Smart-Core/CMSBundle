@@ -11,13 +11,17 @@
             margin: 5px 0 5px;
         }
         .form-horizontal .control-group {
-            margin-bottom: 15px;
+            margin-bottom: 12px;
         }
         .form-horizontal .control-label {
             width: 180px;
         }
         .form-horizontal .controls {
             margin-left: 200px;
+        }
+        .form-horizontal option[selected=selected] {
+            color: blue;
+            font-weight: bold;
         }
     </style>
 {% endblock html_head_styles %}
@@ -63,17 +67,19 @@
 
 <div class="container">
     <div class="row-fluid">
-
         {% block content %}
+
             {% block subnav %}
             {% endblock subnav %}
+
+            {% for flashMessage in app.session.flashbag.get('notice') %}
+                <div class="alert alert-success">{{ flashMessage }}</div>
+            {% endfor %}
+
         {% endblock content %}
 
         {% block nav %}
         {% endblock nav %}
-
-        {#<div class="well well-small">#}
-        {#</div>#}
     </div>
 </div>
 {% endblock body %}
