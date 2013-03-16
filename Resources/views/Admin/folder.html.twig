@@ -1,19 +1,15 @@
-{% extends '@SmartCoreEngine/Admin/index.html.twig' %}
+{% extends '@SmartCoreEngine/Admin/structure.html.twig' %}
 
-{% block nav %}
-<div class="span3">
-    {{ render(controller('SmartCoreEngineBundle:AdminStructure:showTree', {'id': folder_id})) }}
-</div>
-{% endblock nav %}
 
 {% block content %}
-{{ parent() }}
+{#{{ parent() }}#}
 
 <div class="span9">
 
     {{ knp_menu_render('SmartCoreEngineBundle:AdminMenu:structure', {'currentClass': 'active'})  }}
 
     {% if form_create %}
+        {% set folder_html_title = 'Добавить раздел' %}
         {% form_theme form_create 'SmartCoreEngineBundle:Form:bootstrap.html.twig' %}
         <div class="well well-small">
             <form action="{{ path('cmf_admin_structure_folder_create') }}" {{ form_enctype(form_create) }} method="POST" class="form-horizontal">
@@ -26,9 +22,8 @@
                 </div>
             </form>
         </div>
-    {% endif %}
-
-    {% if form_edit %}
+    {% elseif form_edit %}
+        {% set folder_html_title = 'Редактировать раздел' %}
         {% form_theme form_edit 'SmartCoreEngineBundle:Form:bootstrap.html.twig' %}
         <div class="well well-small">
             <form action="{{ path('cmf_admin_structure_folder', {'id': folder_id}) }}" {{ form_enctype(form_edit) }} method="post" class="form-horizontal">
@@ -51,3 +46,14 @@
     {#</div>#}
 </div>
 {% endblock content %}
+
+{% block html_head_title %}{{ folder_html_title }} 123 / {{ parent() }}{% endblock html_head_title %}
+
+
+{% block nav %}
+    <div class="span3">
+        {{ render(controller('SmartCoreEngineBundle:AdminStructure:showTree', {'id': folder_id})) }}
+    </div>
+{% endblock nav %}
+
+{% block subnav %}{% endblock subnav %}

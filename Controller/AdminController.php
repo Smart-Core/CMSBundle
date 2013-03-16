@@ -9,11 +9,12 @@ class AdminController extends Controller
 {
     public function indexAction(Request $request, $slug = null)
     {
+        /*
         $this->get('html')
             ->title('Smart Core CMF')
             ->titlePrepend('Управление / ')
         ;
-
+        */
         return $this->render('SmartCoreEngineBundle:Admin:index.html.twig', array(
 
         ));

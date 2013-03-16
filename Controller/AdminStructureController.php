@@ -4,8 +4,6 @@ namespace SmartCore\Bundle\EngineBundle\Controller;
 
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\RedirectResponse;
-
 use SmartCore\Bundle\EngineBundle\Entity\Block;
 use SmartCore\Bundle\EngineBundle\Entity\Folder;
 use SmartCore\Bundle\EngineBundle\Form\Type\FolderFormType;
@@ -43,7 +41,7 @@ class AdminStructureController extends Controller
         $folder = $em->find('SmartCoreEngineBundle:Folder', $id);
 
         if (empty($folder)) {
-            return new RedirectResponse($this->generateUrl('cmf_admin_structure'));
+            return $this->redirect($this->generateUrl('cmf_admin_structure'));
         }
 
         $form = $this->createForm(new FolderFormType(), $folder);
@@ -66,14 +64,12 @@ class AdminStructureController extends Controller
                     $em->persist($form->getData());
                     $em->flush();
 
-                    $notice = 'Папка обновлена.';
+                    $this->get('session')->getFlashBag()->add('notice', 'Папка обновлена.');
+                    return $this->redirect($this->generateUrl('cmf_admin_structure'));
                 }
             } else if ($request->request->has('delete')) {
                 die('@todo');
             }
-
-            $this->get('session')->getFlashBag()->add('notice', $notice);
-            return new RedirectResponse($this->generateUrl('cmf_admin_structure'));
         }
 
         return $this->renderView('SmartCoreEngineBundle:Admin:folder.html.twig', array(
@@ -95,7 +91,6 @@ class AdminStructureController extends Controller
         $form = $this->createForm(new FolderFormType(), $folder);
 
         if ($request->isMethod('POST')) {
-
             if ($request->request->has('create')) {
                 $form->bind($request);
                 if ($form->isValid()) {
@@ -104,7 +99,7 @@ class AdminStructureController extends Controller
                     $em->flush();
 
                     $this->get('session')->getFlashBag()->add('notice', 'Папка создана.');
-                    return new RedirectResponse($this->generateUrl('cmf_admin_structure'));
+                    return $this->redirect($this->generateUrl('cmf_admin_structure'));
                 }
             } else if ($request->request->has('delete')) {
                 die('@todo');
@@ -149,14 +144,14 @@ class AdminStructureController extends Controller
                     }
 
                     $this->get('session')->getFlashBag()->add('notice', $notice);
-                    return new RedirectResponse($this->generateUrl('cmf_admin_structure_block'));
+                    return $this->redirect($this->generateUrl('cmf_admin_structure_block'));
                 }
             } else if ($request->request->has('delete')) {
                 $em->remove($form->getData());
                 $em->flush();
 
                 $this->get('session')->getFlashBag()->add('notice', 'Блок удалён.');
-                return new RedirectResponse($this->generateUrl('cmf_admin_structure_block'));
+                return $this->redirect($this->generateUrl('cmf_admin_structure_block'));
             }
         }
 
