@@ -1,13 +1,35 @@
 'Hello %name%': Привет %name%
+Add: Добавить
+Administration: Управление
+Appearance: Оформление
+Blocks: Блоки
+Cancel: Отменить
+Configuration: Конфигруация
+Connect module: Подключить модуль
+Create datetime: Дата создания
+Create folder: Добавить раздел
+Descr: Описание
+Description: Описание
+Delete: Удалить
+Edit folder: Редактировать раздел
+Exit: Выход
+Parent folder: Родительская папка
+Has inherit nodes: Наследование нод
+Help: Справка
+Inherit in folders: Наследование в папках
 Is active: Включено
 Is file: Является файлом?
-Title: Заголовок
-Descr: Описание
-Name: Имя
-Pos: Позиция
-Uri part: Часть URI
-Has inherit nodes: Наследование нод
-Permissions: Права доступа
 Lockout nodes: Блокировка нод
-Folder pid: Родительская папка
-Create datetime: Дата создания
+My profile: Мой профиль
+Modules: Модули
+Name: Имя
+Nodes count: Кол-во нод
+Permissions: Права доступа
+Pos: Позиция
+Position: Позиция
+Reports: Отчеты
+Save: Сохранить
+Structure: Структура
+Title: Заголовок
+Uri part: Часть URI
+Users: Пользователи

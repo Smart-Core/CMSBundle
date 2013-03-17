@@ -19,7 +19,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  *          @ORM\UniqueConstraint(name="folder_pid_uri_part", columns={"folder_pid", "uri_part"}),
  *      }
  * )
- * @UniqueEntity(fields={"uri_part", "folder_pid"}, message="в каждой подпапке должен быть уникальный сегмент URI")
+ * @UniqueEntity(fields={"uri_part", "parent_folder"}, message="в каждой подпапке должен быть уникальный сегмент URI")
  */
 class Folder
 {
@@ -31,9 +31,10 @@ class Folder
     protected $folder_id;
     
     /**
-     * @ORM\Column(type="integer")
+     * @ORM\ManyToOne(targetEntity="Folder")
+     * @ORM\JoinColumn(name="folder_pid", referencedColumnName="folder_id")
      */
-    protected $folder_pid;
+    protected $parent_folder;
 
     /**
      * @ORM\Column(type="string")
@@ -112,6 +113,21 @@ class Folder
     protected $create_by_user_id;
 
     /**
+     * @ORM\Column(type="integer")
+     */
+    protected $test;
+
+    public function setTest($test)
+    {
+        $this->test = $test;
+    }
+
+    public function getTest()
+    {
+        return $this->test;
+    }
+
+    /**
      * @ORM\Column(type="datetime")
      */
     protected $create_datetime;
@@ -131,8 +147,13 @@ class Folder
         $this->template = null;
         $this->redirect_to = null;
         $this->router_node_id = null;
-        $this->folder_pid = 0;
+        $this->parent_folder = null;
         $this->pos = 0;
+    }
+
+    public function __toString()
+    {
+        return $this->getTitle();
     }
 
     public function setTitle($title)
@@ -185,16 +206,6 @@ class Folder
         return $this->has_inherit_nodes;
     }
 
-    public function setFolderPid($folder_pid)
-    {
-        $this->folder_pid = $folder_pid;
-    }
-
-    public function getFolderPid()
-    {
-        return $this->folder_pid;
-    }
-
     public function setDescr($descr)
     {
         $this->descr = $descr;
@@ -238,5 +249,19 @@ class Folder
     public function getCreateByUserId()
     {
         return $this->create_by_user_id;
+    }
+
+    public function setParentFolder($parent_folder)
+    {
+        if ($this->getId() == 1) {
+            $this->parent_folder = null;
+        } else {
+            $this->parent_folder = $parent_folder;
+        }
+    }
+
+    public function getParentFolder()
+    {
+        return $this->parent_folder;
     }
 }

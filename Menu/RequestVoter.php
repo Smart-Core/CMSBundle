@@ -26,5 +26,4 @@ class RequestVoter implements VoterInterface
         }
         return null;
     }
-
 }

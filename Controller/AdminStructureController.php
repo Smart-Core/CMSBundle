@@ -50,7 +50,7 @@ class AdminStructureController extends Controller
         if (1 == $id) {
             $form
                 ->remove('uri_part')
-                ->remove('folder_pid')
+                ->remove('parent_folder')
                 ->remove('is_active')
                 ->remove('is_file')
                 ->remove('pos');
@@ -74,7 +74,7 @@ class AdminStructureController extends Controller
 
         return $this->renderView('SmartCoreEngineBundle:Admin:folder.html.twig', array(
             'folder_id' => $id,
-            'title' => 'Редактировать раздел',
+            'html_head_title' => 'Edit folder',
             'form_edit' => $form->createView(),
         ));
     }
@@ -84,9 +84,11 @@ class AdminStructureController extends Controller
      */
     public function folderCreateAction(Request $request, $folder_pid = 1)
     {
+        $em = $this->EM();
+
         $folder = new Folder();
         $folder->setCreateByUserId($this->getUser()->getId());
-        $folder->setFolderPid($folder_pid);
+        $folder->setParentFolder($em->find('SmartCoreEngineBundle:Folder', $folder_pid));
 
         $form = $this->createForm(new FolderFormType(), $folder);
 
@@ -94,7 +96,6 @@ class AdminStructureController extends Controller
             if ($request->request->has('create')) {
                 $form->bind($request);
                 if ($form->isValid()) {
-                    $em = $this->EM();
                     $em->persist($form->getData());
                     $em->flush();
 
@@ -107,7 +108,7 @@ class AdminStructureController extends Controller
         }
 
         return $this->renderView('SmartCoreEngineBundle:Admin:folder.html.twig', array(
-            'title' => 'Добавить раздел',
+            'html_head_title' => 'Create folder',
             'form_create' => $form->createView(),
         ));
     }

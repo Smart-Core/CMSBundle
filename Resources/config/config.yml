@@ -5,6 +5,10 @@ imports:
 smart_core_engine:
     storage: db
 
+knp_menu:
+    twig:
+        template: SmartCoreEngineBundle:Menu:knp_menu.html.twig
+
 mopa_bootstrap:
     form:
         templating: false

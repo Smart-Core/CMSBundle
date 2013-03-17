@@ -48,8 +48,6 @@ services:
         arguments: [ @engine.db ]
         calls:
             - [ setContainer, [ @service_container ] ]
-    engine.settings:
-        alias: service_container        
     engine.user:
         class: SmartCore\Bundle\EngineBundle\Engine\User
         arguments: [ @service_container ]
@@ -58,16 +56,30 @@ services:
         arguments: [%database_table_prefix%]
         tags:
             - { name: doctrine.event_subscriber }
-
-# Aliases
-    engine.db:
-        alias: database_connection        
-    engine.environment:
-        alias: engine.env
-
+# Forms
+    engine.form.type.folder_tree:
+        class: SmartCore\Bundle\EngineBundle\Form\Type\FolderTreeType
+        calls:
+            - [ setContainer, [ @service_container ] ]
+        tags:
+            - { name: form.type, alias: folder_tree }
+    engine.form.folder_tree_extension:
+        class: SmartCore\Bundle\EngineBundle\Form\Extension\FolderTreeExtension
+        calls:
+            - [ setContainer, [ @service_container ] ]
+        tags:
+            - { name: form.type_extension, alias: folder_tree_zzz }
+# Menu selected items
     cmf_admin.menu.voter.request:
         class: SmartCore\Bundle\EngineBundle\Menu\RequestVoter
         arguments:
             - @service_container
         tags:
             - { name: knp_menu.voter }
+# Aliases
+    engine.db:
+        alias: database_connection        
+    engine.environment:
+        alias: engine.env
+#    engine.settings:
+#        alias: service_container

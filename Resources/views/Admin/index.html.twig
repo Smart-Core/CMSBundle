@@ -47,14 +47,14 @@
                 <!-- .nav, .navbar-search, .navbar-form, etc -->
                 {#{% set admin_main_menu = knp_menu_get('SmartCoreEngineBundle:AdminMenu:main' , [], {'class': 'nav'}) %}#}
                 {#{{ knp_menu_render('admin_main_menu', {'currentClass': 'active'})  }}#}
-                {{ knp_menu_render('SmartCoreEngineBundle:AdminMenu:main', {'currentClass': 'active', 'clear_matcher': false})  }}
+                {{ knp_menu_render('SmartCoreEngineBundle:AdminMenu:main', { 'currentClass': 'active', 'clear_matcher': false })}}
 
                 <ul class="nav pull-right">
                     <li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="icon-user icon-white"></i> {{ app.user.userName }} <b class="caret"></b></a>
                         <ul class="dropdown-menu">
-                            <li class=""><a href="#"><i class="icon-cog"></i> Мой профиль</a></li>
+                            <li class=""><a href="#"><i class="icon-cog"></i> {{ 'My profile'|trans }}</a></li>
                             <li class="divider"></li>
-                            <li class=""><a href="{{ path('fos_user_security_logout') }}"><i class="icon-off"></i> Выход</a></li>
+                            <li class=""><a href="{{ path('fos_user_security_logout') }}"><i class="icon-off"></i> {{ 'Exit'|trans }}</a></li>
                         </ul>
                     </li>
                 </ul>

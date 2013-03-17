@@ -123,6 +123,8 @@
 {% set admin_folder = path('cmf_admin_structure') ~ 'folder/' %}
 {% set admin_node = path('cmf_admin_structure') ~ 'node/' %}
 
+{#
+
 <div id="tree">
     <ul id="browser" class="filetree">
         <li class="folder" id="folder_id_1"><a href="{{ admin_folder }}1/" title="">Главная</a>
@@ -146,4 +148,9 @@
             </ul>
         </li>
     </ul>
+</div>
+#}
+
+<div id="tree">
+{{ knp_menu_render('SmartCoreEngineBundle:StructureMenu:full', {'currentClass': 'active'}) }}
 </div>
