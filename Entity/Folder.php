@@ -6,9 +6,11 @@ namespace SmartCore\Bundle\EngineBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
+use SmartCore\Bundle\EngineBundle\Container;
 
 /**
  * @ORM\Entity
+ * @ORM\HasLifecycleCallbacks
  * @ORM\Table(name="engine_folders",
  *      indexes={
  *          @ORM\Index(name="is_active", columns={"is_active"}),
@@ -113,25 +115,15 @@ class Folder
     protected $create_by_user_id;
 
     /**
-     * @ORM\Column(type="integer")
-     */
-    protected $test;
-
-    public function setTest($test)
-    {
-        $this->test = $test;
-    }
-
-    public function getTest()
-    {
-        return $this->test;
-    }
-
-    /**
      * @ORM\Column(type="datetime")
      */
     protected $create_datetime;
-    
+
+    /**
+     * Для отображения в формах. Не маппится в БД.
+     */
+    protected $form_title;
+
     public function __construct()
     {
         $this->create_by_user_id = 0;
@@ -149,6 +141,7 @@ class Folder
         $this->router_node_id = null;
         $this->parent_folder = null;
         $this->pos = 0;
+        $this->form_title = '';
     }
 
     public function __toString()
@@ -263,5 +256,45 @@ class Folder
     public function getParentFolder()
     {
         return $this->parent_folder;
+    }
+
+    public function setFormTitle($form_title)
+    {
+        $this->form_title = $form_title;
+    }
+
+    public function getFormTitle()
+    {
+        return $this->form_title;
+    }
+
+    /**
+     * @ORM\PrePersist()
+     * @ORM\PreUpdate()
+     */
+    public function checkRelations()
+    {
+        if (empty($this->uri_part) and $this->getId() != 1) {
+            $this->setUriPart($this->getId());
+        }
+
+        // Защита от цикличных зависимостей.
+        $parent = $this->getParentFolder();
+        $cnt = 30;
+        $ok = false;
+        while ($cnt--) {
+            if ($parent->getId() == 1) {
+                $ok = true;
+                break;
+            } else {
+                $parent = $parent->getParentFolder();
+                continue;
+            }
+        }
+
+        // Если обнаружена циклическая зависимость, тогда родитель выставляется корневая папка, которая имеет id = 1.
+        if (!$ok) {
+            $this->setParentFolder(Container::get('doctrine.orm.entity_manager')->find('SmartCoreEngineBundle:Folder', 1));
+        }
     }
 }

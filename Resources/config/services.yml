@@ -59,16 +59,9 @@ services:
 # Forms
     engine.form.type.folder_tree:
         class: SmartCore\Bundle\EngineBundle\Form\Type\FolderTreeType
-        calls:
-            - [ setContainer, [ @service_container ] ]
+        arguments: [ @doctrine ]
         tags:
             - { name: form.type, alias: folder_tree }
-    engine.form.folder_tree_extension:
-        class: SmartCore\Bundle\EngineBundle\Form\Extension\FolderTreeExtension
-        calls:
-            - [ setContainer, [ @service_container ] ]
-        tags:
-            - { name: form.type_extension, alias: folder_tree_zzz }
 # Menu selected items
     cmf_admin.menu.voter.request:
         class: SmartCore\Bundle\EngineBundle\Menu\RequestVoter

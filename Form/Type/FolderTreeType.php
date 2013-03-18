@@ -2,17 +2,18 @@
 
 namespace SmartCore\Bundle\EngineBundle\Form\Type;
 
-use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\View\ChoiceView;
-use Symfony\Component\Form\FormView;
-use Symfony\Component\Form\FormInterface;
-use Symfony\Component\Form\FormBuilderInterface;
+use Doctrine\Common\Persistence\ManagerRegistry;
+use Doctrine\Common\Persistence\ObjectManager;
+use Symfony\Bridge\Doctrine\Form\ChoiceList\EntityChoiceList;
+use Symfony\Bridge\Doctrine\Form\ChoiceList\EntityLoaderInterface;
+use Symfony\Bridge\Doctrine\Form\Type\DoctrineType;
 use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
-use Symfony\Component\PropertyAccess\PropertyAccess;
+//use Symfony\Component\PropertyAccess\PropertyAccess;
 use Symfony\Component\PropertyAccess\PropertyAccessorInterface;
+use SmartCore\Bundle\EngineBundle\Form\Loader\FolderLoader;
 
-class FolderTreeType extends AbstractType
+class FolderTreeType extends DoctrineType
 {
     /**
      * Caches created choice lists.
@@ -20,96 +21,136 @@ class FolderTreeType extends AbstractType
      */
     private $choiceListCache = array();
 
-    protected $container;
-
-    /** @var $folderRepository \Doctrine\ORM\EntityRepository */
-    protected $folderRepository;
-
     /**
      * @var PropertyAccessorInterface
      */
     private $propertyAccessor;
 
-    public function __construct(PropertyAccessorInterface $propertyAccessor = null)
-    {
-        //$this->registry = $registry;
-        $this->propertyAccessor = $propertyAccessor ?: PropertyAccess::getPropertyAccessor();
-    }
-
-    public function setContainer($container)
-    {
-        $this->container = $container;
-        $this->folderRepository = $this->container->get('doctrine')->getRepository('SmartCoreEngineBundle:Folder');
-    }
-
     /**
-     * Pass the image url to the view
+     * Return the default loader object.
      *
-     * @param FormView $view
-     * @param FormInterface $form
-     * @param array $options
+     * @param ObjectManager $manager
+     * @param mixed         $queryBuilder
+     * @param string        $class
+     * @return EntityLoaderInterface
      */
-    public function buildView(FormView $view, FormInterface $form, array $options)
+    public function getLoader(ObjectManager $manager, $queryBuilder, $class)
     {
-        $parent_folder_id = $form->getParent()->getData()->getParentFolder()->getId();
-
-//        ld($view);
-
-//        ld($options);
-
-        if (array_key_exists('folder_id', $options)) {
-            $folders = $this->folderRepository->findAll(
-            //array('pos' => 'ASC')
-            );
-
-            /** @var $folder Folder */
-            foreach ($folders as $folder) {
-                $view->vars['choices'][] = new ChoiceView($folder->getId(), $folder->getId(), $folder->getTitle());
-            }
-
-            //$view->vars['choices'][] = new ChoiceView('XXX', 'XXX', 'XXX');
-        }
-
-//        ld($view->vars);
-//        unset($view->vars['choices'][2]);
-//        ld($view->vars['choices']);
+        return new FolderLoader($manager, $queryBuilder, $class);
     }
 
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $choiceListCache =& $this->choiceListCache;
-//        $propertyAccessor = $this->propertyAccessor;
-//        $type = $this;
+        $registry = $this->registry;
+        $propertyAccessor = $this->propertyAccessor;
+        $type = $this;
 
-//        $loader = function (Options $options) use ($type) {
-//            return $options['data'];
-//        };
+        $loader = function (Options $options) use ($type) {
+            return $type->getLoader($options['em'], $options['query_builder'], 'SmartCoreEngineBundle:Folder');
+        };
 
-//        ld($loader);
+        $choiceList = function (Options $options) use (&$choiceListCache, $propertyAccessor) {
+            // Support for closures
+            $propertyHash = is_object($options['property'])
+                ? spl_object_hash($options['property'])
+                : $options['property'];
 
-//        ld($resolver);
+            $choiceHashes = $options['choices'];
 
-        $choice_list = new \Symfony\Component\Form\Extension\Core\ChoiceList\ChoiceList(
-            array(
-                'm',
-                'f',
-            ),
-            array(
-                'Male',
-                'Female',
-            )
-        );
+            // Support for recursive arrays
+            if (is_array($choiceHashes)) {
+                // A second parameter ($key) is passed, so we cannot use
+                // spl_object_hash() directly (which strictly requires
+                // one parameter)
+                array_walk_recursive($choiceHashes, function (&$value) {
+                    $value = spl_object_hash($value);
+                });
+            }
 
-//        ld($this);
+            $preferredChoiceHashes = $options['preferred_choices'];
+
+            if (is_array($preferredChoiceHashes)) {
+                array_walk_recursive($preferredChoiceHashes, function (&$value) {
+                    $value = spl_object_hash($value);
+                });
+            }
+
+            // Support for custom loaders (with query builders)
+            $loaderHash = is_object($options['loader'])
+                ? spl_object_hash($options['loader'])
+                : $options['loader'];
+
+            // Support for closures
+            $groupByHash = is_object($options['group_by'])
+                ? spl_object_hash($options['group_by'])
+                : $options['group_by'];
+
+            $hash = md5(json_encode(array(
+                spl_object_hash($options['em']),
+                'SmartCoreEngineBundle:Folder', //$options['class'],
+                $propertyHash,
+                $loaderHash,
+                $choiceHashes,
+                $preferredChoiceHashes,
+                $groupByHash
+            )));
+
+            if (!isset($choiceListCache[$hash])) {
+                $choiceListCache[$hash] = new EntityChoiceList(
+                    $options['em'],
+                    'SmartCoreEngineBundle:Folder', //$options['class'],
+                    $options['property'],
+                    $options['loader'],
+                    $options['choices'],
+                    $options['preferred_choices'],
+                    $options['group_by'],
+                    $propertyAccessor
+                );
+            }
+
+            return $choiceListCache[$hash];
+        };
+
+        $emNormalizer = function (Options $options, $em) use ($registry) {
+            /* @var ManagerRegistry $registry */
+            if (null !== $em) {
+                return $registry->getManager($em);
+            }
+
+            $em = $registry->getManagerForClass('SmartCoreEngineBundle:Folder'); //$em = $registry->getManagerForClass($options['class']);
+
+            if (null === $em) {
+                throw new Exception(sprintf(
+                    'Class "%s" seems not to be a managed Doctrine entity. ' .
+                        'Did you forget to map it?',
+                    'SmartCoreEngineBundle:Folder' //$options['class']
+                ));
+            }
+
+            return $em;
+        };
 
         $resolver->setDefaults(array(
-            'choice_list' => $choice_list
+            'em'                => null,
+            'property'          => 'form_title', // null
+            'query_builder'     => null,
+            'loader'            => $loader,
+            'choices'           => null,
+            'choice_list'       => $choiceList,
+            'group_by'          => null,
+            'attr'              => array('class' => 'input-block-level'),
         ));
-    }
 
-    public function getParent()
-    {
-        return 'choice';
+        //$resolver->setRequired(array('class'));
+
+        $resolver->setNormalizers(array(
+            'em' => $emNormalizer,
+        ));
+
+        $resolver->setAllowedTypes(array(
+            'loader' => array('null', 'Symfony\Bridge\Doctrine\Form\ChoiceList\EntityLoaderInterface'),
+        ));
     }
 
     public function getName()
