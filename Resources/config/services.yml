@@ -58,7 +58,7 @@ services:
             - { name: doctrine.event_subscriber }
 # Forms
     engine.form.type.folder_tree:
-        class: SmartCore\Bundle\EngineBundle\Form\Type\FolderTreeType
+        class: SmartCore\Bundle\EngineBundle\Form\Tree\FolderTreeType
         arguments: [ @doctrine ]
         tags:
             - { name: form.type, alias: folder_tree }

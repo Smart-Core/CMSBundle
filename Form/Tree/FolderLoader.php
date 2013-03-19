@@ -1,8 +1,9 @@
 <?php
-namespace SmartCore\Bundle\EngineBundle\Form\Loader;
+namespace SmartCore\Bundle\EngineBundle\Form\Tree;
 
-use Doctrine\ORM\EntityManager;
+use Doctrine\Common\Persistence\ObjectManager;
 use Doctrine\ORM\QueryBuilder;
+use Doctrine\ORM\EntityRepository;
 use Symfony\Bridge\Doctrine\Form\ChoiceList\EntityLoaderInterface;
 use Symfony\Component\Form\Exception\UnexpectedTypeException;
 use SmartCore\Bundle\EngineBundle\Entity\Folder;
@@ -10,24 +11,17 @@ use SmartCore\Bundle\EngineBundle\Entity\Folder;
 class FolderLoader implements EntityLoaderInterface
 {
     /**
-     * @var EntityManager
+     * @var EntityRepository
      */
-    private $em;
-
-    private $class;
-
-    /** @var $repo \Doctrine\ORM\EntityRepository */
     private $repo;
 
     protected $result;
 
     protected $level;
 
-    public function __construct($em, $manager = null, $class = null)
+    public function __construct(ObjectManager $em, $manager = null, $class = null)
     {
-        $this->em = $em;
-        $this->class = $class;
-        $this->repo = $this->em->getRepository($this->class);
+        $this->repo = $em->getRepository($class);
     }
 
     /**
