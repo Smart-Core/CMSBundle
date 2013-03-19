@@ -28,10 +28,11 @@ services:
         class: SmartCore\Bundle\EngineBundle\Engine\Block
         calls:
             - [ setContainer, [ @service_container ] ]
-    engine.module:
-        class: SmartCore\Bundle\EngineBundle\Engine\Module
+    engine.module_manager:
+        class: SmartCore\Bundle\EngineBundle\Engine\ModuleManager
         calls:
             - [ setContainer, [ @service_container ] ]
+            - [ initialize ]
     engine.node:
         class: SmartCore\Bundle\EngineBundle\Engine\Node
         calls:

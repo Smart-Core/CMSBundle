@@ -10,7 +10,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ORM\Entity
  * @ORM\Table(name="engine_blocks",
  *      indexes={
- *          @ORM\Index(name="pos", columns={"pos"}),
+ *          @ORM\Index(name="position", columns={"position"}),
  *      }
  * )
  * -UniqueEntity("name")
@@ -32,7 +32,7 @@ class Block
      * -Assert\Regex(pattern="/\d+/", match=FALSE, message="BAD!" )
      * @Assert\Range(min = "-255", minMessage = "Минимальное значение -255.", max = "255", maxMessage = "Максимальное значение 255.")
      */
-    protected $pos;
+    protected $position;
 
     /**
      * @ORM\Column(type="string", length=50, nullable=FALSE, unique=TRUE)
@@ -59,8 +59,21 @@ class Block
     {
         $this->create_by_user_id = 0;
         $this->create_datetime = new \DateTime();
-        $this->pos = 0;
+        $this->position = 0;
         $this->descr = null;
+    }
+
+    public function __toString()
+    {
+        $descr = $this->getDescr();
+
+        if (empty($descr)) {
+            $full_title = $this->getName();
+        } else {
+            $full_title = $descr . ' (' . $this->getName() . ')';
+        }
+
+        return $full_title;
     }
 
     public function getId()
@@ -88,18 +101,18 @@ class Block
         return $this->name;
     }
 
-    public function setPos($pos)
+    public function setPosition($pos)
     {
         if (empty($pos)) {
             $pos = 0;
         }
 
-        $this->pos = $pos;
+        $this->position = $pos;
     }
 
-    public function getPos()
+    public function getPosition()
     {
-        return $this->pos;
+        return $this->position;
     }
 
     public function setCreateByUserId($create_by_user_id)

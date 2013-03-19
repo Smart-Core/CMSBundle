@@ -39,7 +39,7 @@
                     //window.open(node.data.href, node.data.target);
                     window.location = node.data.href;
                     // or open target in iframe
-//                $("[name=contentFrame]").attr("src", node.data.href);
+                    //$("[name=contentFrame]").attr("src", node.data.href);
                 }
             },
             onDblClick: function(node, event) {
@@ -48,9 +48,7 @@
             },
             dnd: {
                 onDragStart: function(node) {
-                    /** This function MUST be defined to enable dragging for the tree.
-                     *  Return false to cancel dragging of node.
-                     */
+                    // This function MUST be defined to enable dragging for the tree. Return false to cancel dragging of node.
                     logMsg("tree.onDragStart(%o)", node);
                     return true;
                 },
@@ -78,9 +76,7 @@
                     }
                 },
                 onDragOver: function(node, sourceNode, hitMode) {
-                    /** Return false to disallow dropping this node.
-                     *
-                     */
+                    // Return false to disallow dropping this node.
                     logMsg("tree.onDragOver(%o, %o, %o)", node, sourceNode, hitMode);
                     // Prevent dropping a parent below it's own child
                     if(node.isDescendantOf(sourceNode)){
@@ -92,17 +88,14 @@
                     }
                 },
                 onDrop: function(node, sourceNode, hitMode, ui, draggable) {
-                    /** This function MUST be defined to enable dropping of items on
-                     * the tree.
-                     */
+                    // This function MUST be defined to enable dropping of items on  the tree.
                     logMsg("tree.onDrop(%o, %o, %s)", node, sourceNode, hitMode);
                     sourceNode.move(node, hitMode);
                     // expand the drop target
                     sourceNode.expand(true);
                 },
                 onDragLeave: function(node, sourceNode) {
-                    /** Always called if onDragEnter was called.
-                     */
+                    // Always called if onDragEnter was called.
                     logMsg("tree.onDragLeave(%o, %o)", node, sourceNode);
                 }
             }

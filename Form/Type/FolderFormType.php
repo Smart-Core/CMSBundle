@@ -16,7 +16,7 @@ class FolderFormType extends AbstractType
             ->add('uri_part')
             ->add('descr')
             ->add('parent_folder', 'folder_tree')
-            ->add('pos')
+            ->add('position')
             ->add('is_active')
             ->add('is_file')
             ->add('has_inherit_nodes')

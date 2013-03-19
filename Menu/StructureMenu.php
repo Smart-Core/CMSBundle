@@ -6,12 +6,10 @@ use Knp\Menu\FactoryInterface;
 use Knp\Menu\ItemInterface;
 use Symfony\Component\DependencyInjection\ContainerAware;
 use SmartCore\Bundle\EngineBundle\Entity\Folder;
+use SmartCore\Bundle\EngineBundle\Entity\Node;
 
 class StructureMenu extends ContainerAware
 {
-    /** @var $folderRepository \Doctrine\ORM\EntityRepository */
-    protected $folderRepository;
-
     /** @var $em \Doctrine\ORM\EntityManager */
     protected $em;
 
@@ -32,7 +30,6 @@ class StructureMenu extends ContainerAware
         ));
 
         $this->em = $this->container->get('doctrine')->getManager();
-        $this->folderRepository = $this->container->get('doctrine')->getRepository('SmartCoreEngineBundle:Folder');
 
         $this->addChild($menu);
 
@@ -47,12 +44,13 @@ class StructureMenu extends ContainerAware
      */
     protected function addChild(ItemInterface $menu, Folder $parent_folder = null)
     {
-        $folders = $this->folderRepository->findBy(
+        $folders = $this->em->getRepository('SmartCoreEngineBundle:Folder')->findBy(
             array('parent_folder' => $parent_folder),
-            array('pos' => 'ASC')
+            array('position' => 'ASC')
         );
 
         /** @var $folder Folder */
+        /** @var $node Node */
         foreach ($folders as $folder) {
             $uri = $this->container->get('router')->generate('cmf_admin_structure_folder', array('id' => $folder->getId()));
             $menu->addChild($folder->getTitle(), array('uri' => $uri))->setAttributes(array(
@@ -61,7 +59,22 @@ class StructureMenu extends ContainerAware
                 'id' => 'folder_id_' . $folder->getId(),
             ));
 
-            $this->addChild($menu[$folder->getTitle()], $folder);
+            $nodes = $this->em->getRepository('SmartCoreEngineBundle:Node')->findBy(
+                array('folder' => $folder),
+                array('position' => 'ASC')
+            );
+
+            $sub_menu = $menu[$folder->getTitle()];
+
+            $this->addChild($sub_menu, $folder);
+
+            foreach ($nodes as $node) {
+                $uri = $this->container->get('router')->generate('cmf_admin_structure_node_properties', array('id' => $node->getId()));
+                $sub_menu->addChild($node->getDescr() . ' (' . $node->getModule() . ':' . $node->getId() . ')', array('uri' => $uri))->setAttributes(array(
+                    'title' => $node->getDescr(),
+                    'id' => 'node_id_' . $node->getId(),
+                ));
+            }
         }
     }
 }

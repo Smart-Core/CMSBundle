@@ -15,7 +15,7 @@ use SmartCore\Bundle\EngineBundle\Container;
  *      indexes={
  *          @ORM\Index(name="is_active", columns={"is_active"}),
  *          @ORM\Index(name="is_deleted", columns={"is_deleted"}),
- *          @ORM\Index(name="pos", columns={"pos"})
+ *          @ORM\Index(name="position", columns={"position"})
  *      },
  *      uniqueConstraints={
  *          @ORM\UniqueConstraint(name="folder_pid_uri_part", columns={"folder_pid", "uri_part"}),
@@ -52,7 +52,7 @@ class Folder
     /**
      * @ORM\Column(type="smallint")
      */
-    protected $pos;
+    protected $position;
     
     /**
      * @ORM\Column(type="string", nullable=TRUE)
@@ -140,7 +140,7 @@ class Folder
         $this->redirect_to = null;
         $this->router_node_id = null;
         $this->parent_folder = null;
-        $this->pos = 0;
+        $this->position = 0;
         $this->form_title = '';
     }
 
@@ -157,16 +157,6 @@ class Folder
     public function getTitle()
     {
         return $this->title;
-    }
-
-    public function setPos($pos)
-    {
-        $this->pos = $pos;
-    }
-
-    public function getPos()
-    {
-        return $this->pos;
     }
 
     public function setIsFile($is_file)
@@ -256,6 +246,16 @@ class Folder
     public function getParentFolder()
     {
         return $this->parent_folder;
+    }
+
+    public function setPosition($position)
+    {
+        $this->position = $position;
+    }
+
+    public function getPosition()
+    {
+        return $this->position;
     }
 
     public function setFormTitle($form_title)

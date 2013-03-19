@@ -50,7 +50,7 @@ class FolderLoader implements EntityLoaderInterface
 
         $folders = $this->repo->findBy(
             array('parent_folder' => $parent_folder),
-            array('pos' => 'ASC')
+            array('position' => 'ASC')
         );
 
         /** @var $folder Folder */

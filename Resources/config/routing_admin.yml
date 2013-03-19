@@ -38,7 +38,7 @@ cmf_admin_structure_node_create:
 cmf_admin_structure_node_create_in_folder:
     path: /structure/node/create/{folder_pid}/
     defaults:
-        _controller: SmartCoreEngineBundle:Admin:node
+        _controller: SmartCoreEngineBundle:AdminStructure:nodeCreate
 cmf_admin_structure_node_all:
     path: /structure/node/
     defaults:

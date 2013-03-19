@@ -13,7 +13,7 @@ class BlockFormType extends AbstractType
         $builder
             ->add('name', null, array('attr' => array('class' => 'focused')))
             ->add('descr')
-            ->add('pos')
+            ->add('position')
         ;
     }
 

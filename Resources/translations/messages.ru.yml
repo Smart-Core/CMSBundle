@@ -2,18 +2,20 @@
 Add: Добавить
 Administration: Управление
 Appearance: Оформление
+Block: Блок
 Blocks: Блоки
 Cancel: Отменить
 Configuration: Конфигруация
 Connect module: Подключить модуль
 Create datetime: Дата создания
 Create folder: Добавить раздел
+Create node: Подключить модуль
 Descr: Описание
 Description: Описание
 Delete: Удалить
 Edit folder: Редактировать раздел
 Exit: Выход
-Parent folder: Родительская папка
+Folder: Папка
 Has inherit nodes: Наследование нод
 Help: Справка
 Inherit in folders: Наследование в папках
@@ -24,6 +26,7 @@ My profile: Мой профиль
 Modules: Модули
 Name: Имя
 Nodes count: Кол-во нод
+Parent folder: Родительская папка
 Permissions: Права доступа
 Pos: Позиция
 Position: Позиция
