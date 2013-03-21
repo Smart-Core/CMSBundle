@@ -8,5 +8,5 @@
 
 {% block content %}
 {{ parent() }}
-{{ render(controller('SmartCoreEngineBundle:AdminStructure:showTree', {'id': folder_id})) }}
+{{ render(controller('SmartCoreEngineBundle:AdminStructure:showTree', {'folder_id': folder_id, 'node_id': node_id} )) }}
 {% endblock content %}

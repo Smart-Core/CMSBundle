@@ -29,9 +29,15 @@
     <script src="{{ app.request.basePath }}/assets/bootstrap/js/bootstrap.min.js" type="text/javascript"></script>
 {% endblock html_head_scripts %}
 
+
 {% block body_js %}
 {{ parent() }}
-    <script type="text/javascript">
+<script type="text/javascript">
+    {# Фокусировка на элементе с классом .focused а также позиционирование курсора в конец поля #}
+    $(function(){
+        $('.focused').focusEnd();
+    });
+
     $.fn.setCursorPosition = function(position){
         if(this.length == 0) return this;
         return $(this).setSelection(position, position);
@@ -57,9 +63,5 @@
         this.setCursorPosition(this.val().length);
         return this;
     }
-
-    $(function(){
-        $('.focused').focusEnd();
-    });
-    </script>
+</script>
 {% endblock body_js %}

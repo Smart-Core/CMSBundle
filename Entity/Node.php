@@ -37,7 +37,7 @@ class Node
     protected $module;
 
     /**
-     * @ORM\Column(type="text", nullable=TRUE)
+     * @ORM\Column(type="array", nullable=TRUE)
      */
     protected $params;
 
@@ -208,5 +208,15 @@ class Node
     public function getModule()
     {
         return $this->module;
+    }
+
+    public function setParams($params)
+    {
+        $this->params = $params;
+    }
+
+    public function getParams()
+    {
+        return $this->params;
     }
 }

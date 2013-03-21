@@ -4,7 +4,7 @@ namespace SmartCore\Bundle\EngineBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller as BaseController;
 use SmartCore\Bundle\EngineBundle\Engine\View;
-use Symfony\Component\HttpFoundation\Response;
+//use Symfony\Component\HttpFoundation\Response;
 
 class Controller extends BaseController
 {
@@ -17,23 +17,13 @@ class Controller extends BaseController
     /**
      * Constructor.
      * 
-     * Вызывается как parent::__construct(); из дочерних классов.
-     * 
      * @todo пересмотреть логику... ненравится мне эта инициализация вида...
      */
     public function __construct()
     {
-        $this->initView();
-    }
-    
-    /**
-     * NewFunction
-     */
-    public function initView()
-    {
         // По умолчанию устанавливается имя шаблона, как короткое имя контроллера.
         $reflector = new \ReflectionClass(get_class($this));
-        
+
         if (substr($reflector->getShortName(), -10) == 'Controller') {
             $template = substr($reflector->getShortName(), 0, strlen($reflector->getShortName()) - 10);
         } else {
@@ -44,22 +34,6 @@ class Controller extends BaseController
             'template' => strtolower($template),
             'engine' => 'twig',
         ));
-    }
-    
-    /**
-     * Магическое обращение к сервисам.
-     *
-     * @todo убрать.
-     */
-    public function __get($name)
-    {
-        if (!is_object($this->container)) {
-            throw new \Exception('SmartCore\EngineBundle: Container is not accesible. Service "engine.' . $name . '" fail.');
-        }
-
-        if ($name == 'DB') {
-            return $this->container->get('engine.db');
-        }
     }
     
     /**
@@ -100,9 +74,8 @@ class Controller extends BaseController
     /**
      * @return \Doctrine\ORM\EntityRepository
      */
-    public function getRepo($name)
+    public function getRepo($name, $persistentManagerName = null)
     {
-        return $this->getDoctrine()->getRepository($name);
+        return $this->getDoctrine()->getRepository($name, $persistentManagerName);
     }
-
 }

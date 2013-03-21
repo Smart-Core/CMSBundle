@@ -27,6 +27,51 @@ class AdminStructureController extends Controller
         ));
     }
 
+    public function nodeEditAction(Request $request, $id)
+    {
+        $em = $this->EM();
+
+        /** @var $node Node */
+        $node = $em->find('SmartCoreEngineBundle:Node', $id);
+
+        if (empty($node)) {
+            return $this->redirect($this->generateUrl('cmf_admin_structure'));
+        }
+
+        $form = $this->createForm(new NodeFormType(), $node);
+        $form_properties = $this->createForm($this->get('engine.module_manager')->getNodePropertiesFormType($node), $node->getParams());
+
+        $form->remove('module');
+
+        if ($request->isMethod('POST')) {
+            if ($request->request->has('update')) {
+                $form->bind($request);
+                $form_properties->bind($request);
+                if ($form->isValid() and $form_properties->isValid()) {
+                    /** @var $updated_node Node */
+                    $updated_node = $form->getData();
+                    $updated_node->setParams($form_properties->getData());
+                    $em->persist($updated_node);
+                    $em->flush();
+
+                    $this->get('session')->getFlashBag()->add('notice', 'Нода обновлена.');
+                    return $this->redirect($this->generateUrl('cmf_admin_structure'));
+                }
+            } else if ($request->request->has('delete')) {
+                die('@todo');
+            }
+        }
+
+        return $this->renderView('SmartCoreEngineBundle:Admin:node_edit.html.twig', array(
+            'node_id' => $id,
+            'html_head_title' => 'Edit node',
+            'form' => $form->createView(),
+            'form_action' => $this->generateUrl('cmf_admin_structure_node_properties', array('id' => $id)),
+            'form_controls' => 'update',
+            'form_properties' => $form_properties->createView(),
+        ));
+    }
+
     public function nodeCreateAction(Request $request, $folder_pid = 1)
     {
         $em = $this->EM();
@@ -41,11 +86,16 @@ class AdminStructureController extends Controller
             if ($request->request->has('create')) {
                 $form->bind($request);
                 if ($form->isValid()) {
-                    $em->persist($form->getData());
+                    $created_node = $form->getData();
+
+                    // Свежесозданная нода выполняет свои действия, а также устанавливает параметры по умолчанию.
+                    $this->get('engine.module_manager')->createNode($created_node);
+
+                    $em->persist($created_node);
                     $em->flush();
 
                     $this->get('session')->getFlashBag()->add('notice', 'Нода создана.');
-                    return $this->redirect($this->generateUrl('cmf_admin_structure'));
+                    return $this->redirect($this->generateUrl('cmf_admin_structure_node_properties', array('id' => $created_node->getId())));
                 }
             } else if ($request->request->has('delete')) {
                 die('@todo');
@@ -88,7 +138,6 @@ class AdminStructureController extends Controller
             if ($request->request->has('update')) {
                 $form->bind($request);
                 if ($form->isValid()) {
-                    $em = $this->EM();
                     $em->persist($form->getData());
                     $em->flush();
 
@@ -106,6 +155,7 @@ class AdminStructureController extends Controller
             'form' => $form->createView(),
             'form_action' => $this->generateUrl('cmf_admin_structure_folder', array('id' => $id)),
             'form_controls' => 'update',
+            'allow_delete' => $id != 1 ? true : false,
         ));
     }
 
@@ -206,10 +256,11 @@ class AdminStructureController extends Controller
     /**
      * Отображение структуры в виде дерева.
      */
-    public function showTreeAction($id = null)
+    public function showTreeAction($folder_id = null, $node_id = null)
     {
         return $this->renderView('SmartCoreEngineBundle:Admin:tree.html.twig', array(
-            'folder_id' => $id,
+            'folder_id' => $folder_id,
+            'node_id' => $node_id,
         ));
     }
 }

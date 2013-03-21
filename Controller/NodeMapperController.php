@@ -298,9 +298,9 @@ class NodeMapperController extends Controller
 
         foreach ($nodes_list as $node_id => $node_properties) {
             // Не собираем ноду, если она уже была отработала в механизе nodeAction()
-            if ($node_id == $this->front_end_action_node_id) {
-                continue;
-            }
+//            if ($node_id == $this->front_end_action_node_id) {
+//                continue;
+//            }
 
             $block_name = $blocks[$node_properties['block_id']]['name'];
 

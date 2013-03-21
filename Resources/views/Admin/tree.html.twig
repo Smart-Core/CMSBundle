@@ -102,9 +102,15 @@
         });
 
         {% if folder_id %}
-        $("#tree").dynatree("getTree").activateKey("folder_id_{{ folder_id }}");
-        //$("#tree").dynatree("getTree").getNodeByKey("id4.3.2").activate();
+            $("#tree").dynatree("getTree").activateKey("folder_id_{{ folder_id }}");
+            {#$("#tree").dynatree("getTree").getNodeByKey("id4.3.2").activate();#}
+        {% elseif node_id %}
+            $("#tree").dynatree("getTree").activateKey("node_id_{{ node_id }}");
         {% endif %}
+
+        $("#tree").dynatree("getRoot").visit(function(node){
+            node.expand(true);
+        });
     });
 </script>
 

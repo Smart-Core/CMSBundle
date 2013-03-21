@@ -30,4 +30,12 @@ class Bundle extends BaseBundle
     {
         return 'index';
     }
+
+    /**
+     * Действие при создании ноды.
+     */
+    public function createNode($node)
+    {
+
+    }
 }

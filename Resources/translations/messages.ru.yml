@@ -14,6 +14,7 @@ Descr: Описание
 Description: Описание
 Delete: Удалить
 Edit folder: Редактировать раздел
+Edit node: Редактировать ноду
 Exit: Выход
 Folder: Папка
 Has inherit nodes: Наследование нод
@@ -24,6 +25,7 @@ Is file: Является файлом?
 Lockout nodes: Блокировка нод
 My profile: Мой профиль
 Modules: Модули
+Module: Модуль
 Name: Имя
 Nodes count: Кол-во нод
 Parent folder: Родительская папка
