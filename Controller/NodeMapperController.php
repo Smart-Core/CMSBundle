@@ -7,6 +7,8 @@ use Symfony\Component\HttpFoundation\Response;
 use SmartCore\Bundle\EngineBundle\Engine\View;
 use SmartCore\Bundle\EngineBundle\Container;
 
+use SmartCore\Bundle\EngineBundle\Entity\Folder;
+
 class NodeMapperController extends Controller
 {
     public function indexAction(Request $request, $slug)
@@ -15,21 +17,23 @@ class NodeMapperController extends Controller
 //        ld($this->container->getParameter('security.role_hierarchy.roles'));
 
         // @todo убрать, это здесь на время отладки.
+        /*
         $flashes = $request->getSession()->getFlashBag()->all();
         if (!empty($flashes)) {
-            //ld($flashes);
+            ld($flashes);
         }
+        */
 
         // @todo вынести router в другое место... можно сделать в виде отдельного сервиса, например 'engine.folder_router'.
-        $router_data = $this->engine('folder')->router($request->getPathInfo());
+        $router_data = $this->get('engine.folder')->router($request->getPathInfo());
 //        ld($router_data);
 
+        /** @var $folder Folder */
         foreach ($router_data['folders'] as $folder) {
-            $this->engine('breadcrumbs')->add($folder['uri'], $folder['title'], $folder['descr']);
-            if (isset($folder['router_response'])) {
-                $mbc = $folder['router_response']->getBreadcrumbs();
-                foreach ($mbc as $bc) {
-                    $this->engine('breadcrumbs')->add($bc['uri'], $bc['title'], $bc['descr']);
+            $this->get('engine.breadcrumbs')->add($folder->getUri(), $folder->getTitle(), $folder->getDescr());
+            if ($router_data['node_route']['response']) {
+                foreach ($router_data['node_route']['response']->getBreadcrumbs() as $bc) {
+                    $this->get('engine.breadcrumbs')->add($bc['uri'], $bc['title'], $bc['descr']);
                 }
             }
         }
@@ -221,7 +225,7 @@ class NodeMapperController extends Controller
             ;
         }
 
-        $theme_path = $this->engine('env')->base_path . $this->engine('env')->theme_path;
+        $theme_path = $this->get('engine.env')->theme_path;
         $this->View->assets = array(
             'theme_path'        => $theme_path,
             'theme_css_path'    => $theme_path . 'css/',
@@ -250,7 +254,7 @@ class NodeMapperController extends Controller
             'engine'    => 'echo',
         ));
 
-        $nodes_list = $this->engine('node')->buildNodesListByFolders($router_data['folders']);
+        $nodes_list = $this->get('engine.node')->buildNodesList($router_data);
 //        ld($nodes_list);
 
         $this->buildModulesData($nodes_list);

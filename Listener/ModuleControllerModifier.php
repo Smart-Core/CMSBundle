@@ -57,7 +57,7 @@ class ModuleControllerModifier
                     $controller[2] = $node['action'];
                 }
 
-                $event->getRequest()->attributes->set('_controller', $node['module_id'] . 'Module:' . $controller[1] . ':' . $controller[2]);
+                $event->getRequest()->attributes->set('_controller', $node['module'] . 'Module:' . $controller[1] . ':' . $controller[2]);
                 $event->getRequest()->attributes->set('_node', $node);
                 if (!empty($node['arguments']) and is_array($node['arguments'])) {
                     foreach ($node['arguments'] as $name => $value) {

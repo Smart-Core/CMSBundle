@@ -2,6 +2,7 @@
 
 namespace SmartCore\Bundle\EngineBundle\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -54,6 +55,17 @@ class Block
      * @ORM\Column(type="datetime")
      */
     protected $create_datetime;
+
+    /**
+     * @ORM\ManyToMany(targetEntity="Folder")
+     * @ORM\JoinTable(name="engine_blocks_inherit",
+     *      joinColumns={@ORM\JoinColumn(name="block_id", referencedColumnName="block_id")},
+     *      inverseJoinColumns={@ORM\JoinColumn(name="folder_id", referencedColumnName="folder_id")}
+     *      )
+     *
+     * @var ArrayCollection
+     */
+    protected $folders;
     
     public function __construct()
     {
@@ -61,6 +73,7 @@ class Block
         $this->create_datetime = new \DateTime();
         $this->position = 0;
         $this->descr = null;
+        $this->folders = new ArrayCollection();
     }
 
     public function __toString()
@@ -89,6 +102,16 @@ class Block
     public function getDescr()
     {
         return $this->descr;
+    }
+
+    public function setFolders($folder)
+    {
+        $this->folders->add($folder);
+    }
+
+    public function getFolders()
+    {
+        return $this->folders;
     }
 
     public function setName($name)

@@ -19,7 +19,7 @@ class Environment extends ParameterBag
 
         parent::__construct(array(
             'base_path'             => $base_path,
-            'base_url'              => $container->get('request')->getBaseUrl() . '/',
+            //'base_url'              => $container->get('request')->getBaseUrl() . '/',
             'current_folder_id'     => 1,
             'current_folder_path'   => $base_path,
             'dir_app'               => $kernel->getRootDir()  . '/',
@@ -31,7 +31,7 @@ class Environment extends ParameterBag
             // Хост проекта, в формате "site.com" т.е. без префикса "www."
             'http_host'             => str_replace('www.', '', $_SERVER['HTTP_HOST']),
             // Относительный путь к теме оформления.
-            'theme_path'            => 'theme/',
+            'theme_path'            => $base_path . 'theme/',
             // Путь к глобальным ресурсам. Может быть на другом домене, например 'http://site.com/assets/'
             'global_assets'         => $base_path . 'assets/',
         ));
@@ -44,6 +44,10 @@ class Environment extends ParameterBag
      */
     public function __get($name)
     {
-        return $this->get($name);
+        if ($this->has($name)) {
+            return $this->get($name);
+        } else {
+            throw new \Exception("Параметр $name не доступен.");
+        }
     }
 }

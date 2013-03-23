@@ -44,13 +44,13 @@ class StructureMenu extends ContainerAware
      */
     protected function addChild(ItemInterface $menu, Folder $parent_folder = null)
     {
-        $folders = $this->em->getRepository('SmartCoreEngineBundle:Folder')->findBy(
-            array('parent_folder' => $parent_folder),
-            array('position' => 'ASC')
-        );
+        if (null == $parent_folder) {
+            $folders = $this->em->getRepository('SmartCoreEngineBundle:Folder')->findByParent(null);
+        } else {
+            $folders = $parent_folder->getChildren();
+        }
 
         /** @var $folder Folder */
-        /** @var $node Node */
         foreach ($folders as $folder) {
             $uri = $this->container->get('router')->generate('cmf_admin_structure_folder', array('id' => $folder->getId()));
             $menu->addChild($folder->getTitle(), array('uri' => $uri))->setAttributes(array(
@@ -59,16 +59,13 @@ class StructureMenu extends ContainerAware
                 'id' => 'folder_id_' . $folder->getId(),
             ));
 
-            $nodes = $this->em->getRepository('SmartCoreEngineBundle:Node')->findBy(
-                array('folder' => $folder),
-                array('position' => 'ASC')
-            );
-
+            /** @var $sub_menu ItemInterface */
             $sub_menu = $menu[$folder->getTitle()];
 
             $this->addChild($sub_menu, $folder);
 
-            foreach ($nodes as $node) {
+            /** @var $node Node */
+            foreach ($folder->getNodes() as $node) {
                 $uri = $this->container->get('router')->generate('cmf_admin_structure_node_properties', array('id' => $node->getId()));
                 $sub_menu->addChild($node->getDescr() . ' (' . $node->getModule() . ':' . $node->getId() . ')', array('uri' => $uri))->setAttributes(array(
                     'title' => $node->getDescr(),

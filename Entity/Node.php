@@ -42,7 +42,7 @@ class Node
     protected $params;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Folder")
+     * @ORM\ManyToOne(targetEntity="Folder", inversedBy="nodes")
      * @ORM\JoinColumn(name="folder_id", referencedColumnName="folder_id")
      * @Assert\NotBlank()
      */

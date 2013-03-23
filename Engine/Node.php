@@ -3,6 +3,7 @@
 namespace SmartCore\Bundle\EngineBundle\Engine;
 
 use Symfony\Component\DependencyInjection\ContainerAware;
+use SmartCore\Bundle\EngineBundle\Entity\Folder;
 
 class Node extends ContainerAware
 {
@@ -10,7 +11,7 @@ class Node extends ContainerAware
 
     /**
      * Список всех нод, запрошенных через роутинг.
-     * Строится методом buildNodesListByFolders().
+     * Строится методом buildNodesList().
      */
     protected $nodes_list = array();
 
@@ -28,7 +29,7 @@ class Node extends ContainerAware
 
         $db = $this->container->get('engine.db');
 
-        $sql = "SELECT * FROM engine_nodes WHERE node_id = '$node_id' ";
+        $sql = "SELECT * FROM aaa_engine_nodes WHERE node_id = '$node_id' ";
         $result = $db->query($sql);
         if ($result->rowCount() == 1) {
             return $this->getPropertiesByRow($result->fetchObject());
@@ -46,7 +47,9 @@ class Node extends ContainerAware
      */
     protected function getPropertiesByRow($row)
     {
-        $module = $this->container->get('kernel')->getBundle($row->module_id . 'Module');
+//        ld($row);
+
+        $module = $this->container->get('kernel')->getBundle($row->module . 'Module');
 
         if (!empty($row->controller)) {
             $tmp = explode(':', $row->controller);
@@ -61,29 +64,29 @@ class Node extends ContainerAware
             'id'            => $row->node_id,
             'node_id'       => $row->node_id,
             'is_active'     => $row->is_active,
-            'is_cached'     => $row->is_cached,
+//            'is_cached'     => $row->is_cached,
             'folder_id'     => $row->folder_id,
             'block_id'      => $row->block_id,
-            'pos'           => $row->pos,
-            'database_id'   => $row->database_id,
+            'position'      => $row->position,
+//            'database_id'   => $row->database_id,
             'descr'         => $row->descr,
             
-            'module_id'     => $row->module_id,
+            'module'        => $row->module,
             'module_class'  => get_class($module),
             'controller'    => $controller,
             'action'        => $action,
             'arguments'     => array(),
             
             'params'        => empty($row->params) ? array() : unserialize($row->params),
-            'permissions'   => $row->permissions,
-            'plugins'       => $row->plugins, // @todo продумать.
+//            'permissions'   => $row->permissions,
+//            'plugins'       => $row->plugins, // @todo продумать.
             
-            'cache_params'  => empty($row->cache_params) ? null : unserialize($row->cache_params),
-            'cache_params_yaml' => $row->cache_params_yaml,
+//            'cache_params'  => empty($row->cache_params) ? null : unserialize($row->cache_params),
+//            'cache_params_yaml' => $row->cache_params_yaml,
             
-            'node_action_mode'  => $row->node_action_mode,
-            'owner_id'          => $row->owner_id,
-            'create_datetime'   => $row->create_datetime,
+//            'node_action_mode'  => $row->node_action_mode,
+//            'owner_id'          => $row->owner_id,
+//            'create_datetime'   => $row->create_datetime,
         );
     }
 
@@ -335,8 +338,10 @@ class Node extends ContainerAware
      * @param array     $parsed_uri
      * @return array    $nodes_list
      */
-    public function buildNodesListByFolders(array $folders)
+    public function buildNodesList(array $router_data)
     {
+        $folders = $router_data['folders'];
+
         if (!empty($this->nodes_list)) {
             return $this->nodes_list;
         }
@@ -350,8 +355,11 @@ class Node extends ContainerAware
             'except'  => array(), // Блокировка всех нод в папке, кроме заданных.
         );
 
-        foreach ($folders as $folder_id => $parsed_uri_value) {
+        /** @var $folder Folder */
+        foreach ($folders as $folder) {
             // single каждый раз сбрасывается и устанавливается заново для каждоый папки.
+            // @todo блокировку нод.
+            /*
             $lockout_nodes['single'] = array();
             if (isset($parsed_uri_value['lockout_nodes']['single']) and !empty($parsed_uri_value['lockout_nodes']['single'])) {
                 //$lockout_nodes['single'] = $parsed_uri_value['lockout_nodes']['single'];
@@ -385,28 +393,33 @@ class Node extends ContainerAware
                     }
                 }
             }
+            */
 
             $sql = false;
-            if ($parsed_uri_value['has_inherit_nodes'] == 1) { // в этой папке есть ноды, которые наследуются...
+            if ($folder->getHasInheritNodes()) { // в этой папке есть ноды, которые наследуются...
                 $sql = "SELECT n.*
-                    FROM engine_nodes AS n,
+                    FROM aaa_engine_nodes AS n,
                         engine_blocks_inherit AS bi
                     WHERE n.block_id = bi.block_id 
                         AND is_active = 1
-                        AND n.folder_id = '{$folder_id}'
-                        AND bi.folder_id = '{$folder_id}'
-                    ORDER BY n.pos
+                        AND n.folder_id = '{$folder->getId()}'
+                        AND bi.folder_id = '{$folder->getId()}'
+                    ORDER BY n.position
                 ";
             }
 
             // Обрабатываем последнюю папку т.е. текущую.
-            if ($folder_id == $this->container->get('engine.env')->get('current_folder_id')) { // @todo убрать Env
-                $sql = "SELECT * FROM engine_nodes WHERE folder_id = '{$folder_id}' AND is_active = '1' ";
+            if ($folder->getId() == $this->container->get('engine.env')->get('current_folder_id')) {
+                $sql = "SELECT *
+                    FROM aaa_engine_nodes
+                    WHERE folder_id = '{$folder->getId()}'
+                    AND is_active = '1'
+                ";
                 // исключаем ранее включенные ноды.
                 foreach ($used_nodes as $used_nodes_value) {
                     $sql .= " AND node_id != '{$used_nodes_value}'";
                 }
-                $sql .= ' ORDER BY pos';
+                $sql .= ' ORDER BY position';
             }
 
             // В папке нет нод для сборки.
@@ -422,29 +435,31 @@ class Node extends ContainerAware
                 }*/
 
                 // Создаётся список нод, которые уже в включены.
-                if ($parsed_uri_value['has_inherit_nodes'] == 1) {
+                if ($folder->getHasInheritNodes()) {
                     $used_nodes[] = $row->node_id; 
                 }
 
                 $this->nodes_list[$row->node_id] = $this->getPropertiesByRow($row);
             }
             
-            // Если есть ответ роутинга модуля, то подменяются controller, action и arguments.  
-            if (isset($parsed_uri_value['router_response'])) {
-                if ($controller = $parsed_uri_value['router_response']->getController()) {
-                    $this->nodes_list[$parsed_uri_value['router_node_id']]['controller'] = $controller;
+            // Если есть ответ роутинга модуля, то подменяются controller, action и arguments.
+            if (isset($router_data['node_route']['response'])) {
+                $node_route = $router_data['node_route'];
+                if ($controller = $node_route['response']->getController()) {
+                    $this->nodes_list[$node_route['id']]['controller'] = $controller;
                 }
                 
-                if ($action = $parsed_uri_value['router_response']->getAction()) {
-                    $this->nodes_list[$parsed_uri_value['router_node_id']]['action'] = $action;
+                if ($action = $node_route['response']->getAction()) {
+                    $this->nodes_list[$node_route['id']]['action'] = $action;
                 }
                 
-                $arguments = $parsed_uri_value['router_response']->getAllArguments();
+                $arguments = $node_route['response']->getAllArguments();
                 if (!empty($arguments)) {
-                    $this->nodes_list[$parsed_uri_value['router_node_id']]['arguments'] = $arguments;
+                    $this->nodes_list[$node_route['id']]['arguments'] = $arguments;
                 }
-                // $this->nodes_list[$parsed_uri_value['router_node_id']]['router_response'] = $parsed_uri_value['router_response'];
+                //$this->nodes_list[$node_route['id']]['response'] = $node_route['response'];
             }
+
         }
 
         foreach ($lockout_nodes['single'] as $node_id => $value) {

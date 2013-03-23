@@ -2,14 +2,14 @@
 
 namespace SmartCore\Bundle\EngineBundle\Entity;
 
-//use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
 use SmartCore\Bundle\EngineBundle\Container;
 
 /**
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="FolderRepository")
  * @ORM\HasLifecycleCallbacks
  * @ORM\Table(name="engine_folders",
  *      indexes={
@@ -33,10 +33,22 @@ class Folder
     protected $folder_id;
     
     /**
-     * @ORM\ManyToOne(targetEntity="Folder")
+     * @ORM\ManyToOne(targetEntity="Folder", inversedBy="children")
      * @ORM\JoinColumn(name="folder_pid", referencedColumnName="folder_id")
      */
     protected $parent_folder;
+
+    /**
+     * @ORM\OneToMany(targetEntity="Folder", mappedBy="parent_folder")
+     * @ORM\OrderBy({"position" = "ASC"})
+     */
+    protected $children;
+
+    /**
+     * @ORM\OneToMany(targetEntity="Node", mappedBy="folder")
+     * @ORM\OrderBy({"position" = "ASC"})
+     */
+    protected $nodes;
 
     /**
      * @ORM\Column(type="string")
@@ -124,29 +136,56 @@ class Folder
      */
     protected $form_title;
 
+    /**
+     * Полный URI. Генерируется динамически.
+     */
+    protected $uri;
+
+    public function setUri($uri)
+    {
+        $this->uri = $uri;
+    }
+
+    public function getUri()
+    {
+        return $this->uri;
+    }
+
     public function __construct()
     {
+        $this->children = new ArrayCollection();
         $this->create_by_user_id = 0;
         $this->create_datetime = new \DateTime();
+        $this->form_title = '';
         $this->meta = null;
-        $this->permissions = null;
-        $this->lockout_nodes = null;
         $this->is_active = true;
         $this->is_deleted = false;
         $this->is_file = false;
         $this->has_inherit_nodes = false;
-        $this->uri_part = '';
-        $this->template = null;
+        $this->lockout_nodes = null;
+        $this->nodes = new ArrayCollection();
+        $this->parent_folder = null;
+        $this->permissions = null;
+        $this->position = 0;
         $this->redirect_to = null;
         $this->router_node_id = null;
-        $this->parent_folder = null;
-        $this->position = 0;
-        $this->form_title = '';
+        $this->template = null;
+        $this->uri_part = '';
     }
 
     public function __toString()
     {
         return $this->getTitle();
+    }
+
+    public function getChildren()
+    {
+        return $this->children;
+    }
+
+    public function getNodes()
+    {
+        return $this->nodes;
     }
 
     public function setTitle($title)
@@ -216,7 +255,11 @@ class Folder
 
     public function getMeta()
     {
-        return $this->meta;
+        if (empty($this->meta)) {
+            return array();
+        } else {
+            return $this->meta;
+        }
     }
 
     public function getId()
@@ -268,6 +311,26 @@ class Folder
         return $this->form_title;
     }
 
+    public function setRouterNodeId($router_node_id)
+    {
+        $this->router_node_id = $router_node_id;
+    }
+
+    public function getRouterNodeId()
+    {
+        return $this->router_node_id;
+    }
+
+    public function setTemplate($template)
+    {
+        $this->template = $template;
+    }
+
+    public function getTemplate()
+    {
+        return $this->template;
+    }
+
     /**
      * @ORM\PrePersist()
      * @ORM\PreUpdate()
@@ -280,6 +343,11 @@ class Folder
 
         // Защита от цикличных зависимостей.
         $parent = $this->getParentFolder();
+
+        if(null == $parent) {
+            return;
+        }
+
         $cnt = 30;
         $ok = false;
         while ($cnt--) {
