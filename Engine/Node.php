@@ -396,10 +396,11 @@ class Node extends ContainerAware
             */
 
             $sql = false;
+            // @todo запаковать database_table_prefix в конфиг движка.
             if ($folder->getHasInheritNodes()) { // в этой папке есть ноды, которые наследуются...
                 $sql = "SELECT n.*
                     FROM aaa_engine_nodes AS n,
-                        engine_blocks_inherit AS bi
+                        {$this->container->getParameter('database_table_prefix')}engine_blocks_inherit AS bi
                     WHERE n.block_id = bi.block_id 
                         AND is_active = 1
                         AND n.folder_id = '{$folder->getId()}'

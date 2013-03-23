@@ -291,14 +291,20 @@ class NodeMapperController extends Controller
      */
     protected function buildModulesData($nodes_list)
     {
-        $blocks = $this->engine('block')->all();
-        
+        define('_IS_CACHE_NODES', false); // @todo remove
+
+//        $blocks = $this->EM()->getRepository('SmartCoreEngineBundle:Block')->findAll();
+//        ld($blocks);
+
+        $blocks = $this->get('engine.block')->all();
+
         // Каждый "блок" является объектом вида.
         foreach ($blocks as $block) {
             $this->View->blocks->$block['name'] = new View();
+//            $this->View->blocks->{$block->getName()} = new View();
         }
 
-        define('_IS_CACHE_NODES', false); // @todo remove
+
 
         foreach ($nodes_list as $node_id => $node_properties) {
             // Не собираем ноду, если она уже была отработала в механизе nodeAction()

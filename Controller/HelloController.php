@@ -17,7 +17,7 @@ class HelloController extends Controller
             ->lang('en')
             ->title('hi :)')
         ;
-
+        /*
         $sql = "SELECT n.*
                 FROM aaa_engine_nodes AS n,
                     engine_blocks_inherit AS bi
@@ -32,7 +32,7 @@ class HelloController extends Controller
         $result = $db->query($sql);
 
         while ($row = $result->fetchObject()) {
-            ld($row);
+//            ld($row);
         }
 
         /*
@@ -102,6 +102,14 @@ class HelloController extends Controller
 //        foreach ($nodes as $child) {
 //            ld($child);
 //        }
+
+//        $node = $em->find('SmartCoreEngineBundle:Node', 1);
+//        file_put_contents('e:/node_1', serialize($node));
+
+        $node = unserialize(file_get_contents('e:/node_1'));
+
+//        ld($node->getId());
+//        ld($node->getFolder()->getTitle());
 
         return $this->render('HtmlBundle::test.html.twig', array('hello' => 'Hello World!'));
     }
