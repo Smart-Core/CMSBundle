@@ -109,11 +109,11 @@ class HelloController extends Controller
         /** @var $node Node */
 //        $node = $em->find('SmartCoreEngineBundle:Node', 2);
 //        file_put_contents('e:/node_1ig', serialize($node));
-        $node = unserialize(file_get_contents('e:/node_1'));
+//        $node = unserialize(file_get_contents('e:/node_1'));
 //        $node = unserialize(file_get_contents('e:/node_1ig'));
 
-        ld($node->getId());
-        ld($node->getFolder()->getTitle());
+//        ld($node->getId());
+//        ld($node->getFolder()->getTitle());
 //        ld($node->getBlock());
 
 //        ld($node->getFolderId());
@@ -127,7 +127,7 @@ class HelloController extends Controller
         */
 //        $nodes = $query->getResult();
 
-        ld($node);
+//        ld($node);
 
         return $this->render('HtmlBundle::test.html.twig', array('hello' => 'Hello World!'));
     }
