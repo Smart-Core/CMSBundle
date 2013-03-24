@@ -4,6 +4,8 @@ namespace SmartCore\Bundle\EngineBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
+use SmartCore\Bundle\EngineBundle\Entity\Folder;
+use SmartCore\Bundle\EngineBundle\Entity\Block;
 
 /**
  * @ORM\Entity

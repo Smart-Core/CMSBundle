@@ -7,6 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
 use SmartCore\Bundle\EngineBundle\Container;
+use SmartCore\Bundle\EngineBundle\Entity\Node;
 
 /**
  * @ORM\Entity(repositoryClass="FolderRepository")

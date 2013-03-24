@@ -3,7 +3,7 @@
 namespace SmartCore\Bundle\EngineBundle\Engine;
 
 use Symfony\Component\DependencyInjection\ContainerAware;
-use SmartCore\Bundle\EngineBundle\Entity\Folder;
+use SmartCore\Bundle\EngineBundle\Entity\Folder as FolderEntity;
 
 class Node extends ContainerAware
 {
@@ -355,7 +355,7 @@ class Node extends ContainerAware
             'except'  => array(), // Блокировка всех нод в папке, кроме заданных.
         );
 
-        /** @var $folder Folder */
+        /** @var $folder FolderEntity */
         foreach ($folders as $folder) {
             // single каждый раз сбрасывается и устанавливается заново для каждоый папки.
             // @todo блокировку нод.
