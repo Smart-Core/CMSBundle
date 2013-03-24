@@ -7,6 +7,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity
+ * @ORM\HasLifecycleCallbacks
  * @ORM\Table(name="engine_nodes",
  *      indexes={
  *          @ORM\Index(name="is_active", columns={"is_active"}),
@@ -16,7 +17,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  *      }
  * )
  */
-class Node
+class Node implements \Serializable
 {
     /**
      * @ORM\Id
@@ -47,6 +48,11 @@ class Node
      * @Assert\NotBlank()
      */
     protected $folder;
+
+    /**
+     * Хранение folder_id для минимизации кол-ва запросов.
+     */
+    protected $folder_id = null;
 
     /**
      * @ORM\ManyToOne(targetEntity="Block")
@@ -218,5 +224,63 @@ class Node
     public function getParams()
     {
         return $this->params;
+    }
+    
+    public function getFolderId()
+    {
+        if ($this->folder_id == null) {
+            $this->folder_id = $this->getFolder()->getId();
+        }
+
+        return $this->folder_id;
+    }
+
+    /**
+     * Сериализация
+     */
+    public function serialize()
+    {
+        $this->getFolderId();
+        $this->getBlock()->getId();
+        return serialize(array(
+        //return igbinary_serialize(array(
+            $this->node_id,
+            $this->is_active,
+            //$this->is_cached,
+            $this->module,
+            $this->params,
+            $this->folder,
+            $this->folder_id,
+            $this->block,
+            $this->position,
+            $this->priority,
+            $this->descr,
+            $this->create_by_user_id,
+            $this->create_datetime,
+        ));
+    }
+
+    /**
+     * @param string $serialized
+     * @return mixed|void
+     */
+    public function unserialize($serialized)
+    {
+        list(
+            $this->node_id,
+            $this->is_active,
+            //$this->is_cached,
+            $this->module,
+            $this->params,
+            $this->folder,
+            $this->folder_id,
+            $this->block,
+            $this->position,
+            $this->priority,
+            $this->descr,
+            $this->create_by_user_id,
+            $this->create_datetime,
+        ) = unserialize($serialized);
+        //) = igbinary_unserialize($serialized);
     }
 }

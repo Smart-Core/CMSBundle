@@ -1,6 +1,6 @@
 <?php 
 
-namespace SmartCore\Bundle\EngineBundle\Service;
+namespace SmartCore\Bundle\EngineBundle\Engine;
 
 use SmartCore\Bundle\EngineBundle\Controller\Controller;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -31,41 +31,6 @@ class Folder extends Controller // ContainerAware
     }
 
     /**
-     * Получить данные о папке по её ID.
-     *
-     * @param int $folder_id
-     * @param string $language - указать извлекаемый язык (пока не испольузется.)
-     *
-     * @return FolderEntity
-     */
-    public function getDataById($folder_id, $language = false)
-    {
-        return $this->folderRepo->findOneBy(array(
-            'is_active' => true,
-            'is_deleted' => false,
-            'folder_id' => $folder_id,
-        ));
-    }
-
-    /**
-     * Получить данные о папке.
-     *
-     * @param string $uri_part - запрашиваемый чать УРИ
-     * @param int $pid - искать в родительском ID.
-     * @param string $language - указать извлекаемый язык (пока не испольузется.)
-     * @return object|false
-     */
-    public function getData($uri_part, $parent_folder, $language = false)
-    {
-        return $this->folderRepo->findOneBy(array(
-            'is_active' => true,
-            'is_deleted' => false,
-            'uri_part' => empty($uri_part) ? null : $uri_part,
-            'parent_folder' => $parent_folder
-        ));
-    }
-
-    /**
      * Получение полной ссылки на папку, указав её id. Если не указать ид папки, то вернётся текущий путь.
      * 
      * @param int $folder_id
@@ -81,7 +46,11 @@ class Folder extends Controller // ContainerAware
         $uri_parts = array();
 
         while($folder_id != 1) {
-            $folder = $this->getDataById($folder_id);
+            $folder = $this->folderRepo->findOneBy(array(
+                'is_active' => true,
+                'is_deleted' => false,
+                'folder_id' => $folder_id,
+            ));
             if ($folder) {
                 //$folder_id = $folder->pid;
                 $folder_id = $folder->getParentFolder()->getId();
@@ -117,7 +86,7 @@ class Folder extends Controller // ContainerAware
         
         // @todo при обращении к фронт-контроллеру /web/app.php не коррекнтно определяется активные пункты меню.
         $current_folder_path = $this->container->get('request')->getBaseUrl() . '/';
-        $folder_pid = null;
+        $parent_folder = null;
         $router_node_id = null;
         $path_parts = explode('/', $slug);
 
@@ -130,8 +99,7 @@ class Folder extends Controller // ContainerAware
                 break;
             }
 
-            // заканчиваем работу, если имя папки пустое и папка не является корневой 
-            // т.е. обрабатываем последнюю запись в строке УРИ
+            // Закончить работу, если имя папки пустое и папка не является корневой т.е. обрабатывается последняя запись в строке УРИ
             if('' == $segment and 0 != $key) { 
                 // @todo здесь надо делать обработчик "файла" т.е. папки с выставленным флагом "is_file".
                 break;
@@ -139,7 +107,7 @@ class Folder extends Controller // ContainerAware
 
             // В данной папке есть нода которой передаётся дальнейший парсинг URI.
             if ($router_node_id !== null) {
-                // выполняется часть URI парсером модуля и возвращается результат работы, в дальнейшем он будет передан самой ноде.
+                // Выполняется часть URI парсером модуля и возвращается результат работы, в дальнейшем он будет передан самой ноде.
                 $ModuleRouter = $this->forward($router_node_id . '::router', array(
                     'slug' => str_replace($current_folder_path, '', substr($this->container->get('request')->getBaseUrl() . '/', 0, -1) . $slug))
                 );
@@ -157,9 +125,15 @@ class Folder extends Controller // ContainerAware
                 unset($ModuleRouter);
             }
 
-            if ($folder = $this->getData($segment, $folder_pid)) {
+            $folder = $this->folderRepo->findOneBy(array(
+                'is_active' => true,
+                'is_deleted' => false,
+                'uri_part' => empty($segment) ? null : $segment,
+                'parent_folder' => $parent_folder
+            ));
+
+            if ($folder) {
                 if ( true ) { // @todo if ($this->Permissions->isAllowed('folder', 'read', $folder->permissions)) {
-                    // Заполнение мета-тегов.
                     foreach ($folder->getMeta() as $meta_name => $meta_value) {
                         $data['meta'][$meta_name] = $meta_value;
                     }
@@ -172,8 +146,8 @@ class Folder extends Controller // ContainerAware
                         $data['template'] = $folder->getTemplate();
                     }
                     
-                    $folder_pid = $folder; //$folder_pid = $folder->folder_id;
-                    $router_node_id = $folder->getRouterNodeId(); //$router_node_id = $folder->router_node_id;
+                    $parent_folder = $folder;
+                    $router_node_id = $folder->getRouterNodeId();
                     $folder->setUri($current_folder_path);
                     $data['folders'][$folder->getId()] = $folder;
                     $this->env->set('current_folder_id', $folder->getId());

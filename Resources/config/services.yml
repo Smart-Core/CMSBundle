@@ -19,10 +19,10 @@ services:
     engine.breadcrumbs:
         class: SmartCore\Bundle\EngineBundle\Engine\Breadcrumbs
     engine.env:
-        class: SmartCore\Bundle\EngineBundle\Service\Environment
+        class: SmartCore\Bundle\EngineBundle\Engine\Environment
         arguments: [ @service_container ]
     engine.folder:
-        class: SmartCore\Bundle\EngineBundle\Service\Folder
+        class: SmartCore\Bundle\EngineBundle\Engine\Folder
         arguments: [ @service_container ]
     engine.block:
         class: SmartCore\Bundle\EngineBundle\Engine\Block

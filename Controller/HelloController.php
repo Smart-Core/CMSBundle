@@ -2,15 +2,18 @@
 
 namespace SmartCore\Bundle\EngineBundle\Controller;
 
+use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Query\ResultSetMapping;
 //use Symfony\Component\HttpFoundation\Response;
 use SmartCore\Bundle\EngineBundle\Controller\Controller;
+use SmartCore\Bundle\EngineBundle\Entity\Node;
 
 class HelloController extends Controller
 {    
     public function indexAction()
     {
-        $em = $this->EM();
+        /** @var $em EntityManager */
+        $em = $this->getDoctrine()->getManager();
 
         $this->get('html')
             ->doctype('xhtml')
@@ -103,13 +106,28 @@ class HelloController extends Controller
 //            ld($child);
 //        }
 
-//        $node = $em->find('SmartCoreEngineBundle:Node', 1);
-//        file_put_contents('e:/node_1', serialize($node));
-
+        /** @var $node Node */
+//        $node = $em->find('SmartCoreEngineBundle:Node', 2);
+//        file_put_contents('e:/node_1ig', serialize($node));
         $node = unserialize(file_get_contents('e:/node_1'));
+//        $node = unserialize(file_get_contents('e:/node_1ig'));
 
-//        ld($node->getId());
-//        ld($node->getFolder()->getTitle());
+        ld($node->getId());
+        ld($node->getFolder()->getTitle());
+//        ld($node->getBlock());
+
+//        ld($node->getFolderId());
+        /*
+        $query = $em->createQuery('
+            SELECT n
+            FROM SmartCoreEngineBundle:Node n
+            WHERE n.node_id IN(5,4,3,2,1)
+            ORDER BY n.position DESC
+        ');
+        */
+//        $nodes = $query->getResult();
+
+        ld($node);
 
         return $this->render('HtmlBundle::test.html.twig', array('hello' => 'Hello World!'));
     }
