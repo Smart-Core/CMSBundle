@@ -16,6 +16,14 @@ class Node extends ContainerAware
     protected $nodes_list = array();
 
     /**
+     * Получить объект ноды.
+     */
+    public function get($node_id)
+    {
+        return $this->container->get('doctrine')->getManager()->find('SmartCoreEngineBundle:Node', $node_id);
+    }
+
+    /**
      * Получить свойва ноды.
      *
      * @param int $node_id
@@ -396,8 +404,21 @@ class Node extends ContainerAware
             */
 
             $sql = false;
-            // @todo запаковать database_table_prefix в конфиг движка.
-            if ($folder->getHasInheritNodes()) { // в этой папке есть ноды, которые наследуются...
+            // Обработка последней папки т.е. текущей.
+            if ($folder->getId() == $this->container->get('engine.env')->get('current_folder_id')) {
+                $sql = "SELECT *
+                    FROM aaa_engine_nodes
+                    WHERE folder_id = '{$folder->getId()}'
+                    AND is_active = '1'
+                ";
+
+                // исключаем ранее включенные ноды.
+                foreach ($used_nodes as $used_nodes_value) {
+                    $sql .= " AND node_id != '{$used_nodes_value}'";
+                }
+                $sql .= ' ORDER BY position';
+            } else if ($folder->getHasInheritNodes()) { // в этой папке есть ноды, которые наследуются...
+                // @todo запаковать database_table_prefix в конфиг движка.
                 $sql = "SELECT n.*
                     FROM aaa_engine_nodes AS n,
                         {$this->container->getParameter('database_table_prefix')}engine_blocks_inherit AS bi
@@ -405,22 +426,8 @@ class Node extends ContainerAware
                         AND is_active = 1
                         AND n.folder_id = '{$folder->getId()}'
                         AND bi.folder_id = '{$folder->getId()}'
-                    ORDER BY n.position
+                    ORDER BY n.position ASC
                 ";
-            }
-
-            // Обрабатываем последнюю папку т.е. текущую.
-            if ($folder->getId() == $this->container->get('engine.env')->get('current_folder_id')) {
-                $sql = "SELECT *
-                    FROM aaa_engine_nodes
-                    WHERE folder_id = '{$folder->getId()}'
-                    AND is_active = '1'
-                ";
-                // исключаем ранее включенные ноды.
-                foreach ($used_nodes as $used_nodes_value) {
-                    $sql .= " AND node_id != '{$used_nodes_value}'";
-                }
-                $sql .= ' ORDER BY position';
             }
 
             // В папке нет нод для сборки.
@@ -458,9 +465,9 @@ class Node extends ContainerAware
                 if (!empty($arguments)) {
                     $this->nodes_list[$node_route['id']]['arguments'] = $arguments;
                 }
+
                 //$this->nodes_list[$node_route['id']]['response'] = $node_route['response'];
             }
-
         }
 
         foreach ($lockout_nodes['single'] as $node_id => $value) {
@@ -477,6 +484,33 @@ class Node extends ContainerAware
                     unset($this->nodes_list[$node_id]);
                 }
             }
+        }
+
+        $list = '';
+        foreach ($this->nodes_list as $node_id => $dummy) {
+            $list .= $node_id . ',';
+        }
+
+        if (strlen($list)) {
+            $em = $this->container->get('doctrine')->getManager();
+            $list = substr($list, 0, strlen($list)-1);
+            $query = $em->createQuery("
+                SELECT n
+                FROM SmartCoreEngineBundle:Node n
+                WHERE n.node_id IN({$list})
+                ORDER BY n.position ASC
+            ");
+
+            $nodes = $query->getResult();
+            //ld($nodes);
+
+            // Приведение массива в вид с индексами в качестве ID нод.
+            $nodes2 = array();
+            foreach ($nodes as $node) {
+                $nodes2[$node->getId()] = $node;
+            }
+
+            ld($nodes2);
         }
 
         return $this->nodes_list;

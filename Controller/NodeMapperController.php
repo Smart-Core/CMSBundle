@@ -254,7 +254,7 @@ class NodeMapperController extends Controller
         ));
 
         $nodes_list = $this->get('engine.node')->buildNodesList($router_data);
-//        ld($nodes_list);
+        ld($nodes_list);
 
         $this->buildModulesData($nodes_list);
 
@@ -292,15 +292,12 @@ class NodeMapperController extends Controller
     {
         define('_IS_CACHE_NODES', false); // @todo remove
 
-//        $blocks = $this->EM()->getRepository('SmartCoreEngineBundle:Block')->findAll();
-//        ld($blocks);
-
         $blocks = $this->get('engine.block')->all();
 
         // Каждый "блок" является объектом вида.
         foreach ($blocks as $block) {
             $this->View->blocks->$block['name'] = new View();
-//            $this->View->blocks->{$block->getName()} = new View();
+            //$this->View->blocks->{$block->getName()} = new View();
         }
 
 
@@ -365,7 +362,8 @@ class NodeMapperController extends Controller
                     $Module = $Node->getModuleInstance($node_id, false);
                 }
                 */
-                
+
+                // Выполняется модуль, все параметры ноды берутся в SmartCore\Bundle\EngineBundle\Listener\ModuleControllerModifier
                 $Module = $this->forward($node_id, array(
                     '_eip' => true,
                 ));
@@ -423,7 +421,9 @@ class NodeMapperController extends Controller
             // @todo пока так выставляются декораторы обрамления ноды.
             if ($this->get('security.context')->isGranted('ROLE_ADMIN') && !$this->get('request')->isXmlHttpRequest()) {
                 //ld($this->View->blocks->$block_name->$node_id);
-                $this->View->blocks->$block_name->$node_id->setDecorators("<div class=\"cmf-frontadmin-node\" id=\"__node_{$node_id}\">", "</div>");
+                if ($this->View->blocks->$block_name->$node_id instanceof View) {
+                    $this->View->blocks->$block_name->$node_id->setDecorators("<div class=\"cmf-frontadmin-node\" id=\"__node_{$node_id}\">", "</div>");
+                }
             }
 
             unset($Module);

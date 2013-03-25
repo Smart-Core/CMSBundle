@@ -7,6 +7,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 //use Symfony\Component\DependencyInjection\ContainerAware;
 use SmartCore\Bundle\EngineBundle\Entity\Folder as FolderEntity;
 use SmartCore\Bundle\EngineBundle\Entity\FolderRepository;
+use SmartCore\Bundle\EngineBundle\Module\RouterResponse;
 
 class Folder extends Controller // ContainerAware
 {
@@ -108,11 +109,16 @@ class Folder extends Controller // ContainerAware
             // В данной папке есть нода которой передаётся дальнейший парсинг URI.
             if ($router_node_id !== null) {
                 // Выполняется часть URI парсером модуля и возвращается результат работы, в дальнейшем он будет передан самой ноде.
-                $ModuleRouter = $this->forward($router_node_id . '::router', array(
-                    'slug' => str_replace($current_folder_path, '', substr($this->container->get('request')->getBaseUrl() . '/', 0, -1) . $slug))
-                );
+                // @todo запрос ноды только для получения имени модуля не сосвсем красиво...
+                // может быть как-то кешировать это дело, либо хранить имя модуля прямо в таблице папок, например в виде массива router_node_id и router_node_module.
+                $node = $this->container->get('engine.node')->get($router_node_id);
+
+                /** @var $ModuleRouter RouterResponse */
+                $ModuleRouter = $this->get('kernel')->getBundle($node->getModule() . 'Module')
+                    ->router($node, str_replace($current_folder_path, '', substr($this->container->get('request')->getBaseUrl() . '/', 0, -1) . $slug));
 
                 // Роутер модуля вернул положительный ответ.
+                // @todo сделать 404
                 if ($ModuleRouter->isOk()) {
                     $data['node_route'] = array(
                         'id' => $router_node_id,

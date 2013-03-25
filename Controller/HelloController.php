@@ -117,17 +117,16 @@ class HelloController extends Controller
 //        ld($node->getBlock());
 
 //        ld($node->getFolderId());
-        /*
+
         $query = $em->createQuery('
             SELECT n
             FROM SmartCoreEngineBundle:Node n
             WHERE n.node_id IN(5,4,3,2,1)
             ORDER BY n.position DESC
         ');
-        */
-//        $nodes = $query->getResult();
 
-//        ld($node);
+        $nodes = $query->getResult();
+        ld($nodes);
 
         return $this->render('HtmlBundle::test.html.twig', array('hello' => 'Hello World!'));
     }

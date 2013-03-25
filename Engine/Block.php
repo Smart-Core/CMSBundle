@@ -14,6 +14,9 @@ class Block extends ContainerAware
      */
     public function all()
     {
+//        $blocks = $this->EM()->getRepository('SmartCoreEngineBundle:Block')->findAll();
+//        ld($blocks);
+
         $this->blocks = array();
 
         $result = $this->container->get('engine.db')->query("

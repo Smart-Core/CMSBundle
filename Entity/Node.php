@@ -4,8 +4,7 @@ namespace SmartCore\Bundle\EngineBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
-use SmartCore\Bundle\EngineBundle\Entity\Folder;
-use SmartCore\Bundle\EngineBundle\Entity\Block;
+use SmartCore\Bundle\EngineBundle\Module\RouterResponse;
 
 /**
  * @ORM\Entity
@@ -133,6 +132,16 @@ class Node implements \Serializable
      */
     protected $create_datetime;
 
+    /**
+     * Ответ роутинга ноды, если таковой есть.
+     * @var RouterResponse|null
+     */
+    protected $router_response = null;
+
+    protected $controller = null;
+    protected $action = 'index';
+    protected $arguments = array();
+
     public function __construct()
     {
         $this->create_by_user_id = 0;
@@ -141,6 +150,55 @@ class Node implements \Serializable
         $this->is_cached = true;
         $this->position = 0;
         $this->priority = 0;
+    }
+
+    /**
+     * Сериализация
+     */
+    public function serialize()
+    {
+        $this->getFolderId();
+        $this->getBlock()->getId();
+        return serialize(array(
+            //return igbinary_serialize(array(
+            $this->node_id,
+            $this->is_active,
+            //$this->is_cached,
+            $this->module,
+            $this->params,
+            $this->folder,
+            $this->folder_id,
+            $this->block,
+            $this->position,
+            $this->priority,
+            $this->descr,
+            $this->create_by_user_id,
+            $this->create_datetime,
+        ));
+    }
+
+    /**
+     * @param string $serialized
+     * @return mixed|void
+     */
+    public function unserialize($serialized)
+    {
+        list(
+            $this->node_id,
+            $this->is_active,
+            //$this->is_cached,
+            $this->module,
+            $this->params,
+            $this->folder,
+            $this->folder_id,
+            $this->block,
+            $this->position,
+            $this->priority,
+            $this->descr,
+            $this->create_by_user_id,
+            $this->create_datetime,
+            ) = unserialize($serialized);
+        //) = igbinary_unserialize($serialized);
     }
 
     public function getId()
@@ -237,52 +295,47 @@ class Node implements \Serializable
         return $this->folder_id;
     }
 
-    /**
-     * Сериализация
-     */
-    public function serialize()
+    public function setRouterResponse($router_response)
     {
-        $this->getFolderId();
-        $this->getBlock()->getId();
-        return serialize(array(
-        //return igbinary_serialize(array(
-            $this->node_id,
-            $this->is_active,
-            //$this->is_cached,
-            $this->module,
-            $this->params,
-            $this->folder,
-            $this->folder_id,
-            $this->block,
-            $this->position,
-            $this->priority,
-            $this->descr,
-            $this->create_by_user_id,
-            $this->create_datetime,
-        ));
+        $this->router_response = $router_response;
     }
 
-    /**
-     * @param string $serialized
-     * @return mixed|void
-     */
-    public function unserialize($serialized)
+    public function getRouterResponse()
     {
-        list(
-            $this->node_id,
-            $this->is_active,
-            //$this->is_cached,
-            $this->module,
-            $this->params,
-            $this->folder,
-            $this->folder_id,
-            $this->block,
-            $this->position,
-            $this->priority,
-            $this->descr,
-            $this->create_by_user_id,
-            $this->create_datetime,
-        ) = unserialize($serialized);
-        //) = igbinary_unserialize($serialized);
+        return $this->router_response;
+    }
+
+    public function setAction($action)
+    {
+        $this->action = $action;
+    }
+
+    public function getAction()
+    {
+        return $this->action;
+    }
+
+    public function setArguments($arguments)
+    {
+        $this->arguments = $arguments;
+    }
+
+    public function getArguments()
+    {
+        return $this->arguments;
+    }
+
+    public function setController($controller)
+    {
+        $this->controller = $controller;
+    }
+
+    public function getController()
+    {
+        if ($this->controller) {
+            return $this->controller;
+        } else {
+            return $this->module;
+        }
     }
 }

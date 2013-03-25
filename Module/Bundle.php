@@ -38,4 +38,15 @@ class Bundle extends BaseBundle
     {
 
     }
+
+    /**
+     * Router.
+     *
+     * @param string $slug
+     * @return RouterResponse
+     */
+    public function router($node, $slug)
+    {
+        return new RouterResponse(null, 404);
+    }
 }
