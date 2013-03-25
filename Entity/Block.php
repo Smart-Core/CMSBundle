@@ -28,10 +28,10 @@ class Block
 
     /**
      * @ORM\Column(type="smallint", nullable=TRUE)
-     * -ORM\Column(type="string")
+     * @Assert\Range(min = "-255", minMessage = "Минимальное значение -255.", max = "255", maxMessage = "Максимальное значение 255.")
+     *
      * -Assert\Type(type="integer", message="bad :(")
      * -Assert\Regex(pattern="/\d+/", match=FALSE, message="BAD!" )
-     * @Assert\Range(min = "-255", minMessage = "Минимальное значение -255.", max = "255", maxMessage = "Максимальное значение 255.")
      */
     protected $position;
 

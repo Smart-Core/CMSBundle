@@ -39,7 +39,7 @@ class AdminStructureController extends Controller
         }
 
         $form = $this->createForm(new NodeFormType(), $node);
-        $form_properties = $this->createForm($this->get('engine.module_manager')->getNodePropertiesFormType($node), $node->getParams());
+        $form_properties = $this->createForm($this->get('engine.node_manager')->getPropertiesFormType($node->getModule()), $node->getParams());
 
         $form->remove('module');
 
@@ -89,7 +89,7 @@ class AdminStructureController extends Controller
                     $created_node = $form->getData();
 
                     // Свежесозданная нода выполняет свои действия, а также устанавливает параметры по умолчанию.
-                    $this->get('engine.module_manager')->createNode($created_node);
+                    $this->get('engine.node_manager')->createNode($created_node);
 
                     $em->persist($created_node);
                     $em->flush();

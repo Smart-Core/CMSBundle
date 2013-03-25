@@ -6,29 +6,16 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use SmartCore\Bundle\EngineBundle\Container;
 use SmartCore\Bundle\EngineBundle\Engine\View;
-use SmartCore\Bundle\EngineBundle\Entity\Folder;
-use SmartCore\Bundle\EngineBundle\Entity\Node;
 
 class NodeMapperController extends Controller
 {
     public function indexAction(Request $request, $slug)
     {
-//        ld($user = $this->container->get('security.context')->getToken()->getUser());
-//        ld($this->container->getParameter('security.role_hierarchy.roles'));
-
-        // @todo убрать, это здесь на время отладки.
-        /*
-        $flashes = $request->getSession()->getFlashBag()->all();
-        if (!empty($flashes)) {
-            ld($flashes);
-        }
-        */
-
         // @todo вынести router в другое место... можно сделать в виде отдельного сервиса, например 'engine.folder_router'.
         $router_data = $this->get('engine.folder')->router($request->getPathInfo());
-//        ld($router_data);
+        //ld($router_data);
 
-        /** @var $folder Folder */
+        /** @var $folder \SmartCore\Bundle\EngineBundle\Entity\Folder */
         foreach ($router_data['folders'] as $folder) {
             $this->get('engine.breadcrumbs')->add($folder->getUri(), $folder->getTitle(), $folder->getDescr());
             if ($router_data['node_route']['response']) {
@@ -249,27 +236,25 @@ class NodeMapperController extends Controller
             }
         }
 
-        $this->View->blocks = new View(array(
+        $this->View->set('blocks', new View(array(
             'comment'   => 'Блоки',
             'engine'    => 'echo',
-        ));
+        )));
 
         $nodes_list = $this->get('engine.node_manager')->buildNodesList($router_data);
 //        ld($nodes_list);
 
         $this->buildModulesData($nodes_list);
 
-//        sc_dump($this->View->blocks);
-
-//        sc_dump($this->renderView("Menu::menu.html.twig", array()));
-//        sc_dump($this->renderView("Texter::texter.html.twig", array('text' => 777)));
-//        sc_dump($this->forward('Texter:Test:hello', array('text' => 'yahoo :)'))->getContent());
-//        sc_dump($this->forward('2:Test:index')->getContent());
+//        ld($this->View->blocks);
+//        ld($this->renderView("Menu::menu.html.twig", array()));
+//        ld($this->forward('Texter:Test:hello', array('text' => 'yahoo :)'))->getContent());
+//        ld($this->forward('2:Test:index')->getContent());
 
 //        $tmp = $this->forward(8);
 //        $tmp = $this->forward('MenuModule:Menu:index');
-//        sc_dump(get_class($tmp));
-//        sc_dump($tmp->getContentRaw());
+//        ld(get_class($tmp));
+//        ld($tmp->getContentRaw());
 //        echo $tmp->getContent();
 
         /*
@@ -293,31 +278,17 @@ class NodeMapperController extends Controller
     {
         define('_IS_CACHE_NODES', false); // @todo remove
 
-        $blocks = $this->get('engine.block')->all();
-
-        // Каждый "блок" является объектом вида.
-        foreach ($blocks as $block) {
-            $this->View->blocks->$block['name'] = new View();
-            //$this->View->blocks->{$block->getName()} = new View();
-        }
-
-
-
-        /** @var $node Node */
-        //foreach ($nodes_list as $node_id => $node_properties) {
+        /** @var $node \SmartCore\Bundle\EngineBundle\Entity\Node */
         foreach ($nodes_list as $node_id => $node) {
-            // Не собираем ноду, если она уже была отработала в механизе nodeAction()
-//            if ($node_id == $this->front_end_action_node_id) {
-//                continue;
-//            }
-
-
-            //$block_name = $blocks[$node_properties['block_id']]['name'];
             $block_name = $node->getBlock()->getName();
 
+            if (!$this->View->blocks->has($block_name)) {
+                $this->View->blocks->set($block_name, new View());
+            }
+
             // Обнаружены параметры кеша.
-            if (_IS_CACHE_NODES and $node_properties['is_cached'] and !empty($node_properties['cache_params']) and $this->engine('env')->cache_enable ) {
-                $cache_params = unserialize($node_properties['cache_params']);
+            if (_IS_CACHE_NODES and $node['is_cached'] and !empty($node['cache_params']) and $this->engine('env')->cache_enable ) {
+                $cache_params = unserialize($node['cache_params']);
                 if (isset($cache_params['id']) and is_array($cache_params['id'])) {
                     $cache_id = array();
                     foreach ($cache_params['id'] as $key => $dummy) {
@@ -416,7 +387,7 @@ class NodeMapperController extends Controller
                     $Module->View->setDecorators("<div class=\"cmf-frontadmin-node\" id=\"_node$node_id\">", "</div>");
                 }
             }
-            
+
             if (method_exists($Module, 'getContentRaw')) {
                 $this->View->blocks->$block_name->$node_id = $Module->getContentRaw();
             } else {

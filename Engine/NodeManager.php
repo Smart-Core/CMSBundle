@@ -3,21 +3,61 @@
 namespace SmartCore\Bundle\EngineBundle\Engine;
 
 use Symfony\Component\DependencyInjection\ContainerAware;
-use SmartCore\Bundle\EngineBundle\Entity\Folder as FolderEntity;
-use SmartCore\Bundle\EngineBundle\Entity\Node as NodeEntity;
+use Symfony\Component\Form\FormTypeInterface;
+use SmartCore\Bundle\EngineBundle\Entity\Node;
 
 class NodeManager extends ContainerAware
 {
     protected $db;
 
     /**
-     * Список всех нод, запрошенных через роутинг.
-     * Строится методом buildNodesList().
+     * Список всех нод, запрошенных в текущем контексте.
+     * @var array
      */
     protected $nodes_list = array();
 
     /**
+     * Создание ноды
+     *
+     * @param Node $node
+     */
+    public function createNode(Node $node)
+    {
+        $module = $this->container->get('kernel')->getBundle($node->getModule() . 'Module');
+
+        if (method_exists($module, 'createNode')) {
+            $module->createNode($node);
+        }
+    }
+
+    /**
+     * Получить форму редактирования параметров подключения модуля.
+     *
+     * @param string $module_name
+     * @return FormTypeInterface
+     */
+    public function getPropertiesFormType($module_name)
+    {
+        $reflector = new \ReflectionClass(get_class($this->container->get('kernel')->getBundle($module_name . 'Module')));
+        $form_class_name = '\\' . $reflector->getNamespaceName() . '\Form\Type\NodePropertiesFormType';
+
+        return new $form_class_name;
+
+        // @todo продумать как поступать если класс не найден.
+        /*
+        if (class_exists($form_class_name)) {
+            return new $form_class_name;
+        } else {
+            return null;
+        }
+        */
+    }
+
+    /**
      * Получить объект ноды.
+     *
+     * @param int $node_id
+     * @return Node
      */
     public function get($node_id)
     {
@@ -26,207 +66,20 @@ class NodeManager extends ContainerAware
         }
 
         return $this->container->get('doctrine')->getManager()->find('SmartCoreEngineBundle:Node', $node_id);
-    }
 
-    /**
-     * Создание новой ноды.
-     *
-     * @param array $pd
-     * @return bool
-     */
-    public function __create($pd) // @todo 
-    {
-        if (is_numeric($pd['block_id'])) {
-            $block_id = $pd['block_id'];
-        } else {
-            return false;
-        }
-
-        $this->db = $this->container->get('engine.db');
-
-        // Вычисление максимальной позиции, чтобы поместить новую ноду в конец внутри блока.
         /*
-        $sql = "SELECT max(pos) as max_pos 
-            FROM {$this->DB->prefix()}engine_nodes
-            WHERE block_id = '$pd[block_id]'
-            AND folder_id = '$pd[folder_id]'";
-        $result = $this->DB->query($sql);
-        $row = $result->fetchObject();
-        $max_pos = $row->max_pos + 1;
-        */
-        $pos            = is_numeric($pd['pos']) ? $pd['pos'] : 0;
-        $database_id    = (isset($pd['database_id']) and is_numeric($pd['database_id'])) ? $pd['database_id'] : 0;
-        $is_active      = (isset($pd['is_active']) and is_numeric($pd['is_active'])) ? $pd['is_active'] : 1;
-        $is_cached      = is_numeric($pd['is_cached']) ? $pd['is_cached'] : 1;
-        $folder_id      = is_numeric($pd['folder_id']) ? $pd['folder_id'] : 1;
-        $permissions    = strlen(trim($pd['permissions'])) == 0 ? 'NULL' : $this->DB->quote(trim($pd['permissions']));
-        
-        $descr = $this->db->quote(trim($pd['descr']));
-        $user_id = $this->engine('env')->user_id;
-        $sql = "
-            INSERT INTO engine_nodes
-                (folder_id, descr, block_id, module_id, database_id, params, is_active, is_cached, pos, permissions, create_datetime, owner_id)
-            VALUES
-                ('$folder_id', $descr, '$block_id', '$pd[module_id]', '$database_id', NULL, '$is_active', '$is_cached', '$pos', $permissions, NOW(), '$user_id') ";
-        $this->db->query($sql);
-        $node_id = $this->db->lastInsertId();
-
-        $Node = new Node();
-        $Module = $Node->getModuleInstance($node_id, true);
-        $params = $Module->createNode();
-
-        if ($params != 'NULL') {
-            $params = "'" . serialize($params) . "'";
-        }
-
-        $sql = "
-            UPDATE engine_nodes SET
-                params = $params
-            WHERE node_id = '$node_id'";
-        $this->db->exec($sql);
-        $this->Cache->updateFolder($folder_id);
-
-        return true;
-    }
-
-    /**
-     * Получить список всех нод.
-     *
-     * @param
-     * @return array
-     * 
-     * @todo постраничность.
-     */
-    public function __getList($items_per_page = false, $page_num = 1)
-    {
-        return $this->getListInFolder();
-    }
-
-    /**
-     * Получить список нод в папке.
-     * 
-     * @param int $folder_id - если false, то возвращается список всех нод.
-     * @return array
-     */
-    public function __getListInFolder($folder_id = false)
-    {
-        $sql_folder = $folder_id === false ? '' : " WHERE folder_id = '$folder_id' ";
-
-        $nodes = array();
-        $sql = "SELECT n.node_id, n.block_id, n.folder_id, n.pos, n.module_id, n.action,
-                n.params, n.plugins, n.is_cached, n.is_active, n.database_id, 
-                n.descr, b.name AS block_name, b.descr AS block_descr
-            FROM {$this->DB->prefix()}engine_nodes AS n
-            LEFT JOIN {$this->DB->prefix()}engine_blocks AS b USING (block_id)
-            $sql_folder
-            ORDER BY n.pos ";
-        $result = $this->DB->query($sql);
-        while ($row = $result->fetchObject()) {
-            $nodes[$row->node_id] = array(
-                'descr'            => $row->descr,
-                'is_active'        => $row->is_active,
-                'folder_id'        => $row->folder_id,
-                'pos'            => $row->pos,
-                'module_id'        => $row->module_id,
-                'action'        => $row->action,
-                'database_id'    => $row->database_id,
-                'params'        => $row->params,
-                'plugins'        => $row->plugins,
-                'block_name'    => $row->block_name,
-                'block_descr'    => $row->block_descr,
-            );
-        }
-
-        return $nodes;
-    }
-    
-    /**
-     * Получить список всех нод заданного модуля.
-     *
-     * @param string $module
-     * @return array
-     */
-    public function __getListByModule($module)
-    {
-        $data = array();
-        $sql = "SELECT node_id 
-            FROM {$this->DB->prefix()}engine_nodes
-            WHERE module_id = {$this->DB->quote($module)} ";
-        $result = $this->DB->query($sql);
-        while ($row = $result->fetchObject()) {
-            $data[$row->node_id] = $this->getProperties($row->node_id);
-        }
-
-        return $data;
-    }
- 
-    /**
-     * Обновление параметров ноды.
-     * 
-     * @param int $node_id
-     * @param array $pd
-     * @return bool
-     */
-    public function ___update($node_id, $pd)
-    {
-        if (is_numeric($pd['block_id'])) {
-            $block_id = $pd['block_id'];
+        // @todo потестить...
+        if ($node = $this->container->get('engine.cache')->getNode($node_id)) {
+            return $node;
         } else {
-            return false;
+            return $this->container->get('doctrine')->getManager()->find('SmartCoreEngineBundle:Node', $node_id);
         }
-
-        $pos            = is_numeric($pd['pos']) ? $pd['pos'] : 0;
-        $database_id    = (isset($pd['database_id']) and is_numeric($pd['database_id'])) ? $pd['database_id'] : 0;
-        $is_active        = (isset($pd['is_active']) and is_numeric($pd['is_active'])) ? $pd['is_active'] : 1;
-        $is_cached        = is_numeric($pd['is_cached']) ? $pd['is_cached'] : 1;
-        $folder_id        = is_numeric($pd['folder_id']) ? $pd['folder_id'] : 1;
-        $permissions    = strlen(trim($pd['permissions'])) == 0 ? 'NULL' : $this->DB->quote(trim($pd['permissions']));
-        $params            = (!isset($pd['params']) or count($pd['params']) == 0) ? 'params = NULL' : "params = " . $this->DB->quote(serialize($pd['params']));
-        $plugins        = strlen(trim($pd['plugins'])) == 0 ? 'NULL' : $this->DB->quote(trim($pd['plugins']));
-        $cache_params_yaml    = (isset($pd['cache_params_yaml']) and !empty($pd['cache_params_yaml'])) ? 'cache_params_yaml = ' . $this->DB->quote($pd['cache_params_yaml']) : 'cache_params_yaml = NULL';
-        $cache_params    = $cache_params_yaml == 'cache_params_yaml = NULL' ? 'cache_params = NULL' : 'cache_params = ' . $this->DB->quote(serialize(Zend_Config_Yaml::decode($pd['cache_params_yaml'])));
-        $descr = $this->DB->quote(trim($pd['descr']));
-
-        // @todo action
-        $sql = "
-            UPDATE {$this->DB->prefix()}engine_nodes SET
-                descr = $descr,
-                folder_id = '$folder_id',
-                pos = '$pos',
-                database_id = '$database_id',
-                block_id = '$block_id',
-                is_active = '$is_active',
-                is_cached = '$is_cached',
-                permissions = $permissions,
-                plugins = $plugins,
-                $params,
-                $cache_params,
-                $cache_params_yaml
-            WHERE
-                node_id = '$node_id'";
-        $this->DB->exec($sql);
-        $this->Cache->updateNode($node_id);
-        return true;
-    }
-
-    /**
-     * Хуки.
-     *
-     * @param string $method - имя вызываемого метода.
-     * @param array $args - массив с аргументами.
-     * @return mixed
-     */
-    public function ___hook($method, array $args = null)
-    {
-        $Module = $this->getModuleInstance($this->node_id);
-        return is_object($Module) ? $Module->hook($method, $args) : null;
+        */
     }
 
     /**
      * Создание списка всех запрошеных нод, в каких блоках они находятся и с какими 
      * параметрами запускаются модули.
-     * 
-     * @access public
      * 
      * @param array     $parsed_uri
      * @return array    $nodes_list
@@ -248,7 +101,7 @@ class NodeManager extends ContainerAware
             'except'  => array(), // Блокировка всех нод в папке, кроме заданных.
         );
 
-        /** @var $folder FolderEntity */
+        /** @var $folder \SmartCore\Bundle\EngineBundle\Entity\Folder */
         foreach ($folders as $folder) {
             // single каждый раз сбрасывается и устанавливается заново для каждоый папки.
             // @todo блокировку нод.
@@ -352,26 +205,40 @@ class NodeManager extends ContainerAware
             }
         }
 
+        $is_cached = true;
+        $cache = $this->container->get('engine.cache');
+        $nodes = array();
         $list = '';
-        foreach ($this->nodes_list as $node_id => $dummy) {
+        foreach ($this->nodes_list as $node_id => $_dummy) {
             $list .= $node_id . ',';
+
+            if ($cache->hasNode($node_id)) {
+                $nodes[] = $cache->getNode($node_id);
+            } else {
+                $is_cached = false;
+            }
         }
 
         if (strlen($list)) {
-            $em = $this->container->get('doctrine')->getManager();
-            $list = substr($list, 0, strlen($list)-1);
-            $query = $em->createQuery("
-                SELECT n
-                FROM SmartCoreEngineBundle:Node n
-                WHERE n.node_id IN({$list})
-                ORDER BY n.position ASC
-            ");
-
-            $nodes = $query->getResult();
+            if (!$is_cached) {
+                $em = $this->container->get('doctrine')->getManager();
+                $list = substr($list, 0, strlen($list)-1);
+                $query = $em->createQuery("
+                    SELECT n
+                    FROM SmartCoreEngineBundle:Node n
+                    WHERE n.node_id IN({$list})
+                    ORDER BY n.position ASC
+                ");
+                $nodes = $query->getResult();
+            }
 
             // Приведение массива в вид с индексами в качестве ID нод.
-            /** @var $node NodeEntity */
+            /** @var $node Node */
             foreach ($nodes as $node) {
+                if (!$is_cached) {
+                    $cache->setNode($node);
+                }
+
                 if (isset($router_data['node_route']['response']) and $router_data['node_route']['id'] == $node->getId()) {
                     $node->setRouterResponse($router_data['node_route']['response']);
                 }

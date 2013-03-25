@@ -3,15 +3,13 @@
 namespace SmartCore\Bundle\EngineBundle\Engine;
 
 use Symfony\Component\DependencyInjection\ContainerAware;
-use Symfony\Component\Form\FormTypeInterface;
-use SmartCore\Bundle\EngineBundle\Entity\Node;
 
 class ModuleManager extends ContainerAware
 {
+    protected $configFile;
     protected $modules = array();
     protected $initialized = false;
-    protected $configFile;
-    
+
     /**
      * Initializes the collection of modules.
      */
@@ -19,7 +17,11 @@ class ModuleManager extends ContainerAware
     {
         if (!$this->initialized) {
             $this->configFile = $this->container->get('kernel')->getRootDir() . '/usr/modules.ini';
-            $this->modules = parse_ini_file($this->configFile);
+
+            foreach (parse_ini_file($this->configFile) as $module_name => $_dummy) {
+                $this->modules[$module_name] = $this->container->get('kernel')->getBundle($module_name . 'Module');
+            }
+
             $this->initialized = true;
         }
     }
@@ -50,39 +52,10 @@ class ModuleManager extends ContainerAware
     }
 
     /**
-     * Получить форму редактирования параметров подключения модуля.
-     *
-     * @param Node $node
-     * @return FormTypeInterface
+     * Установка модуля.
      */
-    public function getNodePropertiesFormType(Node $node)
+    public function install()
     {
-        $reflector = new \ReflectionClass($this->get($node->getModule()));
-        $form_class_name = '\\' . $reflector->getNamespaceName() . '\Form\Type\NodePropertiesFormType';
-
-        return new $form_class_name;
-
-        // @todo продумать как поступать если класс не найден.
-        /*
-        if (class_exists($form_class_name)) {
-            return new $form_class_name;
-        } else {
-            return null;
-        }
-        */
-    }
-
-    /**
-     * Создание ноды
-     *
-     * @param Node $node
-     */
-    public function createNode($node)
-    {
-        $module = $this->container->get('kernel')->getBundle($node->getModule() . 'Module');
-
-        if (method_exists($module, 'createNode')) {
-            $module->createNode($node);
-        }
+        die('@todo');
     }
 }
