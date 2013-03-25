@@ -52,4 +52,9 @@ class Bundle extends BaseBundle
     {
         return new RouterResponse(null, 404);
     }
+
+    public function __toString()
+    {
+        return get_class($this);
+    }
 }
