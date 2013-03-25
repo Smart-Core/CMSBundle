@@ -7,6 +7,7 @@ use SmartCore\Bundle\EngineBundle\Container;
 use SmartCore\Bundle\EngineBundle\Response;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\Request;
+use SmartCore\Bundle\EngineBundle\Entity\Node;
 
 abstract class Controller extends BaseController
 {
@@ -30,9 +31,9 @@ abstract class Controller extends BaseController
     
     /**
      * Свойства ноды.
-     * @var array
+     * @var Node
      */
-    protected $node = array();
+    protected $node;
     
     /**
      * Базовый конструктор. Модули используют в качестве конструктора метод init();
@@ -54,10 +55,11 @@ abstract class Controller extends BaseController
     /**
      * Установить параметры ноды.
      */
-    public function setNode($node)
+    public function setNode(Node $node)
     {
         $this->node = $node;
-        foreach ($node['params'] as $key => $value) {
+        //foreach ($node['params'] as $key => $value) {
+        foreach ($node->getParams() as $key => $value) {
             $this->$key = $value;
             /*
             if (isset($this->{$key})) {
@@ -68,8 +70,14 @@ abstract class Controller extends BaseController
             */
         }
 
-        $reflector = new \ReflectionClass($this->node['module_class']);
-        $this->View->setOptions(array('bundle' => $reflector->getShortName() . '::'));
+//        $reflector = new \ReflectionClass($this->node['module_class']);
+//        $this->View->setOptions(array('bundle' => $reflector->getShortName() . '::'));
+
+//        $module = $this->container->get('kernel')->getBundle($node->getModule() . 'Module');
+
+//        ld($module);
+
+        $this->View->setOptions(array('bundle' => $node->getModule() . 'Module' . '::'));
     }
 
     /**

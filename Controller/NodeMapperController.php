@@ -7,6 +7,7 @@ use Symfony\Component\HttpFoundation\Response;
 use SmartCore\Bundle\EngineBundle\Container;
 use SmartCore\Bundle\EngineBundle\Engine\View;
 use SmartCore\Bundle\EngineBundle\Entity\Folder;
+use SmartCore\Bundle\EngineBundle\Entity\Node;
 
 class NodeMapperController extends Controller
 {
@@ -253,8 +254,8 @@ class NodeMapperController extends Controller
             'engine'    => 'echo',
         ));
 
-        $nodes_list = $this->get('engine.node')->buildNodesList($router_data);
-        ld($nodes_list);
+        $nodes_list = $this->get('engine.node_manager')->buildNodesList($router_data);
+//        ld($nodes_list);
 
         $this->buildModulesData($nodes_list);
 
@@ -302,13 +303,17 @@ class NodeMapperController extends Controller
 
 
 
-        foreach ($nodes_list as $node_id => $node_properties) {
+        /** @var $node Node */
+        //foreach ($nodes_list as $node_id => $node_properties) {
+        foreach ($nodes_list as $node_id => $node) {
             // Не собираем ноду, если она уже была отработала в механизе nodeAction()
 //            if ($node_id == $this->front_end_action_node_id) {
 //                continue;
 //            }
 
-            $block_name = $blocks[$node_properties['block_id']]['name'];
+
+            //$block_name = $blocks[$node_properties['block_id']]['name'];
+            $block_name = $node->getBlock()->getName();
 
             // Обнаружены параметры кеша.
             if (_IS_CACHE_NODES and $node_properties['is_cached'] and !empty($node_properties['cache_params']) and $this->engine('env')->cache_enable ) {

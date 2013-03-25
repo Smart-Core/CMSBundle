@@ -4,8 +4,9 @@ namespace SmartCore\Bundle\EngineBundle\Engine;
 
 use Symfony\Component\DependencyInjection\ContainerAware;
 use SmartCore\Bundle\EngineBundle\Entity\Folder as FolderEntity;
+use SmartCore\Bundle\EngineBundle\Entity\Node as NodeEntity;
 
-class Node extends ContainerAware
+class NodeManager extends ContainerAware
 {
     protected $db;
 
@@ -20,129 +21,13 @@ class Node extends ContainerAware
      */
     public function get($node_id)
     {
-        return $this->container->get('doctrine')->getManager()->find('SmartCoreEngineBundle:Node', $node_id);
-    }
-
-    /**
-     * Получить свойва ноды.
-     *
-     * @param int $node_id
-     * @return array
-     */
-    public function getProperties($node_id)
-    {
         if (isset($this->nodes_list[$node_id])) {
             return $this->nodes_list[$node_id];
         }
 
-        $db = $this->container->get('engine.db');
-
-        $sql = "SELECT * FROM aaa_engine_nodes WHERE node_id = '$node_id' ";
-        $result = $db->query($sql);
-        if ($result->rowCount() == 1) {
-            return $this->getPropertiesByRow($result->fetchObject());
-        } else {
-            return false;
-        }
+        return $this->container->get('doctrine')->getManager()->find('SmartCoreEngineBundle:Node', $node_id);
     }
 
-    /**
-     * Получить массив со свойствами ноды, по заданному результату выборки из БД.
-     * 
-     * @param object $row
-     * 
-     * @return array
-     */
-    protected function getPropertiesByRow($row)
-    {
-//        ld($row);
-
-        $module = $this->container->get('kernel')->getBundle($row->module . 'Module');
-
-        if (!empty($row->controller)) {
-            $tmp = explode(':', $row->controller);
-            $controller = $tmp[0];
-            $action = $tmp[1];
-        } else {
-            $controller = $module->getDefaultController();
-            $action = $module->getDefaultAction();
-        }
-
-        return array (
-            'id'            => $row->node_id,
-            'node_id'       => $row->node_id,
-            'is_active'     => $row->is_active,
-//            'is_cached'     => $row->is_cached,
-            'folder_id'     => $row->folder_id,
-            'block_id'      => $row->block_id,
-            'position'      => $row->position,
-//            'database_id'   => $row->database_id,
-            'descr'         => $row->descr,
-            
-            'module'        => $row->module,
-            'module_class'  => get_class($module),
-            'controller'    => $controller,
-            'action'        => $action,
-            'arguments'     => array(),
-            
-            'params'        => empty($row->params) ? array() : unserialize($row->params),
-//            'permissions'   => $row->permissions,
-//            'plugins'       => $row->plugins, // @todo продумать.
-            
-//            'cache_params'  => empty($row->cache_params) ? null : unserialize($row->cache_params),
-//            'cache_params_yaml' => $row->cache_params_yaml,
-            
-//            'node_action_mode'  => $row->node_action_mode,
-//            'owner_id'          => $row->owner_id,
-//            'create_datetime'   => $row->create_datetime,
-        );
-    }
-
-    /**
-     * Получить объект модуля.
-     *
-     * @param int $node_id
-     * @param bool $is_admin - вернуть объект с административными методами.
-     * @return object
-     */
-    public function __getModuleInstance($node_id = false, $is_admin = false)
-    {
-        /**
-          Array
-            (
-                [folder_id] => 1
-                [module_id] => Texter
-                [block_id] => 3
-                [params] => a:1:{s:12:"text_item_id";s:1:"1";}
-                [permissions] => 
-                [database_id] => 0
-                [node_action_mode] => popup
-                [session] => 0
-            )
-         */
-        /*
-        $properties = Kernel::getNodeData($node_id);
-        
-        if ($properties === null) {
-            $properties = $this->getProperties($node_id);
-        }
-        */
-        
-        $properties = $this->getProperties($node_id);
-        
-        if ($properties === null) {
-            return null;
-        }
-
-//        $class = 'Module_' . $properties['module_class'];
-        $class = $properties['default_action'];
-        if ($is_admin) {
-            $class .= '_Admin';
-        }
-
-        return new $class($this->container->get('service_container'), $node_id);
-    }
-    
     /**
      * Создание новой ноды.
      *
@@ -447,26 +332,7 @@ class Node extends ContainerAware
                     $used_nodes[] = $row->node_id; 
                 }
 
-                $this->nodes_list[$row->node_id] = $this->getPropertiesByRow($row);
-            }
-            
-            // Если есть ответ роутинга модуля, то подменяются controller, action и arguments.
-            if (isset($router_data['node_route']['response'])) {
-                $node_route = $router_data['node_route'];
-                if ($controller = $node_route['response']->getController()) {
-                    $this->nodes_list[$node_route['id']]['controller'] = $controller;
-                }
-                
-                if ($action = $node_route['response']->getAction()) {
-                    $this->nodes_list[$node_route['id']]['action'] = $action;
-                }
-                
-                $arguments = $node_route['response']->getAllArguments();
-                if (!empty($arguments)) {
-                    $this->nodes_list[$node_route['id']]['arguments'] = $arguments;
-                }
-
-                //$this->nodes_list[$node_route['id']]['response'] = $node_route['response'];
+                $this->nodes_list[$row->node_id] = '_dummy';
             }
         }
 
@@ -502,15 +368,16 @@ class Node extends ContainerAware
             ");
 
             $nodes = $query->getResult();
-            //ld($nodes);
 
             // Приведение массива в вид с индексами в качестве ID нод.
-            $nodes2 = array();
+            /** @var $node NodeEntity */
             foreach ($nodes as $node) {
-                $nodes2[$node->getId()] = $node;
-            }
+                if (isset($router_data['node_route']['response']) and $router_data['node_route']['id'] == $node->getId()) {
+                    $node->setRouterResponse($router_data['node_route']['response']);
+                }
 
-            ld($nodes2);
+                $this->nodes_list[$node->getId()] = $node;
+            }
         }
 
         return $this->nodes_list;

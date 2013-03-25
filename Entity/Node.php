@@ -5,6 +5,7 @@ namespace SmartCore\Bundle\EngineBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use SmartCore\Bundle\EngineBundle\Module\RouterResponse;
+use SmartCore\Bundle\EngineBundle\Container;
 
 /**
  * @ORM\Entity
@@ -39,7 +40,7 @@ class Node implements \Serializable
     protected $module;
 
     /**
-     * @ORM\Column(type="array", nullable=TRUE)
+     * @ORM\Column(type="array", nullable=FALSE)
      */
     protected $params;
 
@@ -148,6 +149,7 @@ class Node implements \Serializable
         $this->create_datetime = new \DateTime();
         $this->is_active = true;
         $this->is_cached = true;
+        $this->params = array();
         $this->position = 0;
         $this->priority = 0;
     }
@@ -283,7 +285,11 @@ class Node implements \Serializable
 
     public function getParams()
     {
-        return $this->params;
+        if (empty($this->params)) {
+            return array();
+        } else {
+            return $this->params;
+        }
     }
     
     public function getFolderId()
@@ -295,8 +301,12 @@ class Node implements \Serializable
         return $this->folder_id;
     }
 
-    public function setRouterResponse($router_response)
+    public function setRouterResponse(RouterResponse $router_response)
     {
+        $this->setController($router_response->getController());
+        $this->setAction($router_response->getAction());
+        $this->setArguments($router_response->getAllArguments());
+
         $this->router_response = $router_response;
     }
 
@@ -332,7 +342,7 @@ class Node implements \Serializable
 
     public function getController()
     {
-        if ($this->controller) {
+        if (!empty($this->controller)) {
             return $this->controller;
         } else {
             return $this->module;

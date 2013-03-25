@@ -47,22 +47,21 @@ class ModuleControllerModifier
             $controller = explode(':', $event->getRequest()->attributes->get('_controller'));
             
             if (is_numeric($controller[0])) {
-                $node = $this->container->get('engine.node')->getProperties($controller[0]);
+                /** @var $node \SmartCore\Bundle\EngineBundle\Entity\Node */
+                $node = $this->container->get('engine.node_manager')->get($controller[0]);
 
                 if (empty($controller[1])) {
-                    $controller[1] = $node['controller'];
+                    $controller[1] = $node->getController();
                 }
 
                 if (empty($controller[2])) {
-                    $controller[2] = $node['action'];
+                    $controller[2] = $node->getAction();
                 }
 
-                $event->getRequest()->attributes->set('_controller', $node['module'] . 'Module:' . $controller[1] . ':' . $controller[2]);
+                $event->getRequest()->attributes->set('_controller', $node->getModule() . 'Module:' . $controller[1] . ':' . $controller[2]);
                 $event->getRequest()->attributes->set('_node', $node);
-                if (!empty($node['arguments']) and is_array($node['arguments'])) {
-                    foreach ($node['arguments'] as $name => $value) {
-                        $event->getRequest()->attributes->set($name, $value);
-                    }
+                foreach ($node->getArguments() as $name => $value) {
+                    $event->getRequest()->attributes->set($name, $value);
                 }
             }
         }

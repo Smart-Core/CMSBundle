@@ -11,6 +11,8 @@ class Bundle extends BaseBundle
      * Вычисляется как посленяя часть пространства имён.
      * 
      * @return string
+     *
+     * @todo REMOVE
      */
     public function getDefaultController()
     {
@@ -25,6 +27,8 @@ class Bundle extends BaseBundle
      * Получить имя экшена по умолчанию.
      * 
      * @return string
+     *
+     * @todo REMOVE
      */
     public function getDefaultAction()
     {
@@ -36,7 +40,6 @@ class Bundle extends BaseBundle
      */
     public function createNode($node)
     {
-
     }
 
     /**
