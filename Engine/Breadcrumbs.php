@@ -86,7 +86,7 @@ class Breadcrumbs implements \Iterator, \Countable
         $current_uri = '';
         foreach ($this->_breadcrumbs as $key => $value) {
             $data[$key] = $value;
-            if (sc_is_absolute_path($value['uri'])) {
+            if ($this->isAbsolutePath($value['uri'])) {
                 $current_uri = $value['uri'];
                 continue;
             } else {
@@ -136,5 +136,16 @@ class Breadcrumbs implements \Iterator, \Countable
             }
             echo "\n";
         }
+    }
+
+    /**
+     * Является ли указанный путь абсолютным.
+     *
+     * @param string $path
+     * @return string
+     */
+    public function isAbsolutePath($path)
+    {
+        return (strpos($path, '/') === 0 or strpos($path, ':') === 1) ? true : false;
     }
 }

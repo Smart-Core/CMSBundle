@@ -12,8 +12,12 @@ class NodeMapperController extends Controller
     public function indexAction(Request $request, $slug)
     {
         // @todo вынести router в другое место... можно сделать в виде отдельного сервиса, например 'engine.folder_router'.
+        \Profiler::start('Folder Routing');
         $router_data = $this->get('engine.folder')->router($request->getPathInfo());
+        \Profiler::end('Folder Routing');
         //ld($router_data);
+
+        \Profiler::start('NodeMapperController::indexAction body');
 
         /** @var $folder \SmartCore\Bundle\EngineBundle\Entity\Folder */
         foreach ($router_data['folders'] as $folder) {
@@ -241,10 +245,16 @@ class NodeMapperController extends Controller
             'engine'    => 'echo',
         )));
 
+        \Profiler::end('NodeMapperController::indexAction body');
+
+        \Profiler::start('buildNodesList');
         $nodes_list = $this->get('engine.node_manager')->buildNodesList($router_data);
+        \Profiler::end('buildNodesList');
 //        ld($nodes_list);
 
+        \Profiler::start('buildModulesData');
         $this->buildModulesData($nodes_list);
+        \Profiler::end('buildModulesData');
 
 //        ld($this->View->blocks);
 //        ld($this->renderView("Menu::menu.html.twig", array()));
@@ -263,6 +273,7 @@ class NodeMapperController extends Controller
         $activeTheme->setName('phone');
         */
 
+        \Profiler::start('Response');
         return new Response($this->container->get('templating')->render("::{$this->View->getTemplateName()}.html.twig", array(
                 'block' => $this->View->blocks,
             )),
@@ -340,9 +351,11 @@ class NodeMapperController extends Controller
                 */
 
                 // Выполняется модуль, все параметры ноды берутся в SmartCore\Bundle\EngineBundle\Listener\ModuleControllerModifier
+                \Profiler::start($node_id . ' ' . $node->getModule(), 'node');
                 $Module = $this->forward($node_id, array(
                     '_eip' => true,
                 ));
+                \Profiler::end($node_id . ' ' . $node->getModule(), 'node');
 
                 // Указать шаблонизатору, что надо сохранить эту ноду как html.
                 // @todo ПЕРЕДЕЛАТЬ!!! подумать где выполнять кеширование, внутри объекта View или где-то снаружи.

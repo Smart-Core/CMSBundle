@@ -2,8 +2,8 @@
 
 namespace SmartCore\Bundle\EngineBundle;
 
-use Symfony\Component\HttpKernel\Bundle\Bundle;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\HttpKernel\Bundle\Bundle;
 use SmartCore\Bundle\EngineBundle\DependencyInjection\Compiler\TemplateResourcesPass;
 
 class SmartCoreEngineBundle extends Bundle
@@ -18,8 +18,6 @@ class SmartCoreEngineBundle extends Bundle
         if ($this->container->get('kernel')->getEnvironment() == 'prod' and $this->container->has('db.logger')) {
             $this->container->get('engine.db')->getConfiguration()->setSQLLogger($this->container->get('db.logger'));
         }
-        
-        require_once '_temp.php';
     }
 
     /*
