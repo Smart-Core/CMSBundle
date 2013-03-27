@@ -41,16 +41,12 @@ class NodeManager extends ContainerAware
         $reflector = new \ReflectionClass(get_class($this->container->get('kernel')->getBundle($module_name . 'Module')));
         $form_class_name = '\\' . $reflector->getNamespaceName() . '\Form\Type\NodePropertiesFormType';
 
-        return new $form_class_name;
-
-        // @todo продумать как поступать если класс не найден.
-        /*
         if (class_exists($form_class_name)) {
             return new $form_class_name;
         } else {
-            return null;
+            // @todo может быть гибче настраивать форму параметров по умолчанию?.
+            return new \SmartCore\Bundle\EngineBundle\Form\Type\NodeDefaultPropertiesFormType();
         }
-        */
     }
 
     /**
@@ -141,25 +137,28 @@ class NodeManager extends ContainerAware
             }
             */
 
+            // @todo сейчас список нод запрашивается плоским SQL, надо как-то на ORM перевести.
             $sql = false;
+
+            // @todo запаковать database_table_prefix в конфиг движка.
+            $database_table_prefix = $this->container->getParameter('database_table_prefix');
+
             // Обработка последней папки т.е. текущей.
             if ($folder->getId() == $this->container->get('engine.env')->get('current_folder_id')) {
                 $sql = "SELECT *
-                    FROM aaa_engine_nodes
+                    FROM {$database_table_prefix}engine_nodes
                     WHERE folder_id = '{$folder->getId()}'
                     AND is_active = '1'
                 ";
-
                 // исключаем ранее включенные ноды.
                 foreach ($used_nodes as $used_nodes_value) {
                     $sql .= " AND node_id != '{$used_nodes_value}'";
                 }
                 $sql .= ' ORDER BY position';
             } else if ($folder->getHasInheritNodes()) { // в этой папке есть ноды, которые наследуются...
-                // @todo запаковать database_table_prefix в конфиг движка.
                 $sql = "SELECT n.*
-                    FROM aaa_engine_nodes AS n,
-                        {$this->container->getParameter('database_table_prefix')}engine_blocks_inherit AS bi
+                    FROM {$database_table_prefix}engine_nodes AS n,
+                        {$database_table_prefix}engine_blocks_inherit AS bi
                     WHERE n.block_id = bi.block_id 
                         AND is_active = 1
                         AND n.folder_id = '{$folder->getId()}'
