@@ -1,9 +1,10 @@
 {% extends '@SmartCoreEngine/Admin/structure.html.twig' %}
 
 {% block content %}
-<div class="span9">
-
+    {% if app.request.xmlHttpRequest == false %}
+    <div class="span9">
     {{ knp_menu_render('SmartCoreEngineBundle:AdminMenu:structure', {'currentClass': 'active'})  }}
+    {% endif %}
 
     {% form_theme form 'SmartCoreEngineBundle:Form:bootstrap.html.twig' %}
     <div class="well well-small">
@@ -28,15 +29,22 @@
         </form>
     </div>
 
-</div>
+    {% if app.request.xmlHttpRequest == false %}
+    </div>
+    {% endif %}
 {% endblock content %}
+
 
 {% block html_head_title %}{{ html_head_title|trans }} / {{ parent() }}{% endblock html_head_title %}
 
+
 {% block nav %}
+{% if app.request.xmlHttpRequest == false %}
     <div class="span3">
-        {{ render(controller('SmartCoreEngineBundle:AdminStructure:showTree', {'folder_id': folder_id, 'node_id': node_id} )) }}
+    {{ render(controller('SmartCoreEngineBundle:AdminStructure:showTree', {'folder_id': folder_id, 'node_id': node_id} )) }}
     </div>
+{% endif %}
 {% endblock nav %}
+
 
 {% block subnav %}{% endblock subnav %}

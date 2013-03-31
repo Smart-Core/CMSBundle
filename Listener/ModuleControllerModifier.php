@@ -32,10 +32,14 @@ class ModuleControllerModifier
             return;
         }
 
+        if ($event->getRequest()->attributes->has('_eip')) {
+            $controller[0]->setEip($event->getRequest()->attributes->get('_eip'));
+
+            $event->getRequest()->attributes->remove('_eip');
+        }
+
         if ($event->getRequest()->attributes->has('_node')) {
-            $node = $event->getRequest()->attributes->get('_node');
-            
-            $controller[0]->setNode($node);
+            $controller[0]->setNode($event->getRequest()->attributes->get('_node'));
 
             $event->getRequest()->attributes->remove('_node');
         }

@@ -8,9 +8,11 @@ use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 class NodeDefaultPropertiesFormType extends AbstractType
 {
+    /*
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
     }
+    */
 
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {

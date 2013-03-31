@@ -12,6 +12,12 @@ use SmartCore\Bundle\EngineBundle\Entity\Node;
 abstract class Controller extends BaseController
 {
     /**
+     * Edit-In-Place
+     * @var bool
+     */
+    protected $_eip = false;
+
+    /**
      * Действие по умолчанию.
      * @var string|false
      */
@@ -50,6 +56,16 @@ abstract class Controller extends BaseController
         if (method_exists($this, 'init')) {
             $this->init();
         }
+    }
+
+    public function setEip($eip)
+    {
+        $this->_eip = $eip;
+    }
+
+    public function getEip()
+    {
+        return $this->_eip;
     }
 
     /**

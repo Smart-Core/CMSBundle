@@ -9,6 +9,12 @@ use SmartCore\Bundle\EngineBundle\Engine\View;
 
 class NodeMapperController extends Controller
 {
+    /**
+     * Коллекция пронтальных элементов управления.
+     * @var array
+     */
+    protected $cmf_front_controls;
+
     public function indexAction(Request $request, $slug)
     {
         // @todo вынести router в другое место... можно сделать в виде отдельного сервиса, например 'engine.folder_router'.
@@ -17,7 +23,26 @@ class NodeMapperController extends Controller
         \Profiler::end('Folder Routing');
         //ld($router_data);
 
-        \Profiler::start('NodeMapperController::indexAction body');
+        \Profiler::start('buildNodesList');
+        $nodes_list = $this->get('engine.node_manager')->buildNodesList($router_data);
+        \Profiler::end('buildNodesList');
+        //ld($nodes_list);
+
+        $this->View->setOptions(array(
+            'comment'   => 'Базовый шаблон',
+            'template'  => $router_data['template'],
+        ));
+
+        $this->View->set('blocks', new View(array(
+            'comment'   => 'Блоки',
+            'engine'    => 'echo',
+        )));
+
+        \Profiler::start('buildModulesData');
+        $this->buildModulesData($nodes_list);
+        \Profiler::end('buildModulesData');
+
+        //\Profiler::start('NodeMapperController::indexAction body');
 
         /** @var $folder \SmartCore\Bundle\EngineBundle\Entity\Folder */
         foreach ($router_data['folders'] as $folder) {
@@ -29,119 +54,14 @@ class NodeMapperController extends Controller
             }
         }
 
-        $this->View->setOptions(array(
-            'comment'   => 'Базовый шаблон',
-            'template'  => $router_data['template'],
-        ));
-
         $this->get('html')->title('Smart Core CMS (based on Symfony2 Framework)');
 
         // @todo убрать в ini-шник шаблона.
         $this->get('html')->meta('viewport', 'width=device-width, initial-scale=1.0');
 
         if ($this->get('security.context')->isGranted('ROLE_ADMIN') && !$request->isXmlHttpRequest()) {
+            /*
             $cmf_front_controls = array(
-                'toolbar' => array(
-                    'left' => array(
-                        'setings' => array(
-                            'title' => '',
-                            'descr' => 'Настройки',
-                            'icon' => 'wrench',
-                            'items' => array(
-                                'blocks' => array(
-                                    'title' => 'Блоки',
-                                    'icon' => 'th',
-                                    'uri' => $request->getBasePath() . '/admin/structure/blocks/',
-                                ),
-                                'appearance' => array(
-                                    'title' => 'Оформление',
-                                    'icon' => 'picture',
-                                    'uri' => $request->getBasePath() . '/admin/appearance/',
-                                ),
-                                'users' => array(
-                                    'title' => 'Пользователи',
-                                    'icon' => 'user',
-                                    'uri' => $request->getBasePath() . '/admin/users/',
-                                ),
-                                'modules' => array(
-                                    'title' => 'Модули',
-                                    'icon' => 'cog',
-                                    'uri' => $request->getBasePath() . '/admin/module/',
-                                ),
-                                'config' => array(
-                                    'title' => 'Конфигруация',
-                                    'icon' => 'tasks',
-                                    'uri' => $request->getBasePath() . '/admin/config/',
-                                ),
-                                'reports' => array(
-                                    'title' => 'Отчеты',
-                                    'icon' => 'warning-sign',
-                                    'uri' => $request->getBasePath() . '/admin/reports/',
-                                ),
-                                'help' => array(
-                                    'title' => 'Справка',
-                                    'icon' => 'question-sign',
-                                    'uri' => $request->getBasePath() . '/admin/help/',
-                                ),
-                            ),
-                        ),
-                        'structure' => array(
-                            'title' => 'Структура',
-                            'descr' => '',
-                            'icon' => 'folder-open',
-                            'items' => array(
-                                'folder_edit' => array(
-                                    'title' => 'Редактировать раздел',
-                                    'icon' => 'edit',
-                                    'uri' => $request->getBasePath() . '/admin/structure/folder/edit/2/',
-                                ),
-                                'folder_new' => array(
-                                    'title' => 'Добавить раздел',
-                                    'icon' => 'plus',
-                                    'uri' => $request->getBasePath() . '/admin/structure/folder/create/2/',
-                                ),
-                                'folder_all' => array(
-                                    'title' => 'Вся структура',
-                                    'icon' => 'book',
-                                    'uri' => $request->getBasePath() . '/admin/structure/folder/',
-                                ),
-                                'diviver_1' => 'diviver',
-                                'node_new' => array(
-                                    'title' => 'Добавить модуль',
-                                    'icon' => 'plus',
-                                    'uri' => $request->getBasePath() . '/admin/structure/node/create/2/',
-                                ),
-                                'node_all' => array(
-                                    'title' => 'Все модули на странице',
-                                    'icon' => 'list-alt',
-                                    'uri' => $request->getBasePath() . '/admin/structure/node/in_folder/2/',
-                                ),
-                            ),
-                        ),
-                    ),
-                    'right' => array(
-                        'eip_toggle' => array("Просмотр", "Редактирование"),
-                        'user' => array(
-                            'title' => $this->container->get('security.context')->getToken()->getUser()->getUserName(),
-                            'icon' => 'user',
-                            'items' => array(
-                                'profile' => array(
-                                    'title' => 'Мой профиль',
-                                    'uri' => $this->container->get('router')->generate('fos_user_profile_show'),
-                                    'icon' => 'cog',
-                                    'overalay' => true,
-                                ),
-                                'diviver_1' => 'diviver',
-                                'logout' => array(
-                                    'title' => "Выход",
-                                    'uri' => $this->container->get('router')->generate('fos_user_security_logout'),
-                                    'icon' => "off",
-                                    'overalay' => false,
-                                ),
-                            ),
-                        ),
-                    ),
-                ),
                 'node' => array(
                     '__node_3' => array(
                         'edit' => array(
@@ -204,17 +124,23 @@ class NodeMapperController extends Controller
                     ),
                 ),
             );
+            */
 
-            $this->engine('JsLib')->request('bootstrap');
-            $this->engine('JsLib')->request('jquery-cookie');
+            $cmf_front_controls = array(
+                'toolbar' => $this->get('engine.toolbar')->getArray(),
+                'node' => $this->cmf_front_controls['node'],
+            );
+
+            $this->get('engine.JsLib')->request('bootstrap');
+            $this->get('engine.JsLib')->request('jquery-cookie');
             $this->get('html')
-                ->css($this->engine('env')->global_assets . 'cmf/frontend.css')
-                ->js($this->engine('env')->global_assets . 'cmf/frontend.js')
-                ->js($this->engine('env')->global_assets . 'cmf/jquery.ba-hashchange.min.js')
-                // @todo продумать как называть "general_data".
-                ->general_data = '<script type="text/javascript">var cmf_front_controls = ' . json_encode($cmf_front_controls, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT) . ';</script>'
+                ->css($this->get('engine.env')->global_assets . 'cmf/frontend.css')
+                ->js($this->get('engine.env')->global_assets . 'cmf/frontend.js')
+                ->js($this->get('engine.env')->global_assets . 'cmf/jquery.ba-hashchange.min.js')
+                ->appendToHead('<script type="text/javascript">var cmf_front_controls = ' . json_encode($cmf_front_controls, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT) . ';</script>');
             ;
         }
+
 
         $theme_path = $this->get('engine.env')->theme_path;
         $this->View->assets = array(
@@ -222,12 +148,12 @@ class NodeMapperController extends Controller
             'theme_css_path'    => $theme_path . 'css/',
             'theme_js_path'     => $theme_path . 'js/',
             'theme_img_path'    => $theme_path . 'images/',
-            'vendor'            => $this->engine('env')->global_assets,
+            'vendor'            => $this->get('engine.env')->global_assets,
         );
 
-        $this->engine('theme')->processConfig($this->View);
+        $this->get('engine.theme')->processConfig($this->View);
 
-        foreach ($this->engine('JsLib')->all() as $res) {
+        foreach ($this->get('engine.JsLib')->all() as $res) {
             if (isset($res['js']) and is_array($res['js'])) {
                 foreach ($res['js'] as $js) {
                     $this->get('html')->js($js, 200);
@@ -240,21 +166,8 @@ class NodeMapperController extends Controller
             }
         }
 
-        $this->View->set('blocks', new View(array(
-            'comment'   => 'Блоки',
-            'engine'    => 'echo',
-        )));
+        //\Profiler::end('NodeMapperController::indexAction body');
 
-        \Profiler::end('NodeMapperController::indexAction body');
-
-        \Profiler::start('buildNodesList');
-        $nodes_list = $this->get('engine.node_manager')->buildNodesList($router_data);
-        \Profiler::end('buildNodesList');
-//        ld($nodes_list);
-
-        \Profiler::start('buildModulesData');
-        $this->buildModulesData($nodes_list);
-        \Profiler::end('buildModulesData');
 
 //        ld($this->View->blocks);
 //        ld($this->renderView("Menu::menu.html.twig", array()));
@@ -285,7 +198,7 @@ class NodeMapperController extends Controller
      * Сборка "блоков" из подготовленного списка нод.
      * По мере прохождения, подключаются и запускаются нужные модули с нужными параметрами.
      */
-    protected function buildModulesData($nodes_list)
+    protected function buildModulesData(array $nodes_list)
     {
         define('_IS_CACHE_NODES', false); // @todo remove
 
@@ -298,17 +211,17 @@ class NodeMapperController extends Controller
             }
 
             // Обнаружены параметры кеша.
-            if (_IS_CACHE_NODES and $node['is_cached'] and !empty($node['cache_params']) and $this->engine('env')->cache_enable ) {
+            if (_IS_CACHE_NODES and $node['is_cached'] and !empty($node['cache_params']) and $this->get('engine.env')->cache_enable ) {
                 $cache_params = unserialize($node['cache_params']);
                 if (isset($cache_params['id']) and is_array($cache_params['id'])) {
                     $cache_id = array();
                     foreach ($cache_params['id'] as $key => $dummy) {
                         switch ($key) {
                             case 'current_folder_id':
-                                $cache_id['current_folder_id'] = $this->engine('env')->current_folder_id;
+                                $cache_id['current_folder_id'] = $this->get('engine.env')->current_folder_id;
                                 break;
                             case 'user_id':
-                                $cache_id['user_id'] = $this->engine('env')->user_id;
+                                $cache_id['user_id'] = $this->get('engine.env')->user_id;
                                 break;
                             case 'parser_data': // @todo route_data
                                 $cache_id['parser_data'] = $node_properties['parser_data'];
@@ -338,9 +251,9 @@ class NodeMapperController extends Controller
                 and $html_cache = $this->Cache_Node->loadHtml($cache_params['id'])
             ) {
                 // $this->EE->data[$block_name][$node_id]['html_cache'] = $html_cache; @todo !!!!!!!!
-            }
-            // Кеша нет.
-            else { 
+            } else {
+                // Кеша нет.
+
                 // Если разрешены права на запись ноды, то создаётся объект с административными методами и запрашивается у него данные для фронтальных элементов управления.
                 /*
                 if ($this->Permissions->isAllowed('node', 'write', $node_properties['permissions']) and ($this->Permissions->isRoot() or $this->Permissions->isAdmin()) ) {
@@ -356,6 +269,14 @@ class NodeMapperController extends Controller
                     '_eip' => true,
                 ));
                 \Profiler::end($node_id . ' ' . $node->getModule(), 'node');
+
+                if ($this->get('security.context')->isGranted('ROLE_ADMIN')) {
+                    $this->cmf_front_controls['node']['__node_' . $node_id] = $Module->getFrontControls();
+                    $this->cmf_front_controls['node']['__node_' . $node_id]['cmf_node_properties'] = array(
+                        'title' => 'Свойства ноды',
+                        'uri' => $this->generateUrl('cmf_admin_structure_node_properties', array('id' => $node_id))
+                    );
+                }
 
                 // Указать шаблонизатору, что надо сохранить эту ноду как html.
                 // @todo ПЕРЕДЕЛАТЬ!!! подумать где выполнять кеширование, внутри объекта View или где-то снаружи.

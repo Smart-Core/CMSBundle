@@ -1,4 +1,7 @@
 services:
+    db.logger:
+        class: Doctrine\DBAL\Logging\DebugStack
+# Listeners
     engine.controller.listener:
         class: SmartCore\Bundle\EngineBundle\Listener\ModuleControllerModifier
         arguments: [ @service_container ]
@@ -14,8 +17,12 @@ services:
         arguments: [ @service_container ]
         tags:
             - { name: kernel.event_listener, event: kernel.view, method: onView }
-    db.logger:
-        class: Doctrine\DBAL\Logging\DebugStack
+    engine.db.table_prefix_subscriber:
+        class: SmartCore\Bundle\EngineBundle\Listener\TablePrefixSubscriber
+        arguments: [%database_table_prefix%]
+        tags:
+            - { name: doctrine.event_subscriber }
+# Core
     engine.breadcrumbs:
         class: SmartCore\Bundle\EngineBundle\Engine\Breadcrumbs
     engine.env:
@@ -55,11 +62,10 @@ services:
     engine.user:
         class: SmartCore\Bundle\EngineBundle\Engine\User
         arguments: [ @service_container ]
-    engine.db.table_prefix_subscriber:
-        class: SmartCore\Bundle\EngineBundle\Listener\TablePrefixSubscriber
-        arguments: [%database_table_prefix%]
-        tags:
-            - { name: doctrine.event_subscriber }
+    engine.toolbar:
+        class: SmartCore\Bundle\EngineBundle\Engine\Toolbar
+        calls:
+            - [ setContainer, [ @service_container ] ]
 # Forms
     engine.form.type.folder_tree:
         class: SmartCore\Bundle\EngineBundle\Form\Tree\FolderTreeType

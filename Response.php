@@ -13,6 +13,18 @@ use Symfony\Component\HttpFoundation\Response as BaseResponse;
 
 class Response extends BaseResponse
 {
+    protected $cmf_front_controls = array();
+
+    public function setFrontControls($data)
+    {
+        $this->cmf_front_controls = $data;
+    }
+
+    public function getFrontControls()
+    {
+        return $this->cmf_front_controls;
+    }
+
     public function setContent($content)
     {
         if (null !== $content && !is_string($content) && !is_numeric($content) && !is_callable(array($content, '__toString'))) {
