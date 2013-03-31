@@ -8,7 +8,7 @@ use SmartCore\Bundle\EngineBundle\Module\RouterResponse;
 use SmartCore\Bundle\EngineBundle\Container;
 
 /**
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="NodeRepository")
  * @ORM\HasLifecycleCallbacks
  * @ORM\Table(name="engine_nodes",
  *      indexes={

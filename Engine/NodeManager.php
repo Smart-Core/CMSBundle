@@ -184,31 +184,46 @@ class NodeManager extends ContainerAware
                     $used_nodes[] = $row->node_id; 
                 }
 
-                $this->nodes_list[$row->node_id] = '_dummy';
+                $this->nodes_list[$row->node_id] = $row->node_id;
             }
         }
 
-        foreach ($lockout_nodes['single'] as $node_id => $value) {
+        foreach ($lockout_nodes['single'] as $node_id) {
             unset($this->nodes_list[$node_id]);
         }
 
-        foreach ($lockout_nodes['inherit'] as $node_id => $value) {
+        foreach ($lockout_nodes['inherit'] as $node_id) {
             unset($this->nodes_list[$node_id]);
         }
 
         if (!empty($lockout_nodes['except'])) {
-            foreach ($this->nodes_list as $node_id => $value) {
+            foreach ($this->nodes_list as $node_id) {
                 if (!array_key_exists($node_id, $lockout_nodes['except'])) {
                     unset($this->nodes_list[$node_id]);
                 }
             }
         }
 
+        $em = $this->container->get('doctrine')->getManager();
+        $nodes = $em->getRepository('SmartCoreEngineBundle:Node')->findIn($this->nodes_list);
+
+        // Приведение массива в вид с индексами в качестве ID нод.
+        /** @var $node Node */
+        foreach ($nodes as $node) {
+            if (isset($router_data['node_route']['response']) and $router_data['node_route']['id'] == $node->getId()) {
+                $node->setRouterResponse($router_data['node_route']['response']);
+            }
+
+            $this->nodes_list[$node->getId()] = $node;
+        }
+
+        // @todo продумать в каком месте лучше кешировать ноды, также продумать инвалидацию.
+        /*
         $is_cached = true;
         $cache = $this->container->get('engine.cache');
         $nodes = array();
         $list = '';
-        foreach ($this->nodes_list as $node_id => $_dummy) {
+        foreach ($this->nodes_list as $node_id) {
             $list .= $node_id . ',';
 
             if ($cache->hasNode($node_id)) {
@@ -232,7 +247,6 @@ class NodeManager extends ContainerAware
             }
 
             // Приведение массива в вид с индексами в качестве ID нод.
-            /** @var $node Node */
             foreach ($nodes as $node) {
                 if (!$is_cached) {
                     $cache->setNode($node);
@@ -245,6 +259,7 @@ class NodeManager extends ContainerAware
                 $this->nodes_list[$node->getId()] = $node;
             }
         }
+        */
 
         return $this->nodes_list;
     }
