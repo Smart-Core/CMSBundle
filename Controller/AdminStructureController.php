@@ -4,6 +4,7 @@ namespace SmartCore\Bundle\EngineBundle\Controller;
 
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use SmartCore\Bundle\EngineBundle\Entity\Block;
 use SmartCore\Bundle\EngineBundle\Entity\Folder;
 use SmartCore\Bundle\EngineBundle\Entity\Node;
@@ -44,6 +45,8 @@ class AdminStructureController extends Controller
         $form->remove('module');
 
         if ($request->isMethod('POST')) {
+            //return new JsonResponse(array('notice' => 'FAILED'), 403);
+
             if ($request->request->has('update')) {
                 $form->bind($request);
                 $form_properties->bind($request);
@@ -54,8 +57,12 @@ class AdminStructureController extends Controller
                     $em->persist($updated_node);
                     $em->flush();
 
-                    $this->get('session')->getFlashBag()->add('notice', 'Нода обновлена.');
-                    return $this->redirect($this->generateUrl('cmf_admin_structure'));
+                    if ($request->isXmlHttpRequest()) {
+                        return new JsonResponse(array('redirect' => $this->get('engine.folder')->getUri($updated_node->getFolder()->getId())));
+                    } else {
+                        $this->get('session')->getFlashBag()->add('notice', 'Нода обновлена.');
+                        return $this->redirect($this->generateUrl('cmf_admin_structure'));
+                    }
                 }
             } else if ($request->request->has('delete')) {
                 die('@todo');
@@ -94,8 +101,12 @@ class AdminStructureController extends Controller
                     $em->persist($created_node);
                     $em->flush();
 
-                    $this->get('session')->getFlashBag()->add('notice', 'Нода создана.');
-                    return $this->redirect($this->generateUrl('cmf_admin_structure_node_properties', array('id' => $created_node->getId())));
+                    if ($request->isXmlHttpRequest()) {
+                        return new JsonResponse(array('redirect' => $this->get('engine.folder')->getUri($created_node->getFolder()->getId())));
+                    } else {
+                        $this->get('session')->getFlashBag()->add('notice', 'Нода создана.');
+                        return $this->redirect($this->generateUrl('cmf_admin_structure_node_properties', array('id' => $created_node->getId())));
+                    }
                 }
             } else if ($request->request->has('delete')) {
                 die('@todo');
@@ -141,8 +152,12 @@ class AdminStructureController extends Controller
                     $em->persist($form->getData());
                     $em->flush();
 
-                    $this->get('session')->getFlashBag()->add('notice', 'Папка обновлена.');
-                    return $this->redirect($this->generateUrl('cmf_admin_structure'));
+                    if ($request->isXmlHttpRequest()) {
+                        return new JsonResponse(array('redirect' => $this->get('engine.folder')->getUri($folder->getId())));
+                    } else {
+                        $this->get('session')->getFlashBag()->add('notice', 'Папка обновлена.');
+                        return $this->redirect($this->generateUrl('cmf_admin_structure'));
+                    }
                 }
             } else if ($request->request->has('delete')) {
                 die('@todo');
@@ -179,8 +194,12 @@ class AdminStructureController extends Controller
                     $em->persist($form->getData());
                     $em->flush();
 
-                    $this->get('session')->getFlashBag()->add('notice', 'Папка создана.');
-                    return $this->redirect($this->generateUrl('cmf_admin_structure'));
+                    if ($request->isXmlHttpRequest()) {
+                        return new JsonResponse(array('redirect' => $this->get('engine.folder')->getUri($folder->getId())));
+                    } else {
+                        $this->get('session')->getFlashBag()->add('notice', 'Папка создана.');
+                        return $this->redirect($this->generateUrl('cmf_admin_structure'));
+                    }
                 }
             } else if ($request->request->has('delete')) {
                 die('@todo');

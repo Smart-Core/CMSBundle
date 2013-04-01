@@ -44,13 +44,14 @@ class NodeMapperController extends Controller
 
         //\Profiler::start('NodeMapperController::indexAction body');
 
+        // Формирование "Хлебных крошек".
         /** @var $folder \SmartCore\Bundle\EngineBundle\Entity\Folder */
         foreach ($router_data['folders'] as $folder) {
             $this->get('engine.breadcrumbs')->add($folder->getUri(), $folder->getTitle(), $folder->getDescr());
-            if ($router_data['node_route']['response']) {
-                foreach ($router_data['node_route']['response']->getBreadcrumbs() as $bc) {
-                    $this->get('engine.breadcrumbs')->add($bc['uri'], $bc['title'], $bc['descr']);
-                }
+        }
+        if ($router_data['node_route']['response']) {
+            foreach ($router_data['node_route']['response']->getBreadcrumbs() as $bc) {
+                $this->get('engine.breadcrumbs')->add($bc['uri'], $bc['title'], $bc['descr']);
             }
         }
 
@@ -63,30 +64,6 @@ class NodeMapperController extends Controller
             /*
             $cmf_front_controls = array(
                 'node' => array(
-                    '__node_3' => array(
-                        'edit' => array(
-                            'title' => 'Редактировать',
-                            'descr' => 'Текстовый блок',
-                            'uri' => $request->getBasePath() . '/admin/structure/node/3/',
-                            'default' => true,
-                        ),
-                        'cmf_node_properties' => array(
-                            'title' => 'Свойства ноды',
-                            'uri' => $request->getBaseUrl() . '/',
-                        ),
-                    ),
-                    '__node_1' => array(
-                        'edit' => array(
-                            'title' => 'Редактировать',
-                            'descr' => 'Текстовый блок',
-                            'uri' => $request->getBasePath() . '/',
-                            'default' => true,
-                        ),
-                        'cmf_node_properties' => array(
-                            'title' => 'Свойства ноды',
-                            'uri' => $request->getBaseUrl() . '/',
-                        ),
-                    ),
                     '__node_5' => array(
                         'edit' => array(
                             'title' => 'Редактировать',
@@ -101,25 +78,6 @@ class NodeMapperController extends Controller
                         'cmf_node_properties' => array(
                             'title' => 'Свойства ноды',
                             'uri' => $request->getBaseUrl() . '/',
-                        ),
-                    ),
-                    '__node_6' => array(
-                        'edit' => array(
-                            'title' => 'Редактировать',
-                            'descr' => 'Хлебные крошки',
-                            'uri' => $request->getBasePath() . '/',
-                            'default' => true,
-                        ),
-                        'cmf_node_properties' => array(
-                            'title' => 'Свойства ноды',
-                            'uri' => $request->getBaseUrl() . '/',
-                        ),
-                    ),
-                    '__node_2' => array(
-                        'cmf_node_properties' => array(
-                            'title' => 'Свойства ноды',
-                            'uri' => $request->getBaseUrl() . '/',
-                            'default' => true,
                         ),
                     ),
                 ),

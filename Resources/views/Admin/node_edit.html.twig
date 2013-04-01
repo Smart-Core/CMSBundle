@@ -1,6 +1,7 @@
 {% extends '@SmartCoreEngine/Admin/structure_edit.html.twig' %}
 
 {% block form_body %}
+{% if form_properties.count > 0 %}
 <ul class="nav nav-pills" id="nodeTab">
     <li class="active"><a href="#node-properties">Параметры подключения модуля</a></li>
     <li><a href="#node-common">Основные свойства ноды</a></li>
@@ -14,11 +15,15 @@
         {{ parent() }}
     </div>
 </div>
+{% else %}
+    {{ parent() }}
+{% endif %}
 {% endblock form_body %}
 
 
 {% block body_js %}
 {{ parent() }}
+{% if form_properties.count > 0 %}
 <script>
     $('#nodeTab a').click(function (e) {
         e.preventDefault();
@@ -26,4 +31,5 @@
         $(this.hash + ' input.focused').focus();
     });
 </script>
+{% endif %}
 {% endblock body_js %}

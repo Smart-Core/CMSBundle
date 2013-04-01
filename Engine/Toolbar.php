@@ -8,6 +8,8 @@ class Toolbar extends ContainerAware
 {
     public function getArray()
     {
+        //ld($this->container->get('engine.env')->get('current_folder_id'));
+
         $request = $this->container->get('request');
 
         return array(
@@ -62,17 +64,21 @@ class Toolbar extends ContainerAware
                         'folder_edit' => array(
                             'title' => 'Редактировать раздел',
                             'icon' => 'edit',
-                            'uri' => $request->getBasePath() . '/admin/structure/folder/edit/2/',
+                            'uri' => $this->container->get('router')->generate('cmf_admin_structure_folder', array(
+                                'id' => $this->container->get('engine.env')->get('current_folder_id'))
+                            ),
                         ),
                         'folder_new' => array(
                             'title' => 'Добавить раздел',
                             'icon' => 'plus',
-                            'uri' => $request->getBasePath() . '/admin/structure/folder/create/2/',
+                            'uri' => $this->container->get('router')->generate('cmf_admin_structure_folder_create_in_folder', array(
+                                'folder_pid' => $this->container->get('engine.env')->get('current_folder_id'))
+                            ),
                         ),
                         'folder_all' => array(
                             'title' => 'Вся структура',
                             'icon' => 'book',
-                            'uri' => $request->getBasePath() . '/admin/structure/folder/',
+                            'uri' => $this->container->get('router')->generate('cmf_admin_structure'),
                         ),
                         'diviver_1' => 'diviver',
                         'node_new' => array(
