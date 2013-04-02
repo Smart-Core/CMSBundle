@@ -2,13 +2,43 @@
 
 namespace SmartCore\Bundle\EngineBundle\Engine;
 
-use Symfony\Component\DependencyInjection\ContainerAware;
 use Symfony\Component\Form\FormTypeInterface;
 use SmartCore\Bundle\EngineBundle\Entity\Node;
+use SmartCore\Bundle\EngineBundle\Form\Type\NodeDefaultPropertiesFormType;
 
-class NodeManager extends ContainerAware
+class NodeManager
 {
     protected $db;
+
+    /**
+     * @todo запаковать database_table_prefix в конфиг движка.
+     * @var string
+     */
+    protected $db_prefix;
+
+    /**
+     * @var \Doctrine\ORM\EntityManager
+     */
+    protected $em;
+
+    /**
+     * @var Environment
+     */
+    protected $env;
+
+    /**
+     * @var \Symfony\Component\HttpKernel\Kernel
+     */
+    protected $kernel;
+
+    public function __construct($db, $db_prefix, $em, $env, $kernel)
+    {
+        $this->db        = $db;
+        $this->db_prefix = $db_prefix;
+        $this->em        = $em;
+        $this->env       = $env;
+        $this->kernel    = $kernel;
+    }
 
     /**
      * Список всех нод, запрошенных в текущем контексте.
@@ -23,7 +53,7 @@ class NodeManager extends ContainerAware
      */
     public function createNode(Node $node)
     {
-        $module = $this->container->get('kernel')->getBundle($node->getModule() . 'Module');
+        $module = $this->kernel->getBundle($node->getModule() . 'Module');
 
         if (method_exists($module, 'createNode')) {
             $module->createNode($node);
@@ -38,14 +68,14 @@ class NodeManager extends ContainerAware
      */
     public function getPropertiesFormType($module_name)
     {
-        $reflector = new \ReflectionClass(get_class($this->container->get('kernel')->getBundle($module_name . 'Module')));
+        $reflector = new \ReflectionClass(get_class($this->kernel->getBundle($module_name . 'Module')));
         $form_class_name = '\\' . $reflector->getNamespaceName() . '\Form\Type\NodePropertiesFormType';
 
         if (class_exists($form_class_name)) {
             return new $form_class_name;
         } else {
             // @todo может быть гибче настраивать форму параметров по умолчанию?.
-            return new \SmartCore\Bundle\EngineBundle\Form\Type\NodeDefaultPropertiesFormType();
+            return new NodeDefaultPropertiesFormType();
         }
     }
 
@@ -61,14 +91,14 @@ class NodeManager extends ContainerAware
             return $this->nodes_list[$node_id];
         }
 
-        return $this->container->get('doctrine')->getManager()->find('SmartCoreEngineBundle:Node', $node_id);
+        return $this->em->find('SmartCoreEngineBundle:Node', $node_id);
 
         /*
         // @todo потестить...
         if ($node = $this->container->get('engine.cache')->getNode($node_id)) {
             return $node;
         } else {
-            return $this->container->get('doctrine')->getManager()->find('SmartCoreEngineBundle:Node', $node_id);
+            return $this->em->find('SmartCoreEngineBundle:Node', $node_id);
         }
         */
     }
@@ -87,8 +117,6 @@ class NodeManager extends ContainerAware
         if (!empty($this->nodes_list)) {
             return $this->nodes_list;
         }
-
-        $this->db = $this->container->get('engine.db');
 
         $used_nodes = array();
         $lockout_nodes = array(
@@ -137,16 +165,14 @@ class NodeManager extends ContainerAware
             }
             */
 
-            // @todo сейчас список нод запрашивается плоским SQL, надо как-то на ORM перевести.
+            // @todo сейчас список нод запрашивается плоским SQL, надо как-то на ORM перевести,
+            // а еще лучше убрать это в NodeRepository т.о. избавляемся от зависимостей $db и $db_prefix.
             $sql = false;
 
-            // @todo запаковать database_table_prefix в конфиг движка.
-            $database_table_prefix = $this->container->getParameter('database_table_prefix');
-
             // Обработка последней папки т.е. текущей.
-            if ($folder->getId() == $this->container->get('engine.env')->get('current_folder_id')) {
+            if ($folder->getId() == $this->env->get('current_folder_id')) {
                 $sql = "SELECT *
-                    FROM {$database_table_prefix}engine_nodes
+                    FROM {$this->db_prefix}engine_nodes
                     WHERE folder_id = '{$folder->getId()}'
                     AND is_active = '1'
                 ";
@@ -157,8 +183,8 @@ class NodeManager extends ContainerAware
                 $sql .= ' ORDER BY position';
             } else if ($folder->getHasInheritNodes()) { // в этой папке есть ноды, которые наследуются...
                 $sql = "SELECT n.*
-                    FROM {$database_table_prefix}engine_nodes AS n,
-                        {$database_table_prefix}engine_blocks_inherit AS bi
+                    FROM {$this->db_prefix}engine_nodes AS n,
+                        {$this->db_prefix}engine_blocks_inherit AS bi
                     WHERE n.block_id = bi.block_id 
                         AND is_active = 1
                         AND n.folder_id = '{$folder->getId()}'
@@ -204,8 +230,7 @@ class NodeManager extends ContainerAware
             }
         }
 
-        $em = $this->container->get('doctrine')->getManager();
-        $nodes = $em->getRepository('SmartCoreEngineBundle:Node')->findIn($this->nodes_list);
+        $nodes = $this->em->getRepository('SmartCoreEngineBundle:Node')->findIn($this->nodes_list);
 
         // Приведение массива в вид с индексами в качестве ID нод.
         /** @var $node Node */

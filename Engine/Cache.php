@@ -1,26 +1,18 @@
 <?php
 namespace SmartCore\Bundle\EngineBundle\Engine;
 
-use Symfony\Component\DependencyInjection\ContainerInterface;
 use SmartCore\Bundle\EngineBundle\Entity\Node;
-
 
 class Cache
 {
-    /**
-     * @var ContainerInterface
-     */
-    protected $container;
-
     /**
      * @var string
      */
     protected $cache_path;
 
-    public function __construct(ContainerInterface $container = null)
+    public function __construct($kernel)
     {
-        $this->container = $container;
-        $this->cache_path = realpath($container->get('kernel')->getCacheDir()) . '/smart_core/';
+        $this->cache_path = realpath($kernel->getCacheDir()) . '/smart_core/';
 
         if (!is_dir($this->cache_path)) {
             mkdir($this->cache_path, 0777, true);

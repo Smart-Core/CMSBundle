@@ -2,23 +2,17 @@
 
 namespace SmartCore\Bundle\EngineBundle\Engine;
 
-use SmartCore\Bundle\EngineBundle\Controller\Controller;
 use Symfony\Component\DependencyInjection\ContainerInterface;
-//use Symfony\Component\DependencyInjection\ContainerAware;
-use SmartCore\Bundle\EngineBundle\Entity\Folder as FolderEntity;
-use SmartCore\Bundle\EngineBundle\Entity\FolderRepository;
-use SmartCore\Bundle\EngineBundle\Module\RouterResponse;
 
-class Folder extends Controller // ContainerAware
+class Folder
 {
     protected $container;
-    protected $db;
     protected $env;
 
     /**
-     * @var FolderRepository
+     * @var \SmartCore\Bundle\EngineBundle\Entity\FolderRepository
      */
-    protected $folderRepo;
+    protected $folderRepository;
 
     /**
      * Constructor.
@@ -26,9 +20,8 @@ class Folder extends Controller // ContainerAware
     public function __construct(ContainerInterface $container)
     {
         $this->container = $container;
-        $this->db  = $container->get('engine.db');
         $this->env = $container->get('engine.env');
-        $this->folderRepo = $this->getRepo('SmartCoreEngineBundle:Folder');
+        $this->folderRepository = $container->get('doctrine.orm.entity_manager')->getRepository('SmartCoreEngineBundle:Folder');
     }
 
     /**
@@ -46,14 +39,14 @@ class Folder extends Controller // ContainerAware
         $uri = '/';
         $uri_parts = array();
 
+        /** @var $folder \SmartCore\Bundle\EngineBundle\Entity\Folder */
         while($folder_id != 1) {
-            $folder = $this->folderRepo->findOneBy(array(
+            $folder = $this->folderRepository->findOneBy(array(
                 'is_active' => true,
                 'is_deleted' => false,
                 'folder_id' => $folder_id,
             ));
             if ($folder) {
-                //$folder_id = $folder->pid;
                 $folder_id = $folder->getParentFolder()->getId();
                 $uri_parts[] = $folder->getUriPart();
             } else{
@@ -91,7 +84,7 @@ class Folder extends Controller // ContainerAware
         $router_node_id = null;
         $path_parts = explode('/', $slug);
 
-        /** @var $folder FolderEntity */
+        /** @var $folder \SmartCore\Bundle\EngineBundle\Entity\Folder */
         foreach ($path_parts as $key => $segment) {
             // Проверка строки запроса на допустимые символы.
             // @todo сделать проверку на разрешение круглых скобок.
@@ -113,12 +106,11 @@ class Folder extends Controller // ContainerAware
                 // может быть как-то кешировать это дело, либо хранить имя модуля прямо в таблице папок, например в виде массива router_node_id и router_node_module.
                 $node = $this->container->get('engine.node_manager')->get($router_node_id);
 
-                /** @var $ModuleRouter RouterResponse */
-                $ModuleRouter = $this->get('kernel')->getBundle($node->getModule() . 'Module')
+                /** @var $ModuleRouter \SmartCore\Bundle\EngineBundle\Module\RouterResponse */
+                $ModuleRouter = $this->container->get('kernel')->getBundle($node->getModule() . 'Module')
                     ->router($node, str_replace($current_folder_path, '', substr($this->container->get('request')->getBaseUrl() . '/', 0, -1) . $slug));
 
-                // Роутер модуля вернул положительный ответ.
-                // @todo сделать 404
+                // Роутер модуля вернул положительный ответ. Статус 200.
                 if ($ModuleRouter->isOk()) {
                     $data['node_route'] = array(
                         'id' => $router_node_id,
@@ -126,12 +118,14 @@ class Folder extends Controller // ContainerAware
                     );
                     // В случае успешного завершения роутера модуля, роутинг ядром прекращается.
                     break; 
+                } else {
+                    // @todo сделать 404 и 403
                 }
                 
                 unset($ModuleRouter);
             }
 
-            $folder = $this->folderRepo->findOneBy(array(
+            $folder = $this->folderRepository->findOneBy(array(
                 'is_active' => true,
                 'is_deleted' => false,
                 'uri_part' => empty($segment) ? null : $segment,

@@ -41,6 +41,8 @@ class Controller extends BaseController
      * 
      * @param string $name
      * @return object
+     *
+     * @deprecated
      */
     public function engine($name)
     {
@@ -57,6 +59,8 @@ class Controller extends BaseController
 
     /**
      * @return \Doctrine\ORM\EntityManager
+     *
+     * @deprecated
      */
     public function EM()
     {
@@ -65,6 +69,8 @@ class Controller extends BaseController
 
     /**
      * @return \Doctrine\ORM\Query
+     *
+     * @deprecated
      */
     public function DQL($dql)
     {
@@ -73,6 +79,8 @@ class Controller extends BaseController
 
     /**
      * @return \Doctrine\ORM\EntityRepository
+     *
+     * @deprecated
      */
     public function getRepo($name, $persistentManagerName = null)
     {

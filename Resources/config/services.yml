@@ -42,11 +42,10 @@ services:
             - [ initialize ]
     engine.cache:
         class: SmartCore\Bundle\EngineBundle\Engine\Cache
-        arguments: [ @service_container ]
+        arguments: [ @kernel ]
     engine.node_manager:
         class: SmartCore\Bundle\EngineBundle\Engine\NodeManager
-        calls:
-            - [ setContainer, [ @service_container ] ]
+        arguments: [ @engine.db, %database_table_prefix%, @doctrine.orm.entity_manager, @engine.env, @kernel ]
     engine.permissions:
         class: SmartCore\Bundle\EngineBundle\Engine\Permissions
         arguments: [ @service_container ]

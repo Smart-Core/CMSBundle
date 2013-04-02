@@ -52,6 +52,7 @@ abstract class Controller extends BaseController
 
         $this->container = Container::getContainer();
 
+        // @todo возможно есть смысл отказаться от такого метода...
         // Запуск метода init(), который является заменой конструктора для модулей.
         if (method_exists($this, 'init')) {
             $this->init();
