@@ -1,4 +1,4 @@
 SmartCoreEngineBundle
 =====================
 
-Base Bundle of Smart Core CMF
+Base Bundle of Smart Core CMF.
