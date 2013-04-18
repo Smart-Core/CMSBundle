@@ -4,13 +4,13 @@ namespace SmartCore\Bundle\EngineBundle\Controller;
 
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use SmartCore\Bundle\EngineBundle\Container;
+//use SmartCore\Bundle\EngineBundle\Container;
 use SmartCore\Bundle\EngineBundle\Engine\View;
 
 class NodeMapperController extends Controller
 {
     /**
-     * Коллекция пронтальных элементов управления.
+     * Коллекция фронтальных элементов управления.
      * @var array
      */
     protected $cmf_front_controls;
