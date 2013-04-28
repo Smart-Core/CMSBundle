@@ -17,6 +17,10 @@ class NodeMapperController extends Controller
 
     public function indexAction(Request $request, $slug)
     {
+        \Profiler::start('a1');
+        // контейнер HTML
+        $containerHtml = $this->get('html');
+        
         // @todo вынести router в другое место... можно сделать в виде отдельного сервиса, например 'engine.folder_router'.
         \Profiler::start('Folder Routing');
         $router_data = $this->get('engine.folder')->router($request->getPathInfo());
@@ -55,10 +59,11 @@ class NodeMapperController extends Controller
             }
         }
 
-        $this->get('html')->title('Smart Core CMS (based on Symfony2 Framework)');
+        
+        $containerHtml->title('Smart Core CMS (based on Symfony2 Framework)');
 
         // @todo убрать в ini-шник шаблона.
-        $this->get('html')->meta('viewport', 'width=device-width, initial-scale=1.0');
+        $containerHtml->meta('viewport', 'width=device-width, initial-scale=1.0');
 
         if ($this->get('security.context')->isGranted('ROLE_ADMIN') && !$request->isXmlHttpRequest()) {
             /*
@@ -91,7 +96,8 @@ class NodeMapperController extends Controller
 
             $this->get('engine.JsLib')->request('bootstrap');
             $this->get('engine.JsLib')->request('jquery-cookie');
-            $this->get('html')
+            
+            $containerHtml
                 ->css($this->get('engine.env')->global_assets . 'cmf/frontend.css')
                 ->js($this->get('engine.env')->global_assets . 'cmf/frontend.js')
                 ->js($this->get('engine.env')->global_assets . 'cmf/jquery.ba-hashchange.min.js')
@@ -110,16 +116,18 @@ class NodeMapperController extends Controller
         );
 
         $this->get('engine.theme')->processConfig($this->View);
-
+                           
+        
+        //print_r($this->get('engine.JsLib')->all());
         foreach ($this->get('engine.JsLib')->all() as $res) {
             if (isset($res['js']) and is_array($res['js'])) {
                 foreach ($res['js'] as $js) {
-                    $this->get('html')->js($js, 200);
+                    $containerHtml->js($js, 200);
                 }
             }
             if (isset($res['css']) and is_array($res['css'])) {
                 foreach ($res['css'] as $css) {
-                    $this->get('html')->css($css, 200);
+                    $containerHtml->css($css, 200);
                 }
             }
         }
@@ -143,7 +151,7 @@ class NodeMapperController extends Controller
         $activeTheme->setThemes(array('web', 'tablet', 'phone'));
         $activeTheme->setName('phone');
         */
-
+        \Profiler::end('a1');
         \Profiler::start('Response');
         return new Response($this->container->get('templating')->render("::{$this->View->getTemplateName()}.html.twig", array(
                 'block' => $this->View->blocks,
