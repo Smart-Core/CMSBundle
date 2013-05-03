@@ -66,6 +66,11 @@ services:
         calls:
             - [ setContainer, [ @service_container ] ]
 # Forms
+    engine.form.type.extension.node_id:
+        class: SmartCore\Bundle\EngineBundle\Form\Extension\FormTypeNodeIdExtension
+        arguments: [ @service_container ]
+        tags:
+            - { name: form.type_extension, alias: form }
     engine.form.type.folder_tree:
         class: SmartCore\Bundle\EngineBundle\Form\Tree\FolderTreeType
         arguments: [ @doctrine ]
