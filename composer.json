@@ -5,18 +5,7 @@
     "type": "symfony-bundle",
     "homepage": "http://smart-core.org",
     "require": {
-        "php": ">=5.3.3",
-        "symfony/symfony": "2.2.*",
-        "symfony/monolog-bundle": "2.2.*",
-        "doctrine/orm": ">=2.2.3,<2.4-dev",
-        "doctrine/doctrine-bundle": "1.2.*",
-        "doctrine/doctrine-fixtures-bundle": "dev-master",
-        "doctrine/doctrine-migrations-bundle": "dev-master",
-        "twig/extensions": "1.0.*",
-        "symfony/framework-bundle": ">=2.1,<2.3-dev",
-        "knplabs/knp-menu-bundle":"dev-master",
-        "liip/theme-bundle": "*",
-        "mopa/bootstrap-bundle":"dev-master"
+        "php": ">=5.4.1"
     },
     "autoload": {
         "psr-0": {
