@@ -38,12 +38,6 @@ class NodeMapperController extends Controller
             'engine'    => 'echo',
         )));
 
-        \Profiler::start('buildModulesData');
-        $this->buildModulesData($nodes_list);
-        \Profiler::end('buildModulesData');
-
-        //\Profiler::start('NodeMapperController::indexAction body');
-
         // Формирование "Хлебных крошек".
         /** @var $folder \SmartCore\Bundle\EngineBundle\Entity\Folder */
         foreach ($router_data['folders'] as $folder) {
@@ -54,6 +48,12 @@ class NodeMapperController extends Controller
                 $this->get('engine.breadcrumbs')->add($bc['uri'], $bc['title'], $bc['descr']);
             }
         }
+
+        \Profiler::start('buildModulesData');
+        $this->buildModulesData($nodes_list);
+        \Profiler::end('buildModulesData');
+
+        //\Profiler::start('NodeMapperController::indexAction body');
 
         $this->get('html')->title('Smart Core CMS (based on Symfony2 Framework)');
 
