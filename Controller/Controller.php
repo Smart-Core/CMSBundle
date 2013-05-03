@@ -56,34 +56,4 @@ class Controller extends BaseController
             throw new \Exception('SmartCore\EngineBundle: Service "engine.' . strtolower($name) . '" does not register.');
         }
     }
-
-    /**
-     * @return \Doctrine\ORM\EntityManager
-     *
-     * @deprecated
-     */
-    public function EM()
-    {
-        return $this->getDoctrine()->getManager();
-    }
-
-    /**
-     * @return \Doctrine\ORM\Query
-     *
-     * @deprecated
-     */
-    public function DQL($dql)
-    {
-        return $this->EM()->createQuery($dql);
-    }
-
-    /**
-     * @return \Doctrine\ORM\EntityRepository
-     *
-     * @deprecated
-     */
-    public function getRepo($name, $persistentManagerName = null)
-    {
-        return $this->getDoctrine()->getRepository($name, $persistentManagerName);
-    }
 }

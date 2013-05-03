@@ -30,7 +30,7 @@ class AdminStructureController extends Controller
 
     public function nodeEditAction(Request $request, $id)
     {
-        $em = $this->EM();
+        $em = $this->get('doctrine.orm.default_entity_manager');
 
         /** @var $node Node */
         $node = $em->find('SmartCoreEngineBundle:Node', $id);
@@ -81,7 +81,7 @@ class AdminStructureController extends Controller
 
     public function nodeCreateAction(Request $request, $folder_pid = 1)
     {
-        $em = $this->EM();
+        $em = $this->get('doctrine.orm.default_entity_manager');
 
         $node = new Node();
         $node->setCreateByUserId($this->getUser()->getId());
@@ -126,7 +126,7 @@ class AdminStructureController extends Controller
      */
     public function folderEditAction(Request $request, $id = 1)
     {
-        $em = $this->EM();
+        $em = $this->get('doctrine.orm.default_entity_manager');
         $folder = $em->find('SmartCoreEngineBundle:Folder', $id);
 
         if (empty($folder)) {
@@ -179,7 +179,7 @@ class AdminStructureController extends Controller
      */
     public function folderCreateAction(Request $request, $folder_pid = 1)
     {
-        $em = $this->EM();
+        $em = $this->get('doctrine.orm.default_entity_manager');
 
         $folder = new Folder();
         $folder->setCreateByUserId($this->getUser()->getId());
@@ -222,7 +222,8 @@ class AdminStructureController extends Controller
      */
     public function blockAction(Request $request, $id = 0)
     {
-        $em = $this->EM();
+        $em = $this->get('doctrine.orm.default_entity_manager');
+
         $block = $em->find('SmartCoreEngineBundle:Block', $id);
 
         if (empty($block)) {
