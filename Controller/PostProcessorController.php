@@ -10,6 +10,24 @@ class PostProcessorController extends Controller
 {
     public function indexAction(Request $request, $slug)
     {
+        $data = $request->request->all();
+        $node_id = null;
+        foreach ($data as $key => $value) {
+            if ($key == '_cmf_node_id') {
+                $node_id = $data['_cmf_node_id'];
+            }
+
+            if (array_key_exists('_cmf_node_id', $value)) {
+                $node_id = $data[$key]['_cmf_node_id'];
+                unset($data[$key]['_cmf_node_id']);
+                break;
+            }
+        }
+
+        foreach ($data as $key => $value) {
+            $request->request->set($key, $value);
+        }
+
         // @todo УБРАТЬ, это сейчас тут тесты с регистрацией...
         if (isset($_POST['fos_user_registration_form']) or
             isset($_POST['fos_user_profile_form']) or

@@ -22,6 +22,7 @@ class Environment extends ParameterBag
             //'base_url'              => $container->get('request')->getBaseUrl() . '/',
             'current_folder_id'     => 1,
             'current_folder_path'   => $base_path,
+            'current_node_id'       => null,
             'dir_app'               => $kernel->getRootDir()  . '/',
             'dir_backup'            => $kernel->getRootDir()  . '/var/backup/',
             'dir_cache'             => $kernel->getCacheDir() . '/',

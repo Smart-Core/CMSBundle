@@ -229,7 +229,10 @@ class NodeMapperController extends Controller
                 \Profiler::end($node_id . ' ' . $node->getModule(), 'node');
 
                 if ($this->get('security.context')->isGranted('ROLE_ADMIN')) {
-                    $this->cmf_front_controls['node']['__node_' . $node_id] = $Module->getFrontControls();
+                    if (method_exists($Module, 'getFrontControls')) {
+                        $this->cmf_front_controls['node']['__node_' . $node_id] = $Module->getFrontControls();
+                    }
+
                     $this->cmf_front_controls['node']['__node_' . $node_id]['cmf_node_properties'] = array(
                         'title' => 'Свойства ноды',
                         'uri' => $this->generateUrl('cmf_admin_structure_node_properties', array('id' => $node_id))

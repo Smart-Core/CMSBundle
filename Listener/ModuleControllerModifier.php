@@ -5,6 +5,7 @@ namespace SmartCore\Bundle\EngineBundle\Listener;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\FilterControllerEvent;
+use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 use Symfony\Component\HttpKernel\Event\GetResponseForControllerResultEvent;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
@@ -41,6 +42,8 @@ class ModuleControllerModifier
         if ($event->getRequest()->attributes->has('_node')) {
             $controller[0]->setNode($event->getRequest()->attributes->get('_node'));
 
+            $this->container->get('engine.env')->current_node_id = $event->getRequest()->attributes->get('_node')->getId();
+
             $event->getRequest()->attributes->remove('_node');
         }
     }
@@ -69,5 +72,10 @@ class ModuleControllerModifier
                 }
             }
         }
+    }
+
+    public function onResponse(FilterResponseEvent $event)
+    {
+        $this->container->get('engine.env')->current_node_id = null;
     }
 }

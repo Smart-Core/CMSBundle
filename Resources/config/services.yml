@@ -12,6 +12,11 @@ services:
         arguments: [ @service_container ]
         tags:
             - { name: kernel.event_listener, event: kernel.request, method: onRequest }
+    engine.response.listener:
+        class: SmartCore\Bundle\EngineBundle\Listener\ModuleControllerModifier
+        arguments: [ @service_container ]
+        tags:
+            - { name: kernel.event_listener, event: kernel.response, method: onResponse }
     engine.view.listener:
         class: SmartCore\Bundle\EngineBundle\Listener\ModuleControllerModifier
         arguments: [ @service_container ]
@@ -68,7 +73,7 @@ services:
 # Forms
     engine.form.type.extension.node_id:
         class: SmartCore\Bundle\EngineBundle\Form\Extension\FormTypeNodeIdExtension
-        arguments: [ @service_container ]
+        arguments: [ @engine.env ]
         tags:
             - { name: form.type_extension, alias: form }
     engine.form.type.folder_tree:
