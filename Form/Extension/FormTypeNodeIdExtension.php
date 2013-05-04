@@ -33,10 +33,7 @@ class FormTypeNodeIdExtension extends AbstractTypeExtension
         if (!$view->parent && $options['compound'] and !empty($data)) {
             $factory = $form->getConfig()->getFormFactory();
 
-            $form = $factory->createNamed($options['node_id_field_name'], 'hidden', $data, [
-                'mapped'    => false,
-                //'allow_add' => true,
-            ]);
+            $form = $factory->createNamed($options['node_id_field_name'], 'hidden', $data, ['mapped' => false]);
 
             $view->children[$options['node_id_field_name']] = $form->createView($view);
         }
@@ -48,7 +45,7 @@ class FormTypeNodeIdExtension extends AbstractTypeExtension
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver->setDefaults([
-            'node_id_field_name' => '_cmf_node_id',
+            'node_id_field_name' => '_node_id',
         ]);
     }
 

@@ -14,15 +14,15 @@ class PostProcessorController extends Controller
         $data = $request->request->all();
         $node_id = null;
         foreach ($data as $key => $value) {
-            if ($key == '_cmf_node_id') {
-                $node_id = $data['_cmf_node_id'];
-                unset($data['_cmf_node_id']);
+            if ($key == '_node_id') {
+                $node_id = $data['_node_id'];
+                unset($data['_node_id']);
                 break;
             }
 
-            if (array_key_exists('_cmf_node_id', $value)) {
-                $node_id = $data[$key]['_cmf_node_id'];
-                unset($data[$key]['_cmf_node_id']);
+            if (array_key_exists('_node_id', $value)) {
+                $node_id = $data[$key]['_node_id'];
+                unset($data[$key]['_node_id']);
                 break;
             }
         }
