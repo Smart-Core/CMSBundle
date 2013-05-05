@@ -15,7 +15,7 @@ abstract class Controller extends BaseController
      * Edit-In-Place
      * @var bool
      */
-    protected $_eip = false;
+    private $_eip = false;
 
     /**
      * Действие по умолчанию.
