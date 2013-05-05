@@ -73,7 +73,19 @@ cmf_admin_users:
 cmf_admin_module:
     path: /module/
     defaults:
-        _controller: SmartCoreEngineBundle:Admin:index
+        _controller: SmartCoreEngineBundle:AdminModule:index
+cmf_admin_module_manage:
+    path: /module/{module}/{slug}
+    defaults:
+        _controller: SmartCoreEngineBundle:AdminModule:manage
+        slug: ""
+    requirements:
+        slug: ".+"
+cmf_admin_module_manage_w_slash:
+    path: /module/{module}/
+    defaults:
+        _controller: SmartCoreEngineBundle:AdminModule:manage
+        slug: ""
 cmf_admin_config:
     path: /config/
     defaults:

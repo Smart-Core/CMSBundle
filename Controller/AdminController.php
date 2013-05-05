@@ -3,35 +3,21 @@
 namespace SmartCore\Bundle\EngineBundle\Controller;
 
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 
 class AdminController extends Controller
 {
     public function indexAction(Request $request, $slug = null)
     {
-        /*
-        $this->get('html')
-            ->title('Smart Core CMF')
-            ->titlePrepend('Управление / ')
-        ;
-        */
-        return $this->render('SmartCoreEngineBundle:Admin:index.html.twig', array(
-
-        ));
+        return $this->render('SmartCoreEngineBundle:Admin:index.html.twig', []);
     }
 
     public function nodeAction(Request $request, $id, $slug = null)
     {
-        return $this->forward("$id:Admin:index", array('slug' => $slug));
-        //return new Response($id);
+        return $this->forward("$id:Admin:index", ['slug' => $slug]);
     }
 
     public function runAction($slug)
     {
-//        ld($slug);
-        //return new Response('runAction');
-        return $this->renderView('SmartCoreEngineBundle::test.html.twig', array(
-
-        ));
+        return $this->renderView('SmartCoreEngineBundle::test.html.twig', []);
     }
 }

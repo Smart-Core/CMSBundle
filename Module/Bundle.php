@@ -6,6 +6,11 @@ use Symfony\Component\HttpKernel\Bundle\Bundle as BaseBundle;
 
 class Bundle extends BaseBundle
 {
+    public function __toString()
+    {
+        return get_class($this);
+    }
+
     /**
      * Получить имя контроллера по умолчанию.
      * Вычисляется как посленяя часть пространства имён.
@@ -53,8 +58,25 @@ class Bundle extends BaseBundle
         return new RouterResponse(null, 404);
     }
 
-    public function __toString()
+    /**
+     * Получить короткое имя (без суффикса Module).
+     *
+     * @return string
+     */
+    public function getShortName()
     {
-        return get_class($this);
+        return substr($this->getName(), 0, -6);
+    }
+
+    /**
+     * Есть ли у модуля административный раздел.
+     *
+     * @return bool
+     *
+     * @todo переделать на более красивую логику, например основываясь на наличии контроллера админки.
+     */
+    public function hasAdmin()
+    {
+        return false;
     }
 }
