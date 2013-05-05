@@ -6,6 +6,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
+use SmartCore\Bundle\EngineBundle\Container;
 
 /**
  * @ORM\Entity
@@ -14,7 +15,6 @@ use Symfony\Component\Validator\Constraints as Assert;
  *          @ORM\Index(name="position", columns={"position"}),
  *      }
  * )
- * -UniqueEntity("name")
  * @UniqueEntity(fields="name", message="Блок с таким именем уже используется")
  */
 class Block
@@ -146,5 +146,21 @@ class Block
     public function getCreateByUserId()
     {
         return $this->create_by_user_id;
+    }
+
+    /**
+     * Получить кол-во включенных нод.
+     */
+    public function getNodesCount()
+    {
+        $query = Container::get('doctrine.orm.default_entity_manager')->createQuery("
+            SELECT COUNT(n.node_id)
+            FROM SmartCoreEngineBundle:Node n
+            JOIN SmartCoreEngineBundle:Block b
+            WHERE b.block_id = {$this->block_id}
+            AND n.block = b
+        ");
+
+        return $query->getSingleScalarResult();
     }
 }
