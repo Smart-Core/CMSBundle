@@ -16,16 +16,12 @@ class AdminStructureController extends Controller
 {
     public function indexAction(Request $request)
     {
-        return $this->renderView('SmartCoreEngineBundle:Admin:structure.html.twig', array(
-
-        ));
+        return $this->renderView('SmartCoreEngineBundle:Admin:structure.html.twig', []);
     }
 
     public function nodeAction(Request $request)
     {
-        return $this->renderView('SmartCoreEngineBundle:Admin:structure.html.twig', array(
-
-        ));
+        return $this->renderView('SmartCoreEngineBundle:Admin:structure.html.twig', []);
     }
 
     public function nodeEditAction(Request $request, $id)
@@ -45,8 +41,6 @@ class AdminStructureController extends Controller
         $form->remove('module');
 
         if ($request->isMethod('POST')) {
-            //return new JsonResponse(array('notice' => 'FAILED'), 403);
-
             if ($request->request->has('update')) {
                 $form->bind($request);
                 $form_properties->bind($request);
@@ -58,7 +52,7 @@ class AdminStructureController extends Controller
                     $em->flush();
 
                     if ($request->isXmlHttpRequest()) {
-                        return new JsonResponse(array('redirect' => $this->get('engine.folder')->getUri($updated_node->getFolder()->getId())));
+                        return new JsonResponse(['redirect' => $this->get('engine.folder')->getUri($updated_node->getFolder()->getId())]);
                     } else {
                         $this->get('session')->getFlashBag()->add('notice', 'Нода обновлена.');
                         return $this->redirect($this->generateUrl('cmf_admin_structure'));
@@ -69,14 +63,14 @@ class AdminStructureController extends Controller
             }
         }
 
-        return $this->renderView('SmartCoreEngineBundle:Admin:node_edit.html.twig', array(
+        return $this->renderView('SmartCoreEngineBundle:Admin:node_edit.html.twig', [
             'node_id' => $id,
             'html_head_title' => 'Edit node',
             'form' => $form->createView(),
-            'form_action' => $this->generateUrl('cmf_admin_structure_node_properties', array('id' => $id)),
+            'form_action' => $this->generateUrl('cmf_admin_structure_node_properties', ['id' => $id]),
             'form_controls' => 'update',
             'form_properties' => $form_properties->createView(),
-        ));
+        ]);
     }
 
     public function nodeCreateAction(Request $request, $folder_pid = 1)
@@ -102,10 +96,10 @@ class AdminStructureController extends Controller
                     $em->flush();
 
                     if ($request->isXmlHttpRequest()) {
-                        return new JsonResponse(array('redirect' => $this->get('engine.folder')->getUri($created_node->getFolder()->getId())));
+                        return new JsonResponse(['redirect' => $this->get('engine.folder')->getUri($created_node->getFolder()->getId())]);
                     } else {
                         $this->get('session')->getFlashBag()->add('notice', 'Нода создана.');
-                        return $this->redirect($this->generateUrl('cmf_admin_structure_node_properties', array('id' => $created_node->getId())));
+                        return $this->redirect($this->generateUrl('cmf_admin_structure_node_properties', ['id' => $created_node->getId()]));
                     }
                 }
             } else if ($request->request->has('delete')) {
@@ -113,12 +107,12 @@ class AdminStructureController extends Controller
             }
         }
 
-        return $this->renderView('SmartCoreEngineBundle:Admin:structure_edit.html.twig', array(
+        return $this->renderView('SmartCoreEngineBundle:Admin:structure_edit.html.twig', [
             'html_head_title' => 'Create node',
             'form' => $form->createView(),
             'form_action' => $this->generateUrl('cmf_admin_structure_node_create'),
             'form_controls' => 'create',
-        ));
+        ]);
     }
 
     /**
@@ -153,7 +147,7 @@ class AdminStructureController extends Controller
                     $em->flush();
 
                     if ($request->isXmlHttpRequest()) {
-                        return new JsonResponse(array('redirect' => $this->get('engine.folder')->getUri($folder->getId())));
+                        return new JsonResponse(['redirect' => $this->get('engine.folder')->getUri($folder->getId())]);
                     } else {
                         $this->get('session')->getFlashBag()->add('notice', 'Папка обновлена.');
                         return $this->redirect($this->generateUrl('cmf_admin_structure'));
@@ -164,14 +158,14 @@ class AdminStructureController extends Controller
             }
         }
 
-        return $this->renderView('SmartCoreEngineBundle:Admin:structure_edit.html.twig', array(
+        return $this->renderView('SmartCoreEngineBundle:Admin:structure_edit.html.twig', [
             'folder_id' => $id,
             'html_head_title' => 'Edit folder',
             'form' => $form->createView(),
-            'form_action' => $this->generateUrl('cmf_admin_structure_folder', array('id' => $id)),
+            'form_action' => $this->generateUrl('cmf_admin_structure_folder', ['id' => $id]),
             'form_controls' => 'update',
             'allow_delete' => $id != 1 ? true : false,
-        ));
+        ]);
     }
 
     /**
@@ -195,7 +189,7 @@ class AdminStructureController extends Controller
                     $em->flush();
 
                     if ($request->isXmlHttpRequest()) {
-                        return new JsonResponse(array('redirect' => $this->get('engine.folder')->getUri($folder->getId())));
+                        return new JsonResponse(['redirect' => $this->get('engine.folder')->getUri($folder->getId())]);
                     } else {
                         $this->get('session')->getFlashBag()->add('notice', 'Папка создана.');
                         return $this->redirect($this->generateUrl('cmf_admin_structure'));
@@ -206,12 +200,12 @@ class AdminStructureController extends Controller
             }
         }
 
-        return $this->renderView('SmartCoreEngineBundle:Admin:structure_edit.html.twig', array(
+        return $this->renderView('SmartCoreEngineBundle:Admin:structure_edit.html.twig', [
             'html_head_title' => 'Create folder',
             'form' => $form->createView(),
             'form_action' => $this->generateUrl('cmf_admin_structure_folder_create'),
             'form_controls' => 'create',
-        ));
+        ]);
     }
 
     /**
@@ -259,15 +253,15 @@ class AdminStructureController extends Controller
         }
 
         if ($id) {
-            $arg = array(
+            $arg = [
                 'block_id'  => $id,
                 'form_edit' => $form->createView(),
-            );
+            ];
         } else {
-            $arg = array(
-                'all_blocks'  => $em->getRepository('SmartCoreEngineBundle:Block')->findBy(array(), array('position' => 'ASC')),
+            $arg = [
+                'all_blocks'  => $em->getRepository('SmartCoreEngineBundle:Block')->findBy([], ['position' => 'ASC']),
                 'form_create' => $form->createView(),
-            );
+            ];
         }
 
         return $this->renderView('SmartCoreEngineBundle:Admin:block.html.twig', $arg);
@@ -278,9 +272,9 @@ class AdminStructureController extends Controller
      */
     public function showTreeAction($folder_id = null, $node_id = null)
     {
-        return $this->renderView('SmartCoreEngineBundle:Admin:tree.html.twig', array(
+        return $this->renderView('SmartCoreEngineBundle:Admin:tree.html.twig', [
             'folder_id' => $folder_id,
             'node_id' => $node_id,
-        ));
+        ]);
     }
 }
