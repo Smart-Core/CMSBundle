@@ -124,9 +124,7 @@ abstract class Controller extends BaseController
      */
     public function postAction(Request $request)
     {
-        $Response = new Response();
-        $Response->setStatusCode(404);
-        return $Response;
+        return new Response('Method postAction is not exist', 404);
     }
 
     // @todo пересмотреть нижеописанные методы!

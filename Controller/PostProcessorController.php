@@ -4,6 +4,7 @@ namespace SmartCore\Bundle\EngineBundle\Controller;
 
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 
 class PostProcessorController extends Controller
@@ -35,7 +36,6 @@ class PostProcessorController extends Controller
         }
 
         // @todo УБРАТЬ, это сейчас тут тесты с регистрацией...
-        /*
         if (isset($_POST['fos_user_registration_form']) or
             isset($_POST['fos_user_profile_form']) or
             isset($_POST['fos_user_resetting_form']) or
@@ -45,28 +45,23 @@ class PostProcessorController extends Controller
         ) {
             return $this->forward('SmartCoreEngineBundle:NodeMapper:index', array('slug' => $slug));
         }
-        */
 
-        $response = $this->forward("$node_id:Texter:post");
-
-        return $response;
-
-        /*
-
-        $json_response = json_decode($response->getContent());
-        if ($json_response->status === 'OK') {
-            if (isset($json_response->message)) {
-                $request->getSession()->getFlashBag()->add('texter_info', $json_response->message);
-            }
-
-            return new RedirectResponse($request->server->get('HTTP_REFERER') . '#');
+        if (!$this->get('security.context')->isGranted('ROLE_ADMIN')) {
+            return new JsonResponse([
+                'status' => 'INVALID',
+                'message' => 'Access denied',
+            ], 403);
         }
 
-        ob_start();
-        print_r($_POST);
-        $dump = ob_get_clean();
+        $module_name = $this->get('engine.node_manager')->get($node_id)->getModule();
 
-        return new Response("<h1>PostProcessorController</h1><pre>$dump</pre>");
+        return $this->forward("{$node_id}:{$module_name}:post");
+
+        /*
+        $router_data = $this->get('engine.folder')->router($request->getPathInfo());
+        $nodes_list  = $this->get('engine.node_manager')->buildNodesList($router_data);
+        ld($nodes_list);
+        ld($node_id);
         */
     }
 }

@@ -25,6 +25,11 @@ class Response extends BaseResponse
         return $this->cmf_front_controls;
     }
 
+    /**
+     * В отличии от оригинального метода, контент ставится как есть, а не преобразовывается в строку.
+     *
+     * {@inheritdoc}
+     */
     public function setContent($content)
     {
         if (null !== $content && !is_string($content) && !is_numeric($content) && !is_callable(array($content, '__toString'))) {
