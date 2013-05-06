@@ -66,20 +66,21 @@
 {% endblock navbar %}
 
 <div class="container">
+    {% block flashMessages %}
+        {% for flashMessage in app.session.flashbag.get('notice') %}
+            <div class="row-fluid">
+                <div class="alert alert-success"><button type="button" class="close" data-dismiss="alert">&times;</button>{{ flashMessage }}</div>
+            </div>
+        {% endfor %}
+    {% endblock flashMessages %}
     <div class="row-fluid">
         {% block content %}
 
-            {% block subnav %}
-            {% endblock subnav %}
-
-            {% for flashMessage in app.session.flashbag.get('notice') %}
-                <div class="alert alert-success"><button type="button" class="close" data-dismiss="alert">&times;</button>{{ flashMessage }}</div>
-            {% endfor %}
+            {% block subnav '' %}
 
         {% endblock content %}
 
-        {% block nav %}
-        {% endblock nav %}
+        {% block nav '' %}
     </div>
 </div>
 {% endblock body %}

@@ -66,7 +66,7 @@ class Node implements \Serializable
     /**
      * Позиция в внутри блока.
      *
-     * @ORM\Column(type="smallint")
+     * @ORM\Column(type="smallint", nullable=true)
      */
     protected $position;
 
@@ -240,6 +240,10 @@ class Node implements \Serializable
 
     public function setPosition($position)
     {
+        if (empty($position)) {
+            $position = 0;
+        }
+
         $this->position = $position;
     }
 

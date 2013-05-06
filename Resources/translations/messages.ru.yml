@@ -23,6 +23,7 @@ Help: Справка
 Inherit in folders: Наследование в папках
 Is active: Включено
 Is file: Является файлом?
+Items count: Кол-во записей
 Lockout nodes: Блокировка нод
 My profile: Мой профиль
 Modules: Модули
@@ -30,6 +31,7 @@ Module: Модуль
 Name: Имя
 Nodes count: Кол-во нод
 Parent folder: Родительская папка
+Parent item: Родительский пункт
 Permissions: Права доступа
 Pos: Позиция
 Position: Позиция
