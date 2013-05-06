@@ -15,6 +15,7 @@ class NodeFormType extends AbstractType
         $builder
             //->add('name', null, array('attr' => array('class' => 'focused')))
             ->add('is_active')
+            ->add('is_cached')
             ->add('module', 'choice', array(
                 'choices' => Container::get('engine.module_manager')->all(),
                 'data' => 'Texter',

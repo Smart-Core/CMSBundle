@@ -52,6 +52,7 @@ class AdminStructureController extends Controller
                     $em->flush();
 
                     if ($request->isXmlHttpRequest()) {
+                        // @todo проверять referer, и если нода по прежнему находится в наследованном пути, то редиректиться в реферер.
                         return new JsonResponse(['redirect' => $this->get('engine.folder')->getUri($updated_node->getFolder()->getId())]);
                     } else {
                         $this->get('session')->getFlashBag()->add('notice', 'Нода обновлена.');

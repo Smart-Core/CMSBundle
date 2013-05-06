@@ -78,9 +78,11 @@ class Node implements \Serializable
     protected $priority;
 
     /**
-     * @ORM\Column(type="boolean")
+     * Может ли нода кешироваться.
+     *
+     * @ORM\Column(type="boolean", nullable=TRUE)
      */
-    //protected $is_cached;
+    protected $is_cached;
 
     /**
      * @ORM\Column(type="text", nullable=TRUE)
@@ -92,7 +94,7 @@ class Node implements \Serializable
      * 
      * @todo !!! Убрать !!! это временное поле...
      */
-//    protected $cache_params_yaml;
+    //protected $cache_params_yaml;
 
     /**
      * @todo пересмотреть.
@@ -141,15 +143,15 @@ class Node implements \Serializable
 
     protected $controller = null;
     protected $action = 'index';
-    protected $arguments = array();
+    protected $arguments = [];
 
     public function __construct()
     {
         $this->create_by_user_id = 0;
         $this->create_datetime = new \DateTime();
         $this->is_active = true;
-        $this->is_cached = true;
-        $this->params = array();
+        $this->is_cached = false;
+        $this->params = [];
         $this->position = 0;
         $this->priority = 0;
     }
@@ -161,11 +163,11 @@ class Node implements \Serializable
     {
         $this->getFolderId();
         $this->getBlock()->getId();
-        return serialize(array(
+        return serialize([
             //return igbinary_serialize(array(
             $this->node_id,
             $this->is_active,
-            //$this->is_cached,
+            $this->is_cached,
             $this->module,
             $this->params,
             $this->folder,
@@ -176,7 +178,7 @@ class Node implements \Serializable
             $this->descr,
             $this->create_by_user_id,
             $this->create_datetime,
-        ));
+        ]);
     }
 
     /**
@@ -188,7 +190,7 @@ class Node implements \Serializable
         list(
             $this->node_id,
             $this->is_active,
-            //$this->is_cached,
+            $this->is_cached,
             $this->module,
             $this->params,
             $this->folder,
@@ -226,6 +228,16 @@ class Node implements \Serializable
     public function getIsActive()
     {
         return $this->is_active;
+    }
+
+    public function setIsCached($is_cached)
+    {
+        $this->is_cached = $is_cached;
+    }
+
+    public function getIsCached()
+    {
+        return $this->is_cached;
     }
 
     public function setDescr($descr)
@@ -290,7 +302,7 @@ class Node implements \Serializable
     public function getParams()
     {
         if (empty($this->params)) {
-            return array();
+            return [];
         } else {
             return $this->params;
         }

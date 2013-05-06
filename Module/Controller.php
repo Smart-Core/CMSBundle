@@ -75,26 +75,60 @@ abstract class Controller extends BaseController
     public function setNode(Node $node)
     {
         $this->node = $node;
-        //foreach ($node['params'] as $key => $value) {
         foreach ($node->getParams() as $key => $value) {
             $this->$key = $value;
-            /*
-            if (isset($this->{$key})) {
-                $this->{$key} = $value;
-            } else {
-                die('Недопустимый параметр: ' . $key);
-            }
-            */
         }
 
-//        $reflector = new \ReflectionClass($this->node['module_class']);
-//        $this->View->setOptions(array('bundle' => $reflector->getShortName() . '::'));
+        //$reflector = new \ReflectionClass($this->node['module_class']);
+        //$this->View->setOptions(array('bundle' => $reflector->getShortName() . '::'));
 
-//        $module = $this->container->get('kernel')->getBundle($node->getModule() . 'Module');
+        $this->View->setOptions(['bundle' => $node->getModule() . 'Module' . '::']);
+    }
 
-//        ld($module);
+    /**
+     * Получение данных из кеша.
+     *
+     * @return string
+     */
+    protected function getCache($key, $default = null)
+    {
+        if (!$this->node->getIsCached()) {
+            return $default;
+        }
 
-        $this->View->setOptions(array('bundle' => $node->getModule() . 'Module' . '::'));
+        $dir = $this->get('kernel')->getCacheDir() . '/smart_core/node/' . $this->node->getId() . '/';
+        if (file_exists($dir . $key)) {
+            return unserialize(file_get_contents($dir . $key));
+        } else {
+            return $default;
+        }
+    }
+
+    /**
+     * Поместить данные в кеш.
+     *
+     * @return string
+     */
+    protected function setCache($key, $value)
+    {
+        if (!$this->node->getIsCached()) {
+            return false;
+        }
+
+        $dir = $this->get('kernel')->getCacheDir() . '/smart_core/node/' . $this->node->getId() . '/';
+
+        if (!is_dir($dir)) {
+            if (false === @mkdir($dir, 0777, true)) {
+                throw new \RuntimeException(sprintf('Unable to create the %s directory', $dir));
+            }
+        } elseif (!is_writable($dir)) {
+            throw new \RuntimeException(sprintf('Unable to write in the %s directory', $dir));
+        }
+
+        /** @see \Symfony\Component\Config\ConfigCache */
+        file_put_contents($dir . $key, serialize($value));
+
+        return true;
     }
 
     /**
@@ -151,33 +185,7 @@ abstract class Controller extends BaseController
     {
         return false;
     }
-    
-    /**
-     * Получить параметры подключения модуля.
-     * 
-     * @access public
-     * @return array $params
-     */
-    public function __getParams()
-    {
-        return array();
-    }
-    
-    /**
-     * Получить параметры кеширования модуля.
-     * 
-     * @access public
-     * @return array $params
-     */
-    public function __getCacheParams($cache_params = array())
-    {
-        $params = array();
-        foreach ($cache_params as $key => $value) {
-            $params[$key] = $value;
-        }
-        return $params;
-    }
-    
+
     /**
      * Вызывается при создании ноды.
      * 
