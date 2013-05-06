@@ -1,9 +1,11 @@
-{% extends '@SmartCoreEngine/Admin/index.html.twig' %}
+{% extends app.request.xmlHttpRequest ? '@SmartCoreEngine/ajax.html.twig' : '@SmartCoreEngine/Admin/index.html.twig' %}
 
 {% block html_head_title %}Блоки / {{ parent() }}{% endblock html_head_title %}
 
 {% block subnav %}
-    {{ knp_menu_render('SmartCoreEngineBundle:AdminMenu:structure', {'currentClass': 'active'})  }}
+    {% if not app.request.xmlHttpRequest %}
+        {{ knp_menu_render('SmartCoreEngineBundle:AdminMenu:structure', {'currentClass': 'active'})  }}
+    {% endif %}
 {% endblock subnav %}
 
 {% block content %}

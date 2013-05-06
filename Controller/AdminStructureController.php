@@ -21,6 +21,7 @@ class AdminStructureController extends Controller
 
     public function nodeAction(Request $request)
     {
+        ld(123);
         return $this->renderView('SmartCoreEngineBundle:Admin:structure.html.twig', []);
     }
 
