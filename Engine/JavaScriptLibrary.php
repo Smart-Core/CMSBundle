@@ -27,7 +27,7 @@ class JavaScriptLibrary extends ContainerAware
     /**
      * Список запрошенных библиотек.
      */
-    protected $requested_libs = array();
+    protected $requested_libs = [];
     
     protected $table_libs;
     protected $table_paths;
@@ -43,14 +43,14 @@ class JavaScriptLibrary extends ContainerAware
         $this->default_profile  = 'local';
         //$this->profiles = $this->Settings->getParam('scripts_profiles');
         $this->profiles         = 'local';
-        $this->scripts          = array();
+        $this->scripts          = [];
         $this->table_libs       = $this->db->prefix() . 'javascript_library';
         $this->table_paths      = $this->db->prefix() . 'javascript_library_paths';
         
         $sql = "SELECT script_id, name, related_by, current_version, default_profile, files FROM {$this->table_libs} ORDER BY pos DESC ";
         $result = $this->db->query($sql);
         while($row = $result->fetchObject()) {
-            $this->scripts[$row->name] = array(
+            $this->scripts[$row->name] = [
                 'script_id' => $row->script_id,
                 'related_by' => $row->related_by,
                 'current_version' => $row->current_version,
@@ -60,7 +60,7 @@ class JavaScriptLibrary extends ContainerAware
                 //'title' => $row->title,
                 //'homepage' => $row->homepage,
                 //'descr' => $row->descr,
-            );
+            ];
         }
     }
     
@@ -82,7 +82,7 @@ class JavaScriptLibrary extends ContainerAware
      */
     public function all()
     {
-        $output = array();
+        $output = [];
         
         // В связи с тем, что запрашивается в произвольном порядке - сначала надо сформировать массив с ключами в правильном порядке.
         foreach ($this->scripts as $key => $value) {

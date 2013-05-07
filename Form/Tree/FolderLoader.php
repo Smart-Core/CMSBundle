@@ -31,7 +31,7 @@ class FolderLoader implements EntityLoaderInterface
      */
     public function getEntities()
     {
-        $this->result = array();
+        $this->result = [];
         $this->level = 0;
 
         $this->addChild();
@@ -49,8 +49,8 @@ class FolderLoader implements EntityLoaderInterface
         $this->level++;
 
         $folders = $this->repo->findBy(
-            array('parent_folder' => $parent_folder),
-            array('position' => 'ASC')
+            ['parent_folder' => $parent_folder],
+            ['position' => 'ASC']
         );
 
         /** @var $folder Folder */
@@ -76,7 +76,7 @@ class FolderLoader implements EntityLoaderInterface
     public function getEntitiesByIds($identifier, array $values)
     {
         return $this->repo->findBy(
-            array($identifier => $values)
+            [$identifier => $values]
         );
     }
 }

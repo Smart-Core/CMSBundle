@@ -52,7 +52,7 @@ class DataBaseWrapper extends Connection
      * @param array $params       prepared statement params
      * @return object
      */
-    public function fetchObject($statement, array $params = array())
+    public function fetchObject($statement, array $params = [])
     {
         return $this->executeQuery($statement, $params)->fetch(\PDO::FETCH_OBJ);
     }

@@ -31,13 +31,13 @@ class HelloController extends Controller
 //        $em->persist($folder);
 //        $em->flush();
 
-//        $repo = $em->getRepository('SmartCoreEngineBundle:Node')->findIn(array(4, 6, 5, 1));
+//        $repo = $em->getRepository('SmartCoreEngineBundle:Node')->findIn([4, 6, 5, 1]);
 //        $node = $em->find('SmartCoreEngineBundle:Node', 8);
 //        ld($repo);
 
         /** @var $node Node */
         //ld($this->get('engine.folder')->getUri($node->getFolder()->getId()));
 
-        return $this->render('HtmlBundle::test.html.twig', array('hello' => 'Hello World!'));
+        return $this->render('HtmlBundle::test.html.twig', ['hello' => 'Hello World!']);
     }
 }

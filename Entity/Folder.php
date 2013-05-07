@@ -257,7 +257,7 @@ class Folder
     public function getMeta()
     {
         if (empty($this->meta)) {
-            return array();
+            return [];
         } else {
             return $this->meta;
         }

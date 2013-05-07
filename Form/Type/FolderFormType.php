@@ -12,7 +12,7 @@ class FolderFormType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('title', null, array('attr' => array('class' => 'focused')))
+            ->add('title', null, ['attr' => ['class' => 'focused']])
             ->add('uri_part')
             ->add('descr')
             ->add('parent_folder', 'folder_tree')
@@ -21,18 +21,18 @@ class FolderFormType extends AbstractType
             ->add('is_file')
             ->add('has_inherit_nodes')
             ->add('template')
-//            ->add('create_datetime', 'text', array('disabled' => true))
-//            ->add('permissions', 'text')
-//            ->add('lockout_nodes', 'text')
-//            ->addEventSubscriber(new FolderSubscriber())
+            //->add('create_datetime', 'text', ['disabled' => true])
+            //->add('permissions', 'text')
+            //->add('lockout_nodes', 'text')
+            //->addEventSubscriber(new FolderSubscriber())
         ;
     }
 
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
-        $resolver->setDefaults(array(
+        $resolver->setDefaults([
             'data_class' => 'SmartCore\Bundle\EngineBundle\Entity\Folder',
-        ));
+        ]);
     }
 
     public function getName()

@@ -11,7 +11,7 @@ class BlockFormType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('name', null, array('attr' => array('class' => 'focused')))
+            ->add('name', null, ['attr' => ['class' => 'focused']])
             ->add('descr')
             ->add('position')
         ;
@@ -19,9 +19,9 @@ class BlockFormType extends AbstractType
 
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
-        $resolver->setDefaults(array(
+        $resolver->setDefaults([
             'data_class' => 'SmartCore\Bundle\EngineBundle\Entity\Block',
-        ));
+        ]);
     }
 
     public function getName()

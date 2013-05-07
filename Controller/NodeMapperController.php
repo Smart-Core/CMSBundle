@@ -28,15 +28,15 @@ class NodeMapperController extends Controller
         \Profiler::end('buildNodesList');
         //ld($nodes_list);
 
-        $this->View->setOptions(array(
+        $this->View->setOptions([
             'comment'   => 'Базовый шаблон',
             'template'  => $router_data['template'],
-        ));
+        ]);
 
-        $this->View->set('blocks', new View(array(
+        $this->View->set('blocks', new View([
             'comment'   => 'Блоки',
             'engine'    => 'echo',
-        )));
+        ]));
 
         // Формирование "Хлебных крошек".
         /** @var $folder \SmartCore\Bundle\EngineBundle\Entity\Folder */
@@ -84,10 +84,10 @@ class NodeMapperController extends Controller
             );
             */
 
-            $cmf_front_controls = array(
+            $cmf_front_controls = [
                 'toolbar' => $this->get('engine.toolbar')->getArray(),
                 'node' => $this->cmf_front_controls['node'],
-            );
+            ];
 
             $this->get('engine.JsLib')->request('bootstrap');
             $this->get('engine.JsLib')->request('jquery-cookie');
@@ -99,15 +99,14 @@ class NodeMapperController extends Controller
             ;
         }
 
-
         $theme_path = $this->get('engine.env')->theme_path;
-        $this->View->assets = array(
+        $this->View->assets = [
             'theme_path'        => $theme_path,
             'theme_css_path'    => $theme_path . 'css/',
             'theme_js_path'     => $theme_path . 'js/',
             'theme_img_path'    => $theme_path . 'images/',
             'vendor'            => $this->get('engine.env')->global_assets,
-        );
+        ];
 
         $this->get('engine.theme')->processConfig($this->View);
 
@@ -128,8 +127,8 @@ class NodeMapperController extends Controller
 
 
 //        ld($this->View->blocks);
-//        ld($this->renderView("Menu::menu.html.twig", array()));
-//        ld($this->forward('Texter:Test:hello', array('text' => 'yahoo :)'))->getContent());
+//        ld($this->renderView("Menu::menu.html.twig");
+//        ld($this->forward('Texter:Test:hello', ['text' => 'yahoo :)'])->getContent());
 //        ld($this->forward('2:Test:index')->getContent());
 
 //        $tmp = $this->forward(8);
@@ -140,16 +139,14 @@ class NodeMapperController extends Controller
 
         /*
         $activeTheme = $this->get('liip_theme.active_theme');
-        $activeTheme->setThemes(array('web', 'tablet', 'phone'));
+        $activeTheme->setThemes(['web', 'tablet', 'phone']);
         $activeTheme->setName('phone');
         */
 
         \Profiler::start('Response');
-        return new Response($this->container->get('templating')->render("::{$this->View->getTemplateName()}.html.twig", array(
-                'block' => $this->View->blocks,
-            )),
-            $router_data['status']
-        );
+        return new Response($this->container->get('templating')->render("::{$this->View->getTemplateName()}.html.twig", [
+            'block' => $this->View->blocks,
+        ]), $router_data['status'] );
     }
     
     /**
@@ -172,7 +169,7 @@ class NodeMapperController extends Controller
             if (_IS_CACHE_NODES and $node['is_cached'] and !empty($node['cache_params']) and $this->get('engine.env')->cache_enable ) {
                 $cache_params = unserialize($node['cache_params']);
                 if (isset($cache_params['id']) and is_array($cache_params['id'])) {
-                    $cache_id = array();
+                    $cache_id = [];
                     foreach ($cache_params['id'] as $key => $dummy) {
                         switch ($key) {
                             case 'current_folder_id':
@@ -218,14 +215,11 @@ class NodeMapperController extends Controller
                     $Module = $Node->getModuleInstance($node_id, true);
                 } else {
                     $Module = $Node->getModuleInstance($node_id, false);
-                }
-                */
+                } */
 
                 // Выполняется модуль, все параметры ноды берутся в SmartCore\Bundle\EngineBundle\Listener\ModuleControllerModifier
                 \Profiler::start($node_id . ' ' . $node->getModule(), 'node');
-                $Module = $this->forward($node_id, array(
-                    '_eip' => true,
-                ));
+                $Module = $this->forward($node_id, [ '_eip' => true ]);
                 \Profiler::end($node_id . ' ' . $node->getModule(), 'node');
 
                 if ($this->get('security.context')->isGranted('ROLE_ADMIN')) {
@@ -233,10 +227,10 @@ class NodeMapperController extends Controller
                         $this->cmf_front_controls['node']['__node_' . $node_id] = $Module->getFrontControls();
                     }
 
-                    $this->cmf_front_controls['node']['__node_' . $node_id]['cmf_node_properties'] = array(
+                    $this->cmf_front_controls['node']['__node_' . $node_id]['cmf_node_properties'] = [
                         'title' => 'Свойства ноды',
-                        'uri' => $this->generateUrl('cmf_admin_structure_node_properties', array('id' => $node_id))
-                    );
+                        'uri' => $this->generateUrl('cmf_admin_structure_node_properties', ['id' => $node_id])
+                    ];
                 }
 
                 // Указать шаблонизатору, что надо сохранить эту ноду как html.
@@ -256,17 +250,17 @@ class NodeMapperController extends Controller
                     
                     // Для рута добавляется пунктик "свойства ноды"
                     if ($this->Permissions->isRoot()) {
-                        $front_controls['_node_properties'] = array(
+                        $front_controls['_node_properties'] = [
                             'popup_window_title' => 'Свойства ноды' . " ( $node_id )",
                             'title'              => 'Свойства',
                             'link'               => HTTP_ROOT . ADMIN . '/structure/node/' . $node_id . '/?popup',
                             'ico'                => 'edit',
-                        );
+                        ];
                     }
 
                     if(is_array($front_controls)) {
                         // @todo сделать выбор типа фронт админки popup/built-in/ajax.
-                        $this->View->admin['frontend'][$node_id] = array(
+                        $this->View->admin['frontend'][$node_id] = [
                             // 'type' => 'popup',
                             'node_action_mode'  => $node_properties['node_action_mode'],
                             'doubleclick'       => '@todo двойной щелчок по блоку НОДЫ.',
@@ -276,7 +270,7 @@ class NodeMapperController extends Controller
                             // элементы управления блоков внутри ноды.
                             //'controls_inner_default_action' = $Module->getFrontControlsInnerDefaultAction(),
                             'controls_inner'    => $Module->getFrontControlsInner(),
-                        );
+                        ];
                     }
 
                     $Module->View->setDecorators("<div class=\"cmf-frontadmin-node\" id=\"_node$node_id\">", "</div>");

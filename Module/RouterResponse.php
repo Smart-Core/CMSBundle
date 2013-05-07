@@ -8,8 +8,8 @@ class RouterResponse extends Response
 {
     protected $controller = null;
     protected $action = null;
-    protected $arguments = array();
-    protected $breadcrumbs = array();
+    protected $arguments = [];
+    protected $breadcrumbs = [];
 
     /**
      * Constructor.
@@ -20,7 +20,7 @@ class RouterResponse extends Response
      *
      * @api
      */
-    public function __construct($content = '', $status = 200, $headers = array())
+    public function __construct($content = '', $status = 200, $headers = [])
     {
         parent::__construct($content, 404, $headers);
     }
@@ -65,11 +65,11 @@ class RouterResponse extends Response
 
     public function addBreadcrumb($uri, $title, $descr = false)
     {
-        $this->breadcrumbs[] = array(
+        $this->breadcrumbs[] = [
             'uri'   => $uri,
             'title' => $title,
             'descr' => $descr,
-        );
+        ];
     }
 
     public function getBreadcrumbs()

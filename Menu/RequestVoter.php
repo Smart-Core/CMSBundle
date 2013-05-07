@@ -25,7 +25,7 @@ class RequestVoter implements VoterInterface
         } else if(
             $item->getUri() !== $request->getBaseUrl().'/' and
             $item->getUri() === substr($request->getRequestUri(), 0, strlen($item->getUri())) and
-            $request->attributes->get('__selected_inheritance', false)
+            $request->attributes->get('__selected_inheritance', true)
         ) {
             // URL isn't just "/" and the first part of the URL match
             return true;

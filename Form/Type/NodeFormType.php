@@ -12,34 +12,38 @@ class NodeFormType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
+        $modules = [];
+        foreach (Container::get('engine.module_manager')->all() as $module_name => $_dummy) {
+            $modules[$module_name] = $module_name;
+        }
+
         $builder
-            //->add('name', null, array('attr' => array('class' => 'focused')))
-            ->add('is_active')
-            ->add('is_cached')
-            ->add('module', 'choice', array(
-                'choices' => Container::get('engine.module_manager')->all(),
+            ->add('module', 'choice', [
+                'choices' => $modules,
                 'data' => 'Texter',
-                'attr' => array('class' => 'input-block-level'),
-            ))
+                'attr' => ['class' => 'input-block-level'],
+            ])
             ->add('folder', 'folder_tree')
-            ->add('block', 'entity', array(
+            ->add('block', 'entity', [
                 'class' => 'SmartCoreEngineBundle:Block',
                 'query_builder' => function(EntityRepository $er) {
                     return $er->createQueryBuilder('b')->orderBy('b.position', 'ASC');
                 },
-                'attr' => array('class' => 'input-block-level'),
+                'attr' => ['class' => 'input-block-level'],
                 'required' => true,
-            ))
+            ])
             ->add('descr')
             ->add('position')
+            ->add('is_active')
+            ->add('is_cached')
         ;
     }
 
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
-        $resolver->setDefaults(array(
+        $resolver->setDefaults([
             'data_class' => 'SmartCore\Bundle\EngineBundle\Entity\Node',
-        ));
+        ]);
     }
 
     public function getName()

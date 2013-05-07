@@ -43,7 +43,7 @@ class PostProcessorController extends Controller
             $this->container->get('request')->getBaseUrl() . '/' . $slug === $this->container->get('router')->generate('fos_user_resetting_send_email') or
             $this->container->get('request')->getBaseUrl() . '/' . $slug === $this->container->get('router')->generate('fos_user_resetting_check_email')
         ) {
-            return $this->forward('SmartCoreEngineBundle:NodeMapper:index', array('slug' => $slug));
+            return $this->forward('SmartCoreEngineBundle:NodeMapper:index', ['slug' => $slug]);
         }
 
         if (!$this->get('security.context')->isGranted('ROLE_ADMIN')) {

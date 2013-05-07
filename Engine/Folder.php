@@ -37,19 +37,20 @@ class Folder
         }
 
         $uri = '/';
-        $uri_parts = array();
+        $uri_parts = [];
 
         /** @var $folder \SmartCore\Bundle\EngineBundle\Entity\Folder */
-        while($folder_id != 1) {
-            $folder = $this->folderRepository->findOneBy(array(
-                'is_active' => true,
+        while ($folder_id != 1) {
+            $folder = $this->folderRepository->findOneBy([
+                'is_active'  => true,
                 'is_deleted' => false,
-                'folder_id' => $folder_id,
-            ));
+                'folder_id'  => $folder_id,
+            ]);
+
             if ($folder) {
                 $folder_id = $folder->getParentFolder()->getId();
                 $uri_parts[] = $folder->getUriPart();
-            } else{
+            } else {
                 break;
             }
         }
@@ -70,13 +71,13 @@ class Folder
      */
     public function router($slug)
     {
-        $data = array(
-            'folders' => array(),
-            'meta' => array(),
+        $data = [
+            'folders' => [],
+            'meta' => [],
             'status' => 200,
             'template' => 'index',
             'node_route' => null, // @todo
-        );
+        ];
         
         // @todo при обращении к фронт-контроллеру /web/app.php не коррекнтно определяется активные пункты меню.
         $current_folder_path = $this->container->get('request')->getBaseUrl() . '/';
@@ -112,10 +113,10 @@ class Folder
 
                 // Роутер модуля вернул положительный ответ. Статус 200.
                 if ($ModuleRouter->isOk()) {
-                    $data['node_route'] = array(
+                    $data['node_route'] = [
                         'id' => $router_node_id,
                         'response' => $ModuleRouter,
-                    );
+                    ];
                     // В случае успешного завершения роутера модуля, роутинг ядром прекращается.
                     break; 
                 } else {
@@ -125,12 +126,12 @@ class Folder
                 unset($ModuleRouter);
             }
 
-            $folder = $this->folderRepository->findOneBy(array(
+            $folder = $this->folderRepository->findOneBy([
                 'is_active' => true,
                 'is_deleted' => false,
                 'uri_part' => empty($segment) ? null : $segment,
                 'parent_folder' => $parent_folder
-            ));
+            ]);
 
             if ($folder) {
                 if ( true ) { // @todo if ($this->Permissions->isAllowed('folder', 'read', $folder->permissions)) {

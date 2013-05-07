@@ -24,10 +24,10 @@ class StructureMenu extends ContainerAware
     public function full(FactoryInterface $factory, array $options)
     {
         $menu = $factory->createItem('full_structure');
-        $menu->setChildrenAttributes(array(
+        $menu->setChildrenAttributes([
             'class' => 'filetree',
             'id' => 'browser',
-        ));
+        ]);
 
         $this->em = $this->container->get('doctrine')->getManager();
 
@@ -52,12 +52,12 @@ class StructureMenu extends ContainerAware
 
         /** @var $folder Folder */
         foreach ($folders as $folder) {
-            $uri = $this->container->get('router')->generate('cmf_admin_structure_folder', array('id' => $folder->getId()));
-            $menu->addChild($folder->getTitle(), array('uri' => $uri))->setAttributes(array(
+            $uri = $this->container->get('router')->generate('cmf_admin_structure_folder', ['id' => $folder->getId()]);
+            $menu->addChild($folder->getTitle(), ['uri' => $uri])->setAttributes([
                 'class' => 'folder',
                 'title' => $folder->getDescr(),
                 'id' => 'folder_id_' . $folder->getId(),
-            ));
+            ]);
 
             /** @var $sub_menu ItemInterface */
             $sub_menu = $menu[$folder->getTitle()];
@@ -66,11 +66,11 @@ class StructureMenu extends ContainerAware
 
             /** @var $node Node */
             foreach ($folder->getNodes() as $node) {
-                $uri = $this->container->get('router')->generate('cmf_admin_structure_node_properties', array('id' => $node->getId()));
-                $sub_menu->addChild($node->getDescr() . ' (' . $node->getModule() . ':' . $node->getId() . ')', array('uri' => $uri))->setAttributes(array(
+                $uri = $this->container->get('router')->generate('cmf_admin_structure_node_properties', ['id' => $node->getId()]);
+                $sub_menu->addChild($node->getDescr() . ' (' . $node->getModule() . ':' . $node->getId() . ')', ['uri' => $uri])->setAttributes([
                     'title' => $node->getDescr(),
                     'id' => 'node_id_' . $node->getId(),
-                ));
+                ]);
             }
         }
     }

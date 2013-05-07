@@ -5,7 +5,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 
 class User
 {
-    protected $roles = array();
+    protected $roles = [];
 
     public function __construct(ContainerInterface $container)
     {
@@ -29,7 +29,7 @@ class User
      */
     protected function updateRoles($system_roles)
     {
-        $add_roles = array();
+        $add_roles = [];
 
         foreach ($this->roles as $role) {
             $add_roles[$role] = 1;

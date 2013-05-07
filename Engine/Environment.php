@@ -17,7 +17,7 @@ class Environment extends ParameterBag
         $kernel    = $container->get('kernel');
         $base_path = $container->get('request')->getBasePath() . '/';
 
-        parent::__construct(array(
+        parent::__construct([
             'base_path'             => $base_path,
             //'base_url'              => $container->get('request')->getBaseUrl() . '/',
             'current_folder_id'     => 1,
@@ -35,7 +35,7 @@ class Environment extends ParameterBag
             'theme_path'            => $base_path . 'theme/',
             // Путь к глобальным ресурсам. Может быть на другом домене, например 'http://site.com/assets/'
             'global_assets'         => $base_path . 'assets/',
-        ));
+        ]);
     }
 
     /**

@@ -44,7 +44,7 @@ class NodeManager
      * Список всех нод, запрошенных в текущем контексте.
      * @var array
      */
-    protected $nodes_list = array();
+    protected $nodes_list = [];
 
     /**
      * Создание ноды
@@ -118,19 +118,19 @@ class NodeManager
             return $this->nodes_list;
         }
 
-        $used_nodes = array();
-        $lockout_nodes = array(
-            'single'  => array(), // Блокировка нод в папке, без наследования.
-            'inherit' => array(), // Блокировка нод в папке, с наследованием.
-            'except'  => array(), // Блокировка всех нод в папке, кроме заданных.
-        );
+        $used_nodes = [];
+        $lockout_nodes = [
+            'single'  => [], // Блокировка нод в папке, без наследования.
+            'inherit' => [], // Блокировка нод в папке, с наследованием.
+            'except'  => [], // Блокировка всех нод в папке, кроме заданных.
+        ];
 
         /** @var $folder \SmartCore\Bundle\EngineBundle\Entity\Folder */
         foreach ($folders as $folder) {
             // single каждый раз сбрасывается и устанавливается заново для каждоый папки.
             // @todo блокировку нод.
             /*
-            $lockout_nodes['single'] = array();
+            $lockout_nodes['single'] = [];
             if (isset($parsed_uri_value['lockout_nodes']['single']) and !empty($parsed_uri_value['lockout_nodes']['single'])) {
                 //$lockout_nodes['single'] = $parsed_uri_value['lockout_nodes']['single'];
                 $tmp = explode(',', $parsed_uri_value['lockout_nodes']['single']);
@@ -246,7 +246,7 @@ class NodeManager
         /*
         $is_cached = true;
         $cache = $this->container->get('engine.cache');
-        $nodes = array();
+        $nodes = [];
         $list = '';
         foreach ($this->nodes_list as $node_id) {
             $list .= $node_id . ',';

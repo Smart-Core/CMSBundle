@@ -164,7 +164,7 @@ class Node implements \Serializable
         $this->getFolderId();
         $this->getBlock()->getId();
         return serialize([
-            //return igbinary_serialize(array(
+            //return igbinary_serialize([
             $this->node_id,
             $this->is_active,
             $this->is_cached,

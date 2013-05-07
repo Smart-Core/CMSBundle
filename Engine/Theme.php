@@ -6,7 +6,7 @@ use Symfony\Component\DependencyInjection\ContainerAware;
 
 class Theme extends ContainerAware
 {
-    protected $paths = array();
+    protected $paths = [];
     protected $template;
     protected $theme_path;
 
@@ -26,7 +26,7 @@ class Theme extends ContainerAware
         $this->css_path     = $path . 'css/';
         $this->js_path      = $path . 'js/';
         $this->img_path     = $path . 'img/';
-        $this->ini          = array();
+        $this->ini          = [];
     }
 
     public function setPaths($paths)
@@ -63,11 +63,11 @@ class Theme extends ContainerAware
     public function processConfig($View)
     {
         // @todo продумать подключение ini-шников!!!
-        $this->paths        = array(
+        $this->paths        = [
             $this->container->get('engine.env')->dir_web_root . 'theme/views',
             $this->container->get('engine.env')->dir_app . 'Resources/views',
             $this->container->get('kernel')->getBundle('SmartCoreEngineBundle')->getPath() . '/Resources/views',
-        );
+        ];
         $this->template     = $View->getTemplateName();
         $this->vendor_path  = $View->assets['vendor'];
         $this->theme_path   = $View->assets['theme_path'];
@@ -144,12 +144,12 @@ class Theme extends ContainerAware
                             $type = 'image/vnd.microsoft.icon';
                         }
 
-                        $attr = array(
+                        $attr = [
                             'rel' => 'icon',
                             //'rel' => 'shortcut icon',
                             'type' => $type,
                             //'_ie' => 'IE',
-                        );
+                        ];
 
                         if (false !== strpos($value, '{IMG_PATH}')) {
                             $value = str_replace('{IMG_PATH}', $this->img_path, $value);

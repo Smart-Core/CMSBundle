@@ -13,8 +13,8 @@ class Block extends ContainerAware
     public function all()
     {
         return $this->container->get('doctrine')->getRepository('SmartCoreEngineBundle:Block')->findBy(
-            array(),
-            array('position' => 'ASC')
+            [],
+            ['position' => 'ASC']
         );
     }
 }

@@ -6,9 +6,9 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 class Permissions
 {
     private $db;
-    private $permissions = array();
+    private $permissions = [];
     private $user_id = 0;
-    private $user_roles = array();
+    private $user_roles = [];
 
     // @todo remove!
     private $user_groups;
@@ -117,7 +117,7 @@ class Permissions
     {
         return true; // @todo заглушка.
 
-        $user_permissions = array();
+        $user_permissions = [];
         // echo "\$object = <b>$object</b>, \$action = <b>$action</b>, \$permissions = <b>$permissions</b> <hr />";
 
         // Получаем значение по умолчанию.
@@ -145,7 +145,7 @@ class Permissions
         if (isset($permissions) and strlen($permissions) > 0) {
             // Парсим строку и генерим массив. Перезаписываем его обратно в $permissions.
             $temp = explode(';', $permissions);
-            $permissions = array();
+            $permissions = [];
             foreach ($temp as $key => $value) {
                 $t2 = explode('|', $value);
                 if (is_numeric($t2[0])) { // обрабатываются права на группы

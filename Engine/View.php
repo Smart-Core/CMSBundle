@@ -10,22 +10,22 @@ class View
      * Опции.
      * @var array
      */
-    protected $__options = array();
+    protected $__options = [];
 
     /**
      * Constructor.
      *
      * @param array $options
      */
-    public function __construct(array $options = array())
+    public function __construct(array $options = [])
     {
-        $this->__options = array(
+        $this->__options = [
             'comment'       => null,        // Служебный комментарий
             'engine'        => 'echo',      // Движок отрисовки. ('twig', 'php', 'echo' - простое отображение всех свойств.)
             'template'      => null,        // Имя файла шаблона.
             'bundle'        => '::',        // Имя бандла или модуля.
             'decorators'    => null,        // Декораторы - отображаются до и после рендеринга.
-        );
+        ];
         $this->__options = $options + $this->__options;
     }
     
@@ -34,7 +34,7 @@ class View
      *
      * @param array $options
      */
-    public function setOptions(array $options = array())
+    public function setOptions(array $options = [])
     {
         $this->__options = $options + $this->__options;
     }
@@ -45,7 +45,7 @@ class View
      */
     public function all()
     {
-        $properties = array();
+        $properties = [];
         foreach ($this as $property => $data) {
             if ($property === '__options') {
                 continue;
@@ -74,7 +74,7 @@ class View
     
     public function setDecorators($before, $after)
     {
-        $this->__options['decorators'] = array($before, $after);
+        $this->__options['decorators'] = [$before, $after];
     }
     
     public function setTemplateName($name)

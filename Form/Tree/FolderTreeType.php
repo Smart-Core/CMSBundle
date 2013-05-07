@@ -19,12 +19,12 @@ class FolderTreeType extends DoctrineType
             return $type->getLoader($options['em'], $options['query_builder'], $options['class']);
         };
 
-        $resolver->setDefaults(array(
+        $resolver->setDefaults([
             'property'  => 'form_title',
             'loader'    => $loader,
             'class'     => 'SmartCoreEngineBundle:Folder',
-            'attr'      => array('class' => 'input-block-level'),
-        ));
+            'attr'      => ['class' => 'input-block-level'],
+        ]);
     }
 
     public function getLoader(ObjectManager $manager, $queryBuilder, $class)

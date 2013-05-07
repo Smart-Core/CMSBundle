@@ -16,106 +16,106 @@ class Toolbar extends ContainerAware
 
         $username = $this->container->get('security.context')->getToken()->getUser()->getUserName();
 
-        return array(
-            'left' => array(
-                'setings' => array(
+        return [
+            'left' => [
+                'setings' => [
                     'title' => '',
                     'descr' => 'Настройки',
                     'icon' => 'wrench',
-                    'items' => array(
-                        'blocks' => array(
+                    'items' => [
+                        'blocks' => [
                             'title' => 'Блоки',
                             'icon' => 'th',
                             'uri' => $router->generate('cmf_admin_structure_block'),
-                        ),
-                        'appearance' => array(
+                        ],
+                        'appearance' => [
                             'title' => 'Оформление',
                             'icon' => 'picture',
                             'uri' => $router->generate('cmf_admin_appearance'),
-                        ),
-                        'users' => array(
+                        ],
+                        'users' => [
                             'title' => 'Пользователи',
                             'icon' => 'user',
                             'uri' => $router->generate('cmf_admin_users'),
-                        ),
-                        'modules' => array(
+                        ],
+                        'modules' => [
                             'title' => 'Модули',
                             'icon' => 'cog',
                             'uri' => $router->generate('cmf_admin_module'),
-                        ),
-                        'config' => array(
+                        ],
+                        'config' => [
                             'title' => 'Конфигруация',
                             'icon' => 'tasks',
                             'uri' => $router->generate('cmf_admin_config'),
-                        ),
-                        'reports' => array(
+                        ],
+                        'reports' => [
                             'title' => 'Отчеты',
                             'icon' => 'warning-sign',
                             'uri' => $router->generate('cmf_admin_reports'),
-                        ),
-                        'help' => array(
+                        ],
+                        'help' => [
                             'title' => 'Справка',
                             'icon' => 'question-sign',
                             'uri' => $router->generate('cmf_admin_help'),
-                        ),
-                    ),
-                ),
-                'structure' => array(
+                        ],
+                    ],
+                ],
+                'structure' => [
                     'title' => 'Структура',
                     'descr' => '',
                     'icon' => 'folder-open',
-                    'items' => array(
-                        'folder_edit' => array(
+                    'items' => [
+                        'folder_edit' => [
                             'title' => 'Редактировать раздел',
                             'icon' => 'edit',
-                            'uri' => $router->generate('cmf_admin_structure_folder', array('id' => $current_folder_id)),
-                        ),
-                        'folder_new' => array(
+                            'uri' => $router->generate('cmf_admin_structure_folder', ['id' => $current_folder_id]),
+                        ],
+                        'folder_new' => [
                             'title' => 'Добавить раздел',
                             'icon' => 'plus',
-                            'uri' => $router->generate('cmf_admin_structure_folder_create_in_folder', array('folder_pid' => $current_folder_id)),
-                        ),
-                        'folder_all' => array(
+                            'uri' => $router->generate('cmf_admin_structure_folder_create_in_folder', ['folder_pid' => $current_folder_id]),
+                        ],
+                        'folder_all' => [
                             'title' => 'Вся структура',
                             'icon' => 'book',
                             'uri' => $router->generate('cmf_admin_structure'),
-                        ),
+                        ],
                         'diviver_1' => 'diviver',
-                        'node_new' => array(
+                        'node_new' => [
                             'title' => 'Добавить модуль',
                             'icon' => 'plus',
-                            'uri' => $router->generate('cmf_admin_structure_node_create_in_folder', array('folder_pid' => $current_folder_id)),
-                        ),
-                        'node_all' => array(
+                            'uri' => $router->generate('cmf_admin_structure_node_create_in_folder', ['folder_pid' => $current_folder_id]),
+                        ],
+                        'node_all' => [
                             'title' => 'Все модули на странице @todo',
                             'icon' => 'list-alt',
                             'uri' => $base_path . '/admin/structure/node/in_folder/2/',
-                        ),
-                    ),
-                ),
-            ),
-            'right' => array(
-                'eip_toggle' => array("Просмотр", "Редактирование"),
-                'user' => array(
+                        ],
+                    ],
+                ],
+            ],
+            'right' => [
+                'eip_toggle' => ["Просмотр", "Редактирование"],
+                'user' => [
                     'title' => $username,
                     'icon' => 'user',
-                    'items' => array(
-                        'profile' => array(
+                    'items' => [
+                        'profile' => [
                             'title' => 'Мой профиль',
                             'uri' => $router->generate('fos_user_profile_show'),
                             'icon' => 'cog',
                             'overalay' => true,
-                        ),
+                        ],
                         'diviver_1' => 'diviver',
-                        'logout' => array(
+                        'logout' => [
                             'title' => "Выход",
                             'uri' => $router->generate('fos_user_security_logout'),
                             'icon' => "off",
                             'overalay' => false,
-                        ),
-                    ),
-                ),
-            ),
-        );
+                        ],
+                    ],
+                ],
+            ],
+        ];
     }
 }

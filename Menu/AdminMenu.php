@@ -17,13 +17,13 @@ class AdminMenu extends ContainerAware
             $menu->setChildrenAttribute('class', 'nav');
         }
 
-        $menu->addChild('Structure',    array('route' => 'cmf_admin_structure'));
-        $menu->addChild('Appearance',   array('route' => 'cmf_admin_appearance'));
-        $menu->addChild('Users',        array('route' => 'cmf_admin_users'));
-        $menu->addChild('Modules',      array('route' => 'cmf_admin_module'));
-        $menu->addChild('Configuration',array('route' => 'cmf_admin_config'));
-        $menu->addChild('Reports',      array('route' => 'cmf_admin_reports'));
-        $menu->addChild('Help',         array('route' => 'cmf_admin_help'));
+        $menu->addChild('Structure',     ['route' => 'cmf_admin_structure']);
+        $menu->addChild('Appearance',    ['route' => 'cmf_admin_appearance']);
+        $menu->addChild('Users',         ['route' => 'cmf_admin_users']);
+        $menu->addChild('Modules',       ['route' => 'cmf_admin_module']);
+        $menu->addChild('Configuration', ['route' => 'cmf_admin_config']);
+        $menu->addChild('Reports',       ['route' => 'cmf_admin_reports']);
+        $menu->addChild('Help',          ['route' => 'cmf_admin_help']);
 
         return $menu;
     }
@@ -38,9 +38,9 @@ class AdminMenu extends ContainerAware
             $menu->setChildrenAttribute('class', 'nav nav-pills');
         }
 
-        $menu->addChild('Create folder',    array('route' => 'cmf_admin_structure_folder_create'));
-        $menu->addChild('Connect module',   array('route' => 'cmf_admin_structure_node_create'));
-        $menu->addChild('Blocks',           array('route' => 'cmf_admin_structure_block'));
+        $menu->addChild('Create folder',  ['route' => 'cmf_admin_structure_folder_create']);
+        $menu->addChild('Connect module', ['route' => 'cmf_admin_structure_node_create']);
+        $menu->addChild('Blocks',         ['route' => 'cmf_admin_structure_block']);
 
         return $menu;
     }

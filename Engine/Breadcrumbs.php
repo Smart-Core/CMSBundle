@@ -9,14 +9,14 @@ class Breadcrumbs implements \Iterator, \Countable
     /**
      * Массив с хлебными крошками.
      */
-    protected $_breadcrumbs = array();
+    protected $_breadcrumbs = [];
 
     /**
      * Constructor.
      */
     public function __construct()
     {
-        //parent::__construct(array('action' => 'defaultRender'));
+        //parent::__construct(['action' => 'defaultRender']);
     }
 
     public function rewind() 
@@ -66,11 +66,11 @@ class Breadcrumbs implements \Iterator, \Countable
      */
     public function add($uri, $title, $descr = false)
     {
-        $this->_breadcrumbs[] = array(
+        $this->_breadcrumbs[] = [
             'uri'   => $uri,
             'title' => $title,
             'descr' => $descr,
-            );
+        ];
     }
 
     /**
@@ -82,7 +82,7 @@ class Breadcrumbs implements \Iterator, \Countable
     {
         // @todo если $num отрицательный, то вернуть указанный номер с конца, напроимер -1 это последний, а -2 предпослений и т.д...
         
-        $data = array();
+        $data = [];
         $current_uri = '';
         foreach ($this->_breadcrumbs as $key => $value) {
             $data[$key] = $value;

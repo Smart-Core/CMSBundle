@@ -30,10 +30,10 @@ class Controller extends BaseController
             $template = $reflector->getShortName();
         }
 
-        $this->View = new View(array(
+        $this->View = new View([
             'template' => strtolower($template),
             'engine' => 'twig',
-        ));
+        ]);
     }
     
     /**

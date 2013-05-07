@@ -7,7 +7,7 @@ use Symfony\Component\DependencyInjection\ContainerAware;
 class ModuleManager extends ContainerAware
 {
     protected $configFile;
-    protected $modules = array();
+    protected $modules = [];
     protected $initialized = false;
 
     /**

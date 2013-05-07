@@ -80,7 +80,7 @@ abstract class Controller extends BaseController
         }
 
         //$reflector = new \ReflectionClass($this->node['module_class']);
-        //$this->View->setOptions(array('bundle' => $reflector->getShortName() . '::'));
+        //$this->View->setOptions(['bundle' => $reflector->getShortName() . '::']);
 
         $this->View->setOptions(['bundle' => $node->getModule() . 'Module' . '::']);
     }

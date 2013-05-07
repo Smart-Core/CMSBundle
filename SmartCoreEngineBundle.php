@@ -8,8 +8,8 @@ use SmartCore\Bundle\EngineBundle\DependencyInjection\Compiler\TemplateResources
 
 class SmartCoreEngineBundle extends Bundle
 {
-    protected $modules_cache = array();
-    protected $modules = array();
+    protected $modules_cache = [];
+    protected $modules = [];
     
     public function boot()
     {
