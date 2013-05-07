@@ -35,7 +35,7 @@
 <script type="text/javascript">
     {# Фокусировка на элементе с классом .focused а также позиционирование курсора в конец поля #}
     $(function(){
-        $('.focused').focusEnd();
+        $('.focused:first').focusEnd();
     });
 
     $.fn.setCursorPosition = function(position){
