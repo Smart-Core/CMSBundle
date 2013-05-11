@@ -29,15 +29,13 @@ class AdminBlockController extends Controller
         $form = $this->createForm(new BlockFormType(), $block);
 
         if ($request->isMethod('POST')) {
-            if ($request->request->has('create')) {
-                $form->bind($request);
-                if ($form->isValid()) {
-                    $em->persist($form->getData());
-                    $em->flush();
+            $form->bind($request);
+            if ($form->isValid()) {
+                $em->persist($form->getData());
+                $em->flush();
 
-                    $this->get('session')->getFlashBag()->add('notice', 'Блок создан.');
-                    return $this->redirect($this->generateUrl('cmf_admin_structure_block'));
-                }
+                $this->get('session')->getFlashBag()->add('notice', 'Блок создан.');
+                return $this->redirect($this->generateUrl('cmf_admin_structure_block'));
             }
         }
 
