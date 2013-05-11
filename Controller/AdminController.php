@@ -11,13 +11,8 @@ class AdminController extends Controller
         return $this->render('SmartCoreEngineBundle:Admin:_blank.html.twig', []);
     }
 
-    public function nodeAction(Request $request, $id, $slug = null)
-    {
-        return $this->forward("$id:Admin:index", ['slug' => $slug]);
-    }
-
     public function notFoundAction($slug)
     {
-        return $this->renderView('SmartCoreEngineBundle:Admin:_blank.html.twig', []);
+        return $this->render('SmartCoreEngineBundle:Admin:_blank.html.twig', []);
     }
 }

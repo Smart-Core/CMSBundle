@@ -63,7 +63,7 @@ class Folder
     protected $is_file;
 
     /**
-     * @ORM\Column(type="smallint")
+     * @ORM\Column(type="smallint", nullable=TRUE)
      */
     protected $position;
     
@@ -294,6 +294,10 @@ class Folder
 
     public function setPosition($position)
     {
+        if (empty($position)) {
+            $position = 0;
+        }
+
         $this->position = $position;
     }
 

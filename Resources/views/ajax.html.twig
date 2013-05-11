@@ -28,8 +28,7 @@
 {% block html_head_general_data '' %}
 {% block body %}
     {% block content %}
-        {% block subnav %}
-        {% endblock subnav %}
+        {% block subnav '' %}
 
         {% for flashMessage in app.session.flashbag.get('notice') %}
             <div class="alert alert-success"><button type="button" class="close" data-dismiss="alert">&times;</button>{{ flashMessage }}</div>
