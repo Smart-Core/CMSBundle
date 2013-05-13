@@ -4,6 +4,9 @@ namespace SmartCore\Bundle\EngineBundle\Engine;
 
 use Symfony\Component\DependencyInjection\ContainerAware;
 
+/**
+ * @todo переделать!
+ */
 class JavaScriptLibrary extends ContainerAware
 {
     /**
@@ -31,22 +34,29 @@ class JavaScriptLibrary extends ContainerAware
     
     protected $table_libs;
     protected $table_paths;
+
+    /**
+     * @var \Doctrine\DBAL\Connection
+     */
+    protected $db;
     
     /**
      * Constructor.
      */
-    public function __construct($db)
+    public function __construct(\Doctrine\DBAL\Connection $db)
     {
         $this->db = $db;
-        
+
         // @todo пока принимается только один профиль, далее надо сделать перебор...
         $this->default_profile  = 'local';
         //$this->profiles = $this->Settings->getParam('scripts_profiles');
         $this->profiles         = 'local';
         $this->scripts          = [];
-        $this->table_libs       = $this->db->prefix() . 'javascript_library';
-        $this->table_paths      = $this->db->prefix() . 'javascript_library_paths';
-        
+        //$this->table_libs       = $this->db->prefix() . 'javascript_library';
+        $this->table_libs       = 'javascript_library';
+        //$this->table_paths      = $this->db->prefix() . 'javascript_library_paths';
+        $this->table_paths      = 'javascript_library_paths';
+
         $sql = "SELECT script_id, name, related_by, current_version, default_profile, files FROM {$this->table_libs} ORDER BY pos DESC ";
         $result = $this->db->query($sql);
         while($row = $result->fetchObject()) {
@@ -121,7 +131,7 @@ class JavaScriptLibrary extends ContainerAware
                     WHERE script_id = '" . $this->scripts[$name]['script_id'] . "'
                     AND profile = '{$this->default_profile}'
                     $sql_version ";
-                $path = $this->container->get('engine.context')->getGlobalAssets() . $this->db->fetchObject($sql)->path;
+                $path = $this->container->get('engine.context')->getGlobalAssets() . $this->db->fetchAssoc($sql)['path'];
             }
             
             foreach (explode(',', $this->scripts[$name]['files']) as $file) {

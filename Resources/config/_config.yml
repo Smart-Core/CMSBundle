@@ -7,6 +7,6 @@ smart_core_engine:
     # database (db), filesystem (fs)
     storage: database
         # настройки для 'database'
-        connection: @engine.db
+        connection: @database_connection
         # настройки для 'filesystem'
         path: %smart_core_engine_data_dir%

@@ -28,8 +28,6 @@ services:
         tags:
             - { name: doctrine.event_subscriber }
 # Core
-    engine.breadcrumbs:
-        class: SmartCore\Bundle\EngineBundle\Engine\Breadcrumbs
     engine.block:
         class: SmartCore\Bundle\EngineBundle\Engine\EngineBlock
         arguments: [ @service_container ]
@@ -59,7 +57,7 @@ services:
             - [ setContainer, [ @service_container ] ]
     engine.jslib:
         class: SmartCore\Bundle\EngineBundle\Engine\JavaScriptLibrary
-        arguments: [ @engine.db ]
+        arguments: [ @database_connection ]
         calls:
             - [ setContainer, [ @service_container ] ]
     engine.user:
@@ -80,6 +78,13 @@ services:
         arguments: [ @doctrine ]
         tags:
             - { name: form.type, alias: folder_tree }
+# Twig
+    engine.twig.block_extension:
+        class: SmartCore\Bundle\EngineBundle\Twig\BlockExtension
+        arguments: [ @service_container ]
+        tags:
+            - { name: twig.extension }
+
 # Menu selected items
     cmf_admin.menu.voter.request:
         class: SmartCore\Bundle\EngineBundle\Menu\RequestVoter
@@ -87,8 +92,3 @@ services:
             - @service_container
         tags:
             - { name: knp_menu.voter }
-# Aliases
-    engine.db:
-        alias: database_connection        
-#    engine.settings:
-#        alias: service_container

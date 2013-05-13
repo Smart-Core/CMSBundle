@@ -38,7 +38,7 @@ class EngineNode
         $this->constructTrait($container);
 
         $this->context   = $container->get('engine.context');
-        $this->db        = $container->get('engine.db');
+        $this->db        = $container->get('database_connection');
         $this->db_prefix = $container->getParameter('database_table_prefix');
     }
 
@@ -127,11 +127,13 @@ class EngineNode
      * Создание списка всех запрошеных нод, в каких блоках они находятся и с какими 
      * параметрами запускаются модули.
      * 
-     * @param array     $parsed_uri
-     * @return array    $nodes_list
+     * @param array  $parsed_uri
+     * @return array $nodes_list
      */
-    public function buildNodesList(array $router_data)
+    public function buildList(array $router_data)
     {
+        \Profiler::start('buildNodesList');
+
         $folders = $router_data['folders'];
 
         if (!empty($this->nodes_list)) {
@@ -250,10 +252,10 @@ class EngineNode
             }
         }
 
-        $nodes = $this->em->getRepository('SmartCoreEngineBundle:Node')->findIn($this->nodes_list);
+        $nodes = $this->repository->findIn($this->nodes_list);
 
         // Приведение массива в вид с индексами в качестве ID нод.
-        /** @var $node Node */
+        /** @var \SmartCore\Bundle\EngineBundle\Entity\Node $node */
         foreach ($nodes as $node) {
             if (isset($router_data['node_route']['response']) and $router_data['node_route']['id'] == $node->getId()) {
                 $node->setRouterResponse($router_data['node_route']['response']);
@@ -305,6 +307,8 @@ class EngineNode
             }
         }
         */
+
+        \Profiler::end('buildNodesList');
 
         return $this->nodes_list;
     }

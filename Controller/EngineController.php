@@ -18,14 +18,10 @@ class EngineController extends Controller
 
     public function runAction(Request $request, $slug)
     {
-        \Profiler::start('Folder Routing');
-        $router_data = $this->get('engine.folder')->router($request->getPathInfo());
-        \Profiler::end('Folder Routing');
+        $router_data = $this->get('engine.folder')->getRouterData();
         //ld($router_data, $router_data['node_route']);
 
-        \Profiler::start('buildNodesList');
-        $nodes_list = $this->get('engine.node')->buildNodesList($router_data);
-        \Profiler::end('buildNodesList');
+        $nodes_list = $this->get('engine.node')->buildList($router_data);
         //ld($nodes_list);
 
         $this->View->setOptions([
@@ -37,17 +33,6 @@ class EngineController extends Controller
             'comment'   => 'Блоки',
             'engine'    => 'echo',
         ]));
-
-        // Формирование "Хлебных крошек".
-        /** @var $folder \SmartCore\Bundle\EngineBundle\Entity\Folder */
-        foreach ($router_data['folders'] as $folder) {
-            $this->get('engine.breadcrumbs')->add($folder->getUri(), $folder->getTitle(), $folder->getDescr());
-        }
-        if ($router_data['node_route']['response']) {
-            foreach ($router_data['node_route']['response']->getBreadcrumbs() as $bc) {
-                $this->get('engine.breadcrumbs')->add($bc['uri'], $bc['title'], $bc['descr']);
-            }
-        }
 
         \Profiler::start('buildModulesData');
         $this->buildModulesData($nodes_list);

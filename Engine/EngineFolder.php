@@ -2,13 +2,14 @@
 
 namespace SmartCore\Bundle\EngineBundle\Engine;
 
-use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\HttpKernel\HttpKernelInterface;
 use SmartCore\Bundle\EngineBundle\Entity\Folder;
-use SmartCore\Bundle\EngineBundle\Form\Type\FolderFormType;
 
 class EngineFolder
 {
     use TraitEngine;
+
+    protected $router_data = null;
 
     /**
      * Поиск по родительской папке.
@@ -60,7 +61,20 @@ class EngineFolder
     
         return $this->container->get('request')->getBaseUrl() . $uri;
     }
-    
+
+    /**
+     * Получить данные роутинга.
+     * @return array
+     */
+    public function getRouterData()
+    {
+        if (null == $this->router_data) {
+            $this->router($this->container->get('request')->getPathInfo());
+        }
+
+        return $this->router_data;
+    }
+
     /**
      * Роутинг.
      *
@@ -69,10 +83,18 @@ class EngineFolder
      *   engine.context -> setCurrentFolderPath();
      *
      * @param string $slug
+     * @param integer $type
      * @return array
      */
-    public function router($slug)
+    public function router($slug, $type = HttpKernelInterface::MASTER_REQUEST)
     {
+        if (HttpKernelInterface::MASTER_REQUEST) {
+            if (!empty($this->router_data)) {
+                return $this->router_data;
+            }
+            \Profiler::start('Folder Routing');
+        }
+
         $data = [
             'folders' => [],
             'meta' => [],
@@ -161,6 +183,11 @@ class EngineFolder
             } else {
                 $data['status'] = 404;
             }
+        }
+
+        if (HttpKernelInterface::MASTER_REQUEST) {
+            \Profiler::end('Folder Routing');
+            $this->router_data = $data;
         }
 
         return $data;
