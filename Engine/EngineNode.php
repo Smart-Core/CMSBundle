@@ -6,7 +6,6 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Form\FormTypeInterface;
 use SmartCore\Bundle\EngineBundle\Entity\Node;
 use SmartCore\Bundle\EngineBundle\Form\Type\NodeDefaultPropertiesFormType;
-use SmartCore\Bundle\EngineBundle\Form\Type\NodeFormType;
 
 class EngineNode
 {
@@ -26,11 +25,6 @@ class EngineNode
     protected $context;
 
     /**
-     * @var \SmartCore\Bundle\EngineBundle\Entity\NodeRepository
-     */
-    protected $repository;
-
-    /**
      * Является ли нода только что созданной?
      *
      * Применяется для вызова метода createNote() модуля после создания ноды.
@@ -46,27 +40,14 @@ class EngineNode
         $this->context   = $container->get('engine.context');
         $this->db        = $container->get('engine.db');
         $this->db_prefix = $container->getParameter('database_table_prefix');
-        $this->repository = $this->em->getRepository('SmartCoreEngineBundle:Node');
     }
 
     /**
      * Список всех нод, запрошенных в текущем контексте.
+     *
      * @var array
      */
     protected $nodes_list = [];
-
-    /**
-     * Creates and returns a Form instance from the type of the form.
-     *
-     * @param mixed $data    The initial data for the form
-     * @param array $options Options for the form
-     *
-     * @return \Symfony\Component\Form\Form
-     */
-    public function createForm($data = null, array $options = [])
-    {
-        return $this->container->get('form.factory')->create(new NodeFormType(), $data, $options);
-    }
 
     /**
      * Create node.

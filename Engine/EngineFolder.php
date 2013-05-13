@@ -11,43 +11,6 @@ class EngineFolder
     use TraitEngine;
 
     /**
-     * @var \SmartCore\Bundle\EngineBundle\Entity\FolderRepository
-     */
-    protected $repository;
-
-    /**
-     * Constructor.
-     */
-    public function __construct(ContainerInterface $container)
-    {
-        $this->constructTrait($container);
-        $this->repository = $this->em->getRepository('SmartCoreEngineBundle:Folder');
-    }
-
-    /**
-     * Creates and returns a Form instance from the type of the form.
-     *
-     * @param mixed $data    The initial data for the form
-     * @param array $options Options for the form
-     *
-     * @return \Symfony\Component\Form\Form
-     */
-    public function createForm($data = null, array $options = [])
-    {
-        return $this->container->get('form.factory')->create(new FolderFormType(), $data, $options);
-    }
-
-    /**
-     * Create folder.
-     *
-     * @return Folder
-     */
-    public function create()
-    {
-        return new Folder();
-    }
-
-    /**
      * Поиск по родительской папке.
      *
      * @param Folder $parent_folder
@@ -55,6 +18,7 @@ class EngineFolder
      */
     public function findByParent(Folder $parent_folder = null)
     {
+        /** @var \SmartCore\Bundle\EngineBundle\Entity\FolderRepository */
         return $this->repository->findByParent($parent_folder);
     }
 
