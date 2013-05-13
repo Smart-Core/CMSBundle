@@ -36,10 +36,6 @@ services:
     engine.folder:
         class: SmartCore\Bundle\EngineBundle\Engine\Folder
         arguments: [ @service_container ]
-    engine.block:
-        class: SmartCore\Bundle\EngineBundle\Engine\Block
-        calls:
-            - [ setContainer, [ @service_container ] ]
     engine.module_manager:
         class: SmartCore\Bundle\EngineBundle\Engine\ModuleManager
         calls:
