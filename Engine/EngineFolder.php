@@ -70,7 +70,7 @@ class EngineFolder
     /**
      * Get folder.
      *
-     * @return Folder
+     * @return Folder|null
      */
     public function get($id)
     {
@@ -170,7 +170,7 @@ class EngineFolder
                 // Выполняется часть URI парсером модуля и возвращается результат работы, в дальнейшем он будет передан самой ноде.
                 // @todo запрос ноды только для получения имени модуля не сосвсем красиво...
                 // может быть как-то кешировать это дело, либо хранить имя модуля прямо в таблице папок, например в виде массива router_node_id и router_node_module.
-                $node = $this->container->get('engine.node_manager')->get($router_node_id);
+                $node = $this->container->get('engine.node')->get($router_node_id);
 
                 /** @var $ModuleRouter \SmartCore\Bundle\EngineBundle\Module\RouterResponse */
                 $ModuleRouter = $this->container->get('kernel')->getBundle($node->getModule() . 'Module')

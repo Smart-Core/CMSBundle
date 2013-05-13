@@ -55,7 +55,7 @@ class ModuleControllerModifier
             
             if (is_numeric($controller[0])) {
                 /** @var $node \SmartCore\Bundle\EngineBundle\Entity\Node */
-                $node = $this->container->get('engine.node_manager')->get($controller[0]);
+                $node = $this->container->get('engine.node')->get($controller[0]);
 
                 if (empty($controller[1])) {
                     $controller[1] = $node->getController();

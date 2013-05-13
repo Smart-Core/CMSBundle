@@ -2,12 +2,19 @@
 
 namespace SmartCore\Bundle\EngineBundle\Engine;
 
+use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Form\FormTypeInterface;
 use SmartCore\Bundle\EngineBundle\Entity\Node;
 use SmartCore\Bundle\EngineBundle\Form\Type\NodeDefaultPropertiesFormType;
+use SmartCore\Bundle\EngineBundle\Form\Type\NodeFormType;
 
-class NodeManager
+class EngineNode
 {
+    /**
+     * @var \Symfony\Component\DependencyInjection\ContainerInterface
+     */
+    protected $container;
+
     protected $db;
 
     /**
@@ -27,17 +34,27 @@ class NodeManager
     protected $context;
 
     /**
-     * @var \Symfony\Component\HttpKernel\Kernel
+     * @var \SmartCore\Bundle\EngineBundle\Entity\NodeRepository
      */
-    protected $kernel;
+    protected $repository;
 
-    public function __construct($db, $db_prefix, $em, $context, $kernel)
+    /**
+     * Является ли нода только что созданной?
+     *
+     * Применяется для вызова метода createNote() модуля после создания ноды.
+     *
+     * @var bool
+     */
+    protected $is_just_created = false;
+
+    public function __construct(ContainerInterface $container)
     {
-        $this->db        = $db;
-        $this->db_prefix = $db_prefix;
-        $this->em        = $em;
-        $this->context   = $context;
-        $this->kernel    = $kernel;
+        $this->container = $container;
+        $this->context   = $container->get('engine.context');
+        $this->db        = $container->get('engine.db');
+        $this->db_prefix = $container->getParameter('database_table_prefix');
+        $this->em        = $container->get('doctrine.orm.default_entity_manager');
+        $this->repository = $this->em->getRepository('SmartCoreEngineBundle:Node');
     }
 
     /**
@@ -47,17 +64,71 @@ class NodeManager
     protected $nodes_list = [];
 
     /**
-     * Создание ноды
+     * Creates and returns a Form instance from the type of the form.
      *
-     * @param Node $node
+     * @param mixed $data    The initial data for the form
+     * @param array $options Options for the form
+     *
+     * @return \Symfony\Component\Form\Form
      */
-    public function createNode(Node $node)
+    public function createForm($data = null, array $options = [])
     {
-        $module = $this->kernel->getBundle($node->getModule() . 'Module');
+        return $this->container->get('form.factory')->create(new NodeFormType(), $data, $options);
+    }
 
-        if (method_exists($module, 'createNode')) {
-            $module->createNode($node);
+    /**
+     * Create node.
+     *
+     * @return Node
+     */
+    public function create()
+    {
+        $this->is_just_created = true;
+        return new Node();
+    }
+
+    /**
+     * Получить объект ноды.
+     *
+     * @param int $id
+     * @return Node|null
+     */
+    public function get($id)
+    {
+        if (isset($this->nodes_list[$id])) {
+            return $this->nodes_list[$id];
         }
+
+        return $this->repository->find($id);
+
+        /*
+        // @todo потестить...
+        if ($node = $this->container->get('engine.cache')->getNode($node_id)) {
+            return $node;
+        } else {
+            return $this->em->find('SmartCoreEngineBundle:Node', $node_id);
+        }
+        */
+    }
+
+    /**
+     * Обновление ноды.
+     */
+    public function update(Node $node)
+    {
+        // Свежесозданная нода выполняет свои действия, а также устанавливает параметры по умолчанию.
+        if ($this->is_just_created) {
+            $module = $this->container->get('kernel')->getBundle($node->getModule() . 'Module');
+
+            if (method_exists($module, 'createNode')) {
+                $module->createNode($node);
+            }
+
+            $this->is_just_created = false;
+        }
+
+        $this->em->persist($node);
+        $this->em->flush();
     }
 
     /**
@@ -68,7 +139,7 @@ class NodeManager
      */
     public function getPropertiesFormType($module_name)
     {
-        $reflector = new \ReflectionClass(get_class($this->kernel->getBundle($module_name . 'Module')));
+        $reflector = new \ReflectionClass(get_class($this->container->get('kernel')->getBundle($module_name . 'Module')));
         $form_class_name = '\\' . $reflector->getNamespaceName() . '\Form\Type\NodePropertiesFormType';
 
         if (class_exists($form_class_name)) {
@@ -77,30 +148,6 @@ class NodeManager
             // @todo может быть гибче настраивать форму параметров по умолчанию?.
             return new NodeDefaultPropertiesFormType();
         }
-    }
-
-    /**
-     * Получить объект ноды.
-     *
-     * @param int $node_id
-     * @return Node
-     */
-    public function get($node_id)
-    {
-        if (isset($this->nodes_list[$node_id])) {
-            return $this->nodes_list[$node_id];
-        }
-
-        return $this->em->find('SmartCoreEngineBundle:Node', $node_id);
-
-        /*
-        // @todo потестить...
-        if ($node = $this->container->get('engine.cache')->getNode($node_id)) {
-            return $node;
-        } else {
-            return $this->em->find('SmartCoreEngineBundle:Node', $node_id);
-        }
-        */
     }
 
     /**

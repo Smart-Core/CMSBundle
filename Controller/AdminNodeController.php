@@ -5,29 +5,39 @@ namespace SmartCore\Bundle\EngineBundle\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use SmartCore\Bundle\EngineBundle\Entity\Node;
-use SmartCore\Bundle\EngineBundle\Form\Type\NodeFormType;
 
 class AdminNodeController extends Controller
 {
+    /**
+     * @todo !!!
+     *
+     * @param Request $request
+     * @param $id
+     * @param null $slug
+     * @return Response
+     */
     public function nodeAction(Request $request, $id, $slug = null)
     {
         return $this->forward("$id:Admin:index", ['slug' => $slug]);
     }
 
+    /**
+     * Редактирование ноды.
+     *
+     * @param Request $request
+     * @param $id
+     * @return string|JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse
+     */
     public function editAction(Request $request, $id)
     {
-        $em = $this->get('doctrine.orm.default_entity_manager');
-
-        /** @var $node Node */
-        $node = $em->find('SmartCoreEngineBundle:Node', $id);
+        $node = $this->get('engine.node')->get($id);
 
         if (empty($node)) {
             return $this->redirect($this->generateUrl('cmf_admin_structure'));
         }
 
-        $form = $this->createForm(new NodeFormType(), $node);
-        $form_properties = $this->createForm($this->get('engine.node_manager')->getPropertiesFormType($node->getModule()), $node->getParams());
+        $form = $this->get('engine.node')->createForm($node);
+        $form_properties = $this->createForm($this->get('engine.node')->getPropertiesFormType($node->getModule()), $node->getParams());
 
         $form->remove('module');
 
@@ -36,11 +46,10 @@ class AdminNodeController extends Controller
                 $form->bind($request);
                 $form_properties->bind($request);
                 if ($form->isValid() and $form_properties->isValid()) {
-                    /** @var $updated_node Node */
+                    /** @var $updated_node \SmartCore\Bundle\EngineBundle\Entity\Node */
                     $updated_node = $form->getData();
                     $updated_node->setParams($form_properties->getData());
-                    $em->persist($updated_node);
-                    $em->flush();
+                    $this->get('engine.node')->update($updated_node);
 
                     if ($request->isXmlHttpRequest()) {
                         // @todo проверять referer, и если нода по прежнему находится в наследованном пути, то редиректиться в реферер.
@@ -65,27 +74,28 @@ class AdminNodeController extends Controller
         ]);
     }
 
+    /**
+     * Создание новой ноды.
+     *
+     * @param Request $request
+     * @param int $folder_pid
+     * @return string|JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse
+     */
     public function createAction(Request $request, $folder_pid = 1)
     {
-        $em = $this->get('doctrine.orm.default_entity_manager');
-
-        $node = new Node();
+        $node = $this->get('engine.node')->create();
         $node->setCreateByUserId($this->getUser()->getId());
         $node->setFolder($this->get('engine.folder')->get($folder_pid));
 
-        $form = $this->createForm(new NodeFormType(), $node);
+        $form = $this->get('engine.node')->createForm($node);
 
         if ($request->isMethod('POST')) {
             if ($request->request->has('create')) {
                 $form->bind($request);
                 if ($form->isValid()) {
+                    /** @var $updated_node \SmartCore\Bundle\EngineBundle\Entity\Node */
                     $created_node = $form->getData();
-
-                    // Свежесозданная нода выполняет свои действия, а также устанавливает параметры по умолчанию.
-                    $this->get('engine.node_manager')->createNode($created_node);
-
-                    $em->persist($created_node);
-                    $em->flush();
+                    $this->get('engine.node')->update($created_node);
 
                     if ($request->isXmlHttpRequest()) {
                         return new JsonResponse(['redirect' => $this->get('engine.folder')->getUri($created_node->getFolder()->getId())]);

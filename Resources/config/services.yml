@@ -44,9 +44,9 @@ services:
     engine.cache:
         class: SmartCore\Bundle\EngineBundle\Engine\Cache
         arguments: [ @kernel ]
-    engine.node_manager:
-        class: SmartCore\Bundle\EngineBundle\Engine\NodeManager
-        arguments: [ @engine.db, %database_table_prefix%, @doctrine.orm.entity_manager, @engine.context, @kernel ]
+    engine.node:
+        class: SmartCore\Bundle\EngineBundle\Engine\EngineNode
+        arguments: [ @service_container ]
     engine.permissions:
         class: SmartCore\Bundle\EngineBundle\Engine\Permissions
         arguments: [ @service_container ]

@@ -24,7 +24,7 @@ class EngineController extends Controller
         //ld($router_data);
 
         \Profiler::start('buildNodesList');
-        $nodes_list = $this->get('engine.node_manager')->buildNodesList($router_data);
+        $nodes_list = $this->get('engine.node')->buildNodesList($router_data);
         \Profiler::end('buildNodesList');
         //ld($nodes_list);
 
@@ -134,6 +134,8 @@ class EngineController extends Controller
     /**
      * Сборка "блоков" из подготовленного списка нод.
      * По мере прохождения, подключаются и запускаются нужные модули с нужными параметрами.
+     *
+     * @param array $nodes_list
      */
     protected function buildModulesData(array $nodes_list)
     {
@@ -318,7 +320,7 @@ class EngineController extends Controller
             $this->container->get('request')->getBaseUrl() . '/' . $slug === $this->container->get('router')->generate('fos_user_resetting_send_email') or
             $this->container->get('request')->getBaseUrl() . '/' . $slug === $this->container->get('router')->generate('fos_user_resetting_check_email')
         ) {
-            return $this->forward('SmartCoreEngineBundle:NodeMapper:index', ['slug' => $slug]);
+            return $this->runAction($slug);
         }
 
         if (!$this->get('security.context')->isGranted('ROLE_ADMIN')) {
@@ -328,7 +330,7 @@ class EngineController extends Controller
             ], 403);
         }
 
-        $module_name = $this->get('engine.node_manager')->get($node_id)->getModule();
+        $module_name = $this->get('engine.node')->get($node_id)->getModule();
 
         return $this->forward("{$node_id}:{$module_name}:post");
     }
