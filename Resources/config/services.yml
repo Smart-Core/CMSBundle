@@ -34,7 +34,7 @@ services:
         class: SmartCore\Bundle\EngineBundle\Engine\EngineContext
         arguments: [ @service_container ]
     engine.folder:
-        class: SmartCore\Bundle\EngineBundle\Engine\Folder
+        class: SmartCore\Bundle\EngineBundle\Engine\EngineFolder
         arguments: [ @service_container ]
     engine.module_manager:
         class: SmartCore\Bundle\EngineBundle\Engine\ModuleManager

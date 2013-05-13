@@ -3,20 +3,25 @@
 namespace SmartCore\Bundle\EngineBundle\Engine;
 
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use SmartCore\Bundle\EngineBundle\Entity\Folder;
+use SmartCore\Bundle\EngineBundle\Form\Type\FolderFormType;
 
-class Folder
+class EngineFolder
 {
+    /**
+     * @var \Symfony\Component\DependencyInjection\ContainerInterface
+     */
     protected $container;
 
     /**
-     * @var EngineContext
+     * @var \Doctrine\ORM\EntityManager
      */
-    protected $context;
+    protected $em;
 
     /**
      * @var \SmartCore\Bundle\EngineBundle\Entity\FolderRepository
      */
-    protected $folderRepository;
+    protected $repository;
 
     /**
      * Constructor.
@@ -24,8 +29,61 @@ class Folder
     public function __construct(ContainerInterface $container)
     {
         $this->container = $container;
-        $this->context = $container->get('engine.context');
-        $this->folderRepository = $container->get('doctrine.orm.entity_manager')->getRepository('SmartCoreEngineBundle:Folder');
+        $this->em = $container->get('doctrine.orm.entity_manager');
+        $this->repository = $this->em->getRepository('SmartCoreEngineBundle:Folder');
+    }
+
+    /**
+     * Creates and returns a Form instance from the type of the form.
+     *
+     * @param mixed $data    The initial data for the form
+     * @param array $options Options for the form
+     *
+     * @return \Symfony\Component\Form\Form
+     */
+    public function createForm($data = null, array $options = [])
+    {
+        return $this->container->get('form.factory')->create(new FolderFormType(), $data, $options);
+    }
+
+    /**
+     * Create folder.
+     *
+     * @return Folder
+     */
+    public function create()
+    {
+        return new Folder();
+    }
+
+    /**
+     * Поиск по родительской папке.
+     *
+     * @param Folder $parent_folder
+     * @return array
+     */
+    public function findByParent(Folder $parent_folder = null)
+    {
+        return $this->repository->findBy(['parent_folder' => $parent_folder]);
+    }
+
+    /**
+     * Get folder.
+     *
+     * @return Folder
+     */
+    public function get($id)
+    {
+        return $this->repository->find($id);
+    }
+
+    /**
+     * Обновление папки.
+     */
+    public function update(Folder $folder)
+    {
+        $this->em->persist($folder);
+        $this->em->flush();
     }
 
     /**
@@ -37,7 +95,7 @@ class Folder
     public function getUri($folder_id = false)
     {
         if ($folder_id === false) {
-            $folder_id = $this->env->get('current_folder_id');
+            $folder_id = $this->container->get('engine.context')->getCurrentFolderId();
         }
 
         $uri = '/';
@@ -45,7 +103,7 @@ class Folder
 
         /** @var $folder \SmartCore\Bundle\EngineBundle\Entity\Folder */
         while ($folder_id != 1) {
-            $folder = $this->folderRepository->findOneBy([
+            $folder = $this->repository->findOneBy([
                 'is_active'  => true,
                 'is_deleted' => false,
                 'folder_id'  => $folder_id,
@@ -83,7 +141,6 @@ class Folder
             'node_route' => null, // @todo
         ];
         
-        // @todo при обращении к фронт-контроллеру /web/app.php не коррекнтно определяется активные пункты меню.
         $current_folder_path = $this->container->get('request')->getBaseUrl() . '/';
         $parent_folder = null;
         $router_node_id = null;
@@ -130,7 +187,7 @@ class Folder
                 unset($ModuleRouter);
             }
 
-            $folder = $this->folderRepository->findOneBy([
+            $folder = $this->repository->findOneBy([
                 'is_active' => true,
                 'is_deleted' => false,
                 'uri_part' => empty($segment) ? null : $segment,
@@ -155,8 +212,9 @@ class Folder
                     $router_node_id = $folder->getRouterNodeId();
                     $folder->setUri($current_folder_path);
                     $data['folders'][$folder->getId()] = $folder;
-                    $this->context->setCurrentFolderId($folder->getId());
-                    $this->context->setCurrentFolderPath($current_folder_path);
+
+                    $this->container->get('engine.context')->setCurrentFolderId($folder->getId());
+                    $this->container->get('engine.context')->setCurrentFolderPath($current_folder_path);
                 } else {
                     $data['status'] = 403;
                 }

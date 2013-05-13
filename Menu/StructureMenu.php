@@ -6,13 +6,9 @@ use Knp\Menu\FactoryInterface;
 use Knp\Menu\ItemInterface;
 use Symfony\Component\DependencyInjection\ContainerAware;
 use SmartCore\Bundle\EngineBundle\Entity\Folder;
-use SmartCore\Bundle\EngineBundle\Entity\Node;
 
 class StructureMenu extends ContainerAware
 {
-    /** @var $em \Doctrine\ORM\EntityManager */
-    protected $em;
-
     /**
      * Построение полной структуры, включая ноды.
      *
@@ -29,8 +25,6 @@ class StructureMenu extends ContainerAware
             'id' => 'browser',
         ]);
 
-        $this->em = $this->container->get('doctrine')->getManager();
-
         $this->addChild($menu);
 
         return $menu;
@@ -45,7 +39,7 @@ class StructureMenu extends ContainerAware
     protected function addChild(ItemInterface $menu, Folder $parent_folder = null)
     {
         if (null == $parent_folder) {
-            $folders = $this->em->getRepository('SmartCoreEngineBundle:Folder')->findByParent(null);
+            $folders = $this->container->get('engine.folder')->findByParent(null);
         } else {
             $folders = $parent_folder->getChildren();
         }
@@ -64,7 +58,7 @@ class StructureMenu extends ContainerAware
 
             $this->addChild($sub_menu, $folder);
 
-            /** @var $node Node */
+            /** @var $node \SmartCore\Bundle\EngineBundle\Entity\Node */
             foreach ($folder->getNodes() as $node) {
                 $uri = $this->container->get('router')->generate('cmf_admin_structure_node_properties', ['id' => $node->getId()]);
                 $sub_menu->addChild($node->getDescr() . ' (' . $node->getModule() . ':' . $node->getId() . ')', ['uri' => $uri])->setAttributes([

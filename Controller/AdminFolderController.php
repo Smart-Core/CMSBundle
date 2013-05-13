@@ -5,12 +5,7 @@ namespace SmartCore\Bundle\EngineBundle\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use SmartCore\Bundle\EngineBundle\Entity\Block;
 use SmartCore\Bundle\EngineBundle\Entity\Folder;
-use SmartCore\Bundle\EngineBundle\Entity\Node;
-use SmartCore\Bundle\EngineBundle\Form\Type\BlockFormType;
-use SmartCore\Bundle\EngineBundle\Form\Type\FolderFormType;
-use SmartCore\Bundle\EngineBundle\Form\Type\NodeFormType;
 
 class AdminFolderController extends Controller
 {
@@ -19,14 +14,13 @@ class AdminFolderController extends Controller
      */
     public function editAction(Request $request, $id = 1)
     {
-        $em = $this->get('doctrine.orm.default_entity_manager');
-        $folder = $em->find('SmartCoreEngineBundle:Folder', $id);
+        $folder = $this->get('engine.folder')->get($id);
 
         if (empty($folder)) {
             return $this->redirect($this->generateUrl('cmf_admin_structure'));
         }
 
-        $form = $this->createForm(new FolderFormType(), $folder);
+        $form = $this->get('engine.folder')->createForm($folder);
 
         // Для корневой папки удаляются некоторые поля формы
         if (1 == $id) {
@@ -42,8 +36,7 @@ class AdminFolderController extends Controller
             if ($request->request->has('update')) {
                 $form->bind($request);
                 if ($form->isValid()) {
-                    $em->persist($form->getData());
-                    $em->flush();
+                    $this->get('engine.folder')->update($form->getData());
 
                     if ($request->isXmlHttpRequest()) {
                         return new JsonResponse(['redirect' => $this->get('engine.folder')->getUri($folder->getId())]);
@@ -75,20 +68,17 @@ class AdminFolderController extends Controller
      */
     public function createAction(Request $request, $folder_pid = 1)
     {
-        $em = $this->get('doctrine.orm.default_entity_manager');
-
-        $folder = new Folder();
+        $folder = $this->get('engine.folder')->create();
         $folder->setCreateByUserId($this->getUser()->getId());
-        $folder->setParentFolder($em->find('SmartCoreEngineBundle:Folder', $folder_pid));
+        $folder->setParentFolder($this->get('engine.folder')->get($folder_pid));
 
-        $form = $this->createForm(new FolderFormType(), $folder);
+        $form = $this->get('engine.folder')->createForm($folder);
 
         if ($request->isMethod('POST')) {
             if ($request->request->has('create')) {
                 $form->bind($request);
                 if ($form->isValid()) {
-                    $em->persist($form->getData());
-                    $em->flush();
+                    $this->get('engine.folder')->update($form->getData());
 
                     if ($request->isXmlHttpRequest()) {
                         return new JsonResponse(['redirect' => $this->get('engine.folder')->getUri($folder->getId())]);

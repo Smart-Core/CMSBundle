@@ -367,7 +367,7 @@ class Folder
 
         // Если обнаружена циклическая зависимость, тогда родитель выставляется корневая папка, которая имеет id = 1.
         if (!$ok) {
-            $this->setParentFolder(Container::get('doctrine.orm.entity_manager')->find('SmartCoreEngineBundle:Folder', 1));
+            $this->setParentFolder(Container::get('engine.folder')->get(1));
         }
     }
 }

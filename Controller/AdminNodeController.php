@@ -5,11 +5,7 @@ namespace SmartCore\Bundle\EngineBundle\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use SmartCore\Bundle\EngineBundle\Entity\Block;
-use SmartCore\Bundle\EngineBundle\Entity\Folder;
 use SmartCore\Bundle\EngineBundle\Entity\Node;
-use SmartCore\Bundle\EngineBundle\Form\Type\BlockFormType;
-use SmartCore\Bundle\EngineBundle\Form\Type\FolderFormType;
 use SmartCore\Bundle\EngineBundle\Form\Type\NodeFormType;
 
 class AdminNodeController extends Controller
@@ -75,7 +71,7 @@ class AdminNodeController extends Controller
 
         $node = new Node();
         $node->setCreateByUserId($this->getUser()->getId());
-        $node->setFolder($em->find('SmartCoreEngineBundle:Folder', $folder_pid));
+        $node->setFolder($this->get('engine.folder')->get($folder_pid));
 
         $form = $this->createForm(new NodeFormType(), $node);
 
