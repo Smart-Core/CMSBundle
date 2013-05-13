@@ -4,7 +4,6 @@ namespace SmartCore\Bundle\EngineBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller as BaseController;
 use SmartCore\Bundle\EngineBundle\Engine\View;
-//use Symfony\Component\HttpFoundation\Response;
 
 class Controller extends BaseController
 {
@@ -34,26 +33,5 @@ class Controller extends BaseController
             'template' => strtolower($template),
             'engine' => 'twig',
         ]);
-    }
-    
-    /**
-     * Обращение к сервисам движка.
-     * 
-     * @param string $name
-     * @return object
-     *
-     * @deprecated
-     */
-    public function engine($name)
-    {
-        if (!is_object($this->container)) {
-            throw new \Exception('SmartCore\EngineBundle: Container is not accesible. Service "engine.' . $name . '" fail.');
-        }
-        
-        if ($this->container->has('engine.' . $name)) {
-            return $this->container->get('engine.' . $name);
-        } else {
-            throw new \Exception('SmartCore\EngineBundle: Service "engine.' . strtolower($name) . '" does not register.');
-        }
     }
 }

@@ -21,6 +21,23 @@ class HelloController extends Controller
             ->title('hi :)')
         ;
 
+//        ld($this->View->blocks);
+//        ld($this->renderView("Menu::menu.html.twig");
+//        ld($this->forward('Texter:Test:hello', ['text' => 'yahoo :)'])->getContent());
+//        ld($this->forward('2:Test:index')->getContent());
+
+//        $tmp = $this->forward(8);
+//        $tmp = $this->forward('MenuModule:Menu:index');
+//        ld(get_class($tmp));
+//        ld($tmp->getContentRaw());
+//        echo $tmp->getContent();
+
+        /*
+        $activeTheme = $this->get('liip_theme.active_theme');
+        $activeTheme->setThemes(['web', 'tablet', 'phone']);
+        $activeTheme->setName('phone');
+        */
+
 //        $nodes = $em->getRepository('SmartCoreEngineBundle:Node')->findInInheritanceFolder($folder_id);
 
 //        $b = $em->getRepository('SmartCoreEngineBundle:Block')->find(2);

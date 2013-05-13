@@ -101,7 +101,7 @@ class EngineFolder
         $uri = '/';
         $uri_parts = [];
 
-        /** @var $folder \SmartCore\Bundle\EngineBundle\Entity\Folder */
+        /** @var $folder Folder */
         while ($folder_id != 1) {
             $folder = $this->repository->findOneBy([
                 'is_active'  => true,
@@ -127,7 +127,11 @@ class EngineFolder
     
     /**
      * Роутинг.
-     * 
+     *
+     * В процессе обработки, выставляются значения:
+     *   engine.context -> setCurrentFolderId();
+     *   engine.context -> setCurrentFolderPath();
+     *
      * @param string $slug
      * @return array
      */
@@ -146,7 +150,7 @@ class EngineFolder
         $router_node_id = null;
         $path_parts = explode('/', $slug);
 
-        /** @var $folder \SmartCore\Bundle\EngineBundle\Entity\Folder */
+        /** @var $folder Folder */
         foreach ($path_parts as $key => $segment) {
             // Проверка строки запроса на допустимые символы.
             // @todo сделать проверку на разрешение круглых скобок.

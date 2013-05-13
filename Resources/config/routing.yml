@@ -50,7 +50,7 @@ cmf_node_mapper:
     path: /{slug}
     methods: GET
     defaults:
-        _controller: SmartCoreEngineBundle:NodeMapper:index
+        _controller: SmartCoreEngineBundle:Engine:run
         slug: ""
     requirements:
         slug: ".+"
@@ -58,7 +58,7 @@ cmf_node_postprocessor:
     path: /{slug}
     methods: POST
     defaults:
-        _controller: SmartCoreEngineBundle:PostProcessor:index
+        _controller: SmartCoreEngineBundle:Engine:post
         slug: ""
     requirements:
         slug: ".+"
