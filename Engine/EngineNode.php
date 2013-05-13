@@ -208,7 +208,7 @@ class EngineNode
                     FROM {$this->db_prefix}engine_nodes AS n,
                         {$this->db_prefix}engine_blocks_inherit AS bi
                     WHERE n.block_id = bi.block_id 
-                        AND is_active = 1
+                        AND n.is_active = 1
                         AND n.folder_id = '{$folder->getId()}'
                         AND bi.folder_id = '{$folder->getId()}'
                     ORDER BY n.position ASC
