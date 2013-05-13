@@ -4,7 +4,7 @@ namespace SmartCore\Bundle\EngineBundle\Engine;
 
 use Symfony\Component\DependencyInjection\ContainerAware;
 
-class ModuleManager extends ContainerAware
+class EngineModule extends ContainerAware
 {
     protected $configFile;
     protected $modules = [];

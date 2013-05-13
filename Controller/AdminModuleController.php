@@ -11,7 +11,7 @@ class AdminModuleController extends Controller
     public function indexAction()
     {
         return $this->render('SmartCoreEngineBundle:Admin:module.html.twig', [
-            'modules' => $this->get('engine.module_manager')->all(),
+            'modules' => $this->get('engine.module')->all(),
         ]);
     }
 

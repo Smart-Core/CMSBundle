@@ -10,10 +10,7 @@ use SmartCore\Bundle\EngineBundle\Form\Type\NodeFormType;
 
 class EngineNode
 {
-    /**
-     * @var \Symfony\Component\DependencyInjection\ContainerInterface
-     */
-    protected $container;
+    use TraitEngine;
 
     protected $db;
 
@@ -22,11 +19,6 @@ class EngineNode
      * @var string
      */
     protected $db_prefix;
-
-    /**
-     * @var \Doctrine\ORM\EntityManager
-     */
-    protected $em;
 
     /**
      * @var EngineContext
@@ -49,11 +41,11 @@ class EngineNode
 
     public function __construct(ContainerInterface $container)
     {
-        $this->container = $container;
+        $this->constructTrait($container);
+
         $this->context   = $container->get('engine.context');
         $this->db        = $container->get('engine.db');
         $this->db_prefix = $container->getParameter('database_table_prefix');
-        $this->em        = $container->get('doctrine.orm.default_entity_manager');
         $this->repository = $this->em->getRepository('SmartCoreEngineBundle:Node');
     }
 

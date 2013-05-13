@@ -13,7 +13,7 @@ class NodeFormType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $modules = [];
-        foreach (Container::get('engine.module_manager')->all() as $module_name => $_dummy) {
+        foreach (Container::get('engine.module')->all() as $module_name => $_dummy) {
             $modules[$module_name] = $module_name;
         }
 

@@ -4,7 +4,7 @@ namespace SmartCore\Bundle\EngineBundle\Engine;
 
 use Symfony\Component\DependencyInjection\ContainerAware;
 
-class Toolbar extends ContainerAware
+class EngineToolbar extends ContainerAware
 {
     /**
      * @var \Symfony\Bundle\FrameworkBundle\Routing\Router

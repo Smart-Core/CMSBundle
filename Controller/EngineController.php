@@ -21,7 +21,7 @@ class EngineController extends Controller
         \Profiler::start('Folder Routing');
         $router_data = $this->get('engine.folder')->router($request->getPathInfo());
         \Profiler::end('Folder Routing');
-        //ld($router_data);
+        //ld($router_data, $router_data['node_route']);
 
         \Profiler::start('buildNodesList');
         $nodes_list = $this->get('engine.node')->buildNodesList($router_data);
@@ -320,7 +320,7 @@ class EngineController extends Controller
             $this->container->get('request')->getBaseUrl() . '/' . $slug === $this->container->get('router')->generate('fos_user_resetting_send_email') or
             $this->container->get('request')->getBaseUrl() . '/' . $slug === $this->container->get('router')->generate('fos_user_resetting_check_email')
         ) {
-            return $this->runAction($slug);
+            return $this->runAction($request, $slug);
         }
 
         if (!$this->get('security.context')->isGranted('ROLE_ADMIN')) {

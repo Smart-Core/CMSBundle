@@ -8,15 +8,7 @@ use SmartCore\Bundle\EngineBundle\Form\Type\FolderFormType;
 
 class EngineFolder
 {
-    /**
-     * @var \Symfony\Component\DependencyInjection\ContainerInterface
-     */
-    protected $container;
-
-    /**
-     * @var \Doctrine\ORM\EntityManager
-     */
-    protected $em;
+    use TraitEngine;
 
     /**
      * @var \SmartCore\Bundle\EngineBundle\Entity\FolderRepository
@@ -28,8 +20,7 @@ class EngineFolder
      */
     public function __construct(ContainerInterface $container)
     {
-        $this->container = $container;
-        $this->em = $container->get('doctrine.orm.entity_manager');
+        $this->constructTrait($container);
         $this->repository = $this->em->getRepository('SmartCoreEngineBundle:Folder');
     }
 
@@ -64,26 +55,7 @@ class EngineFolder
      */
     public function findByParent(Folder $parent_folder = null)
     {
-        return $this->repository->findBy(['parent_folder' => $parent_folder]);
-    }
-
-    /**
-     * Get folder.
-     *
-     * @return Folder|null
-     */
-    public function get($id)
-    {
-        return $this->repository->find($id);
-    }
-
-    /**
-     * Обновление папки.
-     */
-    public function update(Folder $folder)
-    {
-        $this->em->persist($folder);
-        $this->em->flush();
+        return $this->repository->findByParent($parent_folder);
     }
 
     /**

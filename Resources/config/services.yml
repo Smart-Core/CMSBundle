@@ -30,14 +30,17 @@ services:
 # Core
     engine.breadcrumbs:
         class: SmartCore\Bundle\EngineBundle\Engine\Breadcrumbs
+    engine.block:
+        class: SmartCore\Bundle\EngineBundle\Engine\EngineBlock
+        arguments: [ @service_container ]
     engine.context:
         class: SmartCore\Bundle\EngineBundle\Engine\EngineContext
         arguments: [ @service_container ]
     engine.folder:
         class: SmartCore\Bundle\EngineBundle\Engine\EngineFolder
         arguments: [ @service_container ]
-    engine.module_manager:
-        class: SmartCore\Bundle\EngineBundle\Engine\ModuleManager
+    engine.module:
+        class: SmartCore\Bundle\EngineBundle\Engine\EngineModule
         calls:
             - [ setContainer, [ @service_container ] ]
             - [ initialize ]
@@ -63,7 +66,7 @@ services:
         class: SmartCore\Bundle\EngineBundle\Engine\User
         arguments: [ @service_container ]
     engine.toolbar:
-        class: SmartCore\Bundle\EngineBundle\Engine\Toolbar
+        class: SmartCore\Bundle\EngineBundle\Engine\EngineToolbar
         calls:
             - [ setContainer, [ @service_container ] ]
 # Forms
