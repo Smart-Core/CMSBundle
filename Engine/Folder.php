@@ -7,7 +7,11 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 class Folder
 {
     protected $container;
-    protected $env;
+
+    /**
+     * @var EngineContext
+     */
+    protected $context;
 
     /**
      * @var \SmartCore\Bundle\EngineBundle\Entity\FolderRepository
@@ -20,7 +24,7 @@ class Folder
     public function __construct(ContainerInterface $container)
     {
         $this->container = $container;
-        $this->env = $container->get('engine.env');
+        $this->context = $container->get('engine.context');
         $this->folderRepository = $container->get('doctrine.orm.entity_manager')->getRepository('SmartCoreEngineBundle:Folder');
     }
 
@@ -151,8 +155,8 @@ class Folder
                     $router_node_id = $folder->getRouterNodeId();
                     $folder->setUri($current_folder_path);
                     $data['folders'][$folder->getId()] = $folder;
-                    $this->env->set('current_folder_id', $folder->getId());
-                    $this->env->set('current_folder_path', $current_folder_path);
+                    $this->context->setCurrentFolderId($folder->getId());
+                    $this->context->setCurrentFolderPath($current_folder_path);
                 } else {
                     $data['status'] = 403;
                 }

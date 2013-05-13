@@ -22,21 +22,21 @@ class NodeManager
     protected $em;
 
     /**
-     * @var Environment
+     * @var EngineContext
      */
-    protected $env;
+    protected $context;
 
     /**
      * @var \Symfony\Component\HttpKernel\Kernel
      */
     protected $kernel;
 
-    public function __construct($db, $db_prefix, $em, $env, $kernel)
+    public function __construct($db, $db_prefix, $em, $context, $kernel)
     {
         $this->db        = $db;
         $this->db_prefix = $db_prefix;
         $this->em        = $em;
-        $this->env       = $env;
+        $this->context   = $context;
         $this->kernel    = $kernel;
     }
 
@@ -170,7 +170,7 @@ class NodeManager
             $sql = false;
 
             // Обработка последней папки т.е. текущей.
-            if ($folder->getId() == $this->env->get('current_folder_id')) {
+            if ($folder->getId() == $this->context->getCurrentFolderId()) {
                 $sql = "SELECT *
                     FROM {$this->db_prefix}engine_nodes
                     WHERE folder_id = '{$folder->getId()}'

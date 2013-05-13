@@ -19,7 +19,7 @@ class Permissions
     public function __construct(ContainerInterface $container)
     {
         $this->db = $container->get('engine.db');
-        $this->user_id = $container->get('engine.env')->get('user_id');
+        $this->user_id = $container->get('engine.user')->getId();
         $this->user_roles = $container->get('engine.user')->getRoles();
         $this->init();
     }

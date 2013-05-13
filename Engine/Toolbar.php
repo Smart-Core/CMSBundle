@@ -6,15 +6,17 @@ use Symfony\Component\DependencyInjection\ContainerAware;
 
 class Toolbar extends ContainerAware
 {
+    /**
+     * @var \Symfony\Bundle\FrameworkBundle\Routing\Router
+     */
+    //protected $router;
+
     public function getArray()
     {
-        $base_path = $this->container->get('request')->getBasePath(); // @todo remove
-        $current_folder_id = $this->container->get('engine.env')->get('current_folder_id');
+        $current_folder_id = $this->container->get('engine.context')->getCurrentFolderId();
 
         /** @var $router \Symfony\Bundle\FrameworkBundle\Routing\Router */
         $router = $this->container->get('router');
-
-        $username = $this->container->get('security.context')->getToken()->getUser()->getUserName();
 
         return [
             'left' => [
@@ -89,7 +91,7 @@ class Toolbar extends ContainerAware
                         'node_all' => [
                             'title' => 'Все модули на странице @todo',
                             'icon' => 'list-alt',
-                            'uri' => $base_path . '/admin/structure/node/in_folder/2/',
+                            'uri' => $router->generate('cmf_admin_structure') . '/node/in_folder/2/', // @todo
                         ],
                     ],
                 ],
@@ -97,14 +99,14 @@ class Toolbar extends ContainerAware
             'right' => [
                 'eip_toggle' => ["Просмотр", "Редактирование"],
                 'user' => [
-                    'title' => $username,
+                    'title' => $this->container->get('security.context')->getToken()->getUser()->getUserName(),
                     'icon' => 'user',
                     'items' => [
                         'profile' => [
                             'title' => 'Мой профиль',
                             'uri' => $router->generate('fos_user_profile_show'),
                             'icon' => 'cog',
-                            'overalay' => true,
+                            'overalay' => false,
                         ],
                         'diviver_1' => 'diviver',
                         'logout' => [

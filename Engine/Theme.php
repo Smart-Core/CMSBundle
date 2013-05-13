@@ -64,8 +64,8 @@ class Theme extends ContainerAware
     {
         // @todo продумать подключение ini-шников!!!
         $this->paths        = [
-            $this->container->get('engine.env')->dir_web_root . 'theme/views',
-            $this->container->get('engine.env')->dir_app . 'Resources/views',
+            getcwd() . '/theme/views',
+            $this->container->get('kernel')->getRootDir() . '/Resources/views',
             $this->container->get('kernel')->getBundle('SmartCoreEngineBundle')->getPath() . '/Resources/views',
         ];
         $this->template     = $View->getTemplateName();

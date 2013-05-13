@@ -92,20 +92,20 @@ class NodeMapperController extends Controller
             $this->get('engine.JsLib')->request('bootstrap');
             $this->get('engine.JsLib')->request('jquery-cookie');
             $this->get('html')
-                ->css($this->get('engine.env')->global_assets . 'cmf/frontend.css')
-                ->js($this->get('engine.env')->global_assets . 'cmf/frontend.js')
-                ->js($this->get('engine.env')->global_assets . 'cmf/jquery.ba-hashchange.min.js')
+                ->css($this->get('engine.context')->getGlobalAssets() . 'cmf/frontend.css')
+                ->js($this->get('engine.context')->getGlobalAssets() . 'cmf/frontend.js')
+                ->js($this->get('engine.context')->getGlobalAssets() . 'cmf/jquery.ba-hashchange.min.js')
                 ->appendToHead('<script type="text/javascript">var cmf_front_controls = ' . json_encode($cmf_front_controls, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT) . ';</script>');
             ;
         }
 
-        $theme_path = $this->get('engine.env')->theme_path;
+        $theme_path = $this->get('engine.context')->getThemePath();
         $this->View->assets = [
             'theme_path'        => $theme_path,
             'theme_css_path'    => $theme_path . 'css/',
             'theme_js_path'     => $theme_path . 'js/',
             'theme_img_path'    => $theme_path . 'images/',
-            'vendor'            => $this->get('engine.env')->global_assets,
+            'vendor'            => $this->get('engine.context')->getGlobalAssets(),
         ];
 
         $this->get('engine.theme')->processConfig($this->View);
@@ -166,17 +166,17 @@ class NodeMapperController extends Controller
             }
 
             // Обнаружены параметры кеша.
-            if (_IS_CACHE_NODES and $node['is_cached'] and !empty($node['cache_params']) and $this->get('engine.env')->cache_enable ) {
+            if (_IS_CACHE_NODES and $node['is_cached'] and !empty($node['cache_params']) ) { // and $this->get('engine.context')->cache_enable
                 $cache_params = unserialize($node['cache_params']);
                 if (isset($cache_params['id']) and is_array($cache_params['id'])) {
                     $cache_id = [];
                     foreach ($cache_params['id'] as $key => $dummy) {
                         switch ($key) {
                             case 'current_folder_id':
-                                $cache_id['current_folder_id'] = $this->get('engine.env')->current_folder_id;
+                                $cache_id['current_folder_id'] = $this->get('engine.context')->getCurrentFolderId();
                                 break;
                             case 'user_id':
-                                $cache_id['user_id'] = $this->get('engine.env')->user_id;
+                                $cache_id['user_id'] = $this->getUser();
                                 break;
                             case 'parser_data': // @todo route_data
                                 $cache_id['parser_data'] = $node_properties['parser_data'];
@@ -185,7 +185,7 @@ class NodeMapperController extends Controller
                                 $cache_id['parser_data'] = $_SERVER['REQUEST_URI'];
                                 break;
                             case 'user_groups':
-                                $user_data = $this->User->getData();
+                                $user_data = $this->User->getData(); // @todo
                                 $cache_id['user_groups'] = $user_data['groups'];
                                 break;
                             default;

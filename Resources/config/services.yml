@@ -30,8 +30,8 @@ services:
 # Core
     engine.breadcrumbs:
         class: SmartCore\Bundle\EngineBundle\Engine\Breadcrumbs
-    engine.env:
-        class: SmartCore\Bundle\EngineBundle\Engine\Environment
+    engine.context:
+        class: SmartCore\Bundle\EngineBundle\Engine\EngineContext
         arguments: [ @service_container ]
     engine.folder:
         class: SmartCore\Bundle\EngineBundle\Engine\Folder
@@ -50,7 +50,7 @@ services:
         arguments: [ @kernel ]
     engine.node_manager:
         class: SmartCore\Bundle\EngineBundle\Engine\NodeManager
-        arguments: [ @engine.db, %database_table_prefix%, @doctrine.orm.entity_manager, @engine.env, @kernel ]
+        arguments: [ @engine.db, %database_table_prefix%, @doctrine.orm.entity_manager, @engine.context, @kernel ]
     engine.permissions:
         class: SmartCore\Bundle\EngineBundle\Engine\Permissions
         arguments: [ @service_container ]
@@ -73,7 +73,7 @@ services:
 # Forms
     engine.form.type.extension.node_id:
         class: SmartCore\Bundle\EngineBundle\Form\Extension\FormTypeNodeIdExtension
-        arguments: [ @engine.env ]
+        arguments: [ @engine.context ]
         tags:
             - { name: form.type_extension, alias: form }
     engine.form.type.folder_tree:
@@ -91,7 +91,5 @@ services:
 # Aliases
     engine.db:
         alias: database_connection        
-    engine.environment:
-        alias: engine.env
 #    engine.settings:
 #        alias: service_container

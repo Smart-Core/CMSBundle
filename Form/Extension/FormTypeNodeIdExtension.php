@@ -12,11 +12,14 @@ use Symfony\Component\Form\FormInterface;
 
 class FormTypeNodeIdExtension extends AbstractTypeExtension
 {
-    protected $env;
+    /**
+     * @var \SmartCore\Bundle\EngineBundle\Engine\EngineContext
+     */
+    protected $context;
 
-    public function __construct($env)
+    public function __construct($context)
     {
-        $this->env = $env;
+        $this->context = $context;
     }
 
     /**
@@ -28,7 +31,7 @@ class FormTypeNodeIdExtension extends AbstractTypeExtension
      */
     public function finishView(FormView $view, FormInterface $form, array $options)
     {
-        $data = $this->env->current_node_id;
+        $data = $this->context->getCurrentNodeId();
 
         if (!$view->parent && $options['compound'] and !empty($data)) {
             $factory = $form->getConfig()->getFormFactory();

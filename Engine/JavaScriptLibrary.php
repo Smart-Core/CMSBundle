@@ -114,14 +114,14 @@ class JavaScriptLibrary extends ContainerAware
             $result = $this->db->query($sql);
             if ($result->rowCount() == 1) {
                 $row = $result->fetchObject();
-                $path = strpos($row->path, 'http://') === 0 ? $row->path : $this->container->get('engine.env')->global_assets . $row->path; // @todo https://  и просто //
+                $path = strpos($row->path, 'http://') === 0 ? $row->path : $this->container->get('engine.context')->getGlobalAssets() . $row->path; // @todo https://  и просто //
             } else {
                 $sql = "SELECT path 
                     FROM {$this->table_paths}
                     WHERE script_id = '" . $this->scripts[$name]['script_id'] . "'
                     AND profile = '{$this->default_profile}'
                     $sql_version ";
-                $path = $this->container->get('engine.env')->global_assets . $this->db->fetchObject($sql)->path;
+                $path = $this->container->get('engine.context')->getGlobalAssets() . $this->db->fetchObject($sql)->path;
             }
             
             foreach (explode(',', $this->scripts[$name]['files']) as $file) {
