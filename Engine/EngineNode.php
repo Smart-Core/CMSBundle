@@ -252,11 +252,9 @@ class EngineNode
             }
         }
 
-        $nodes = $this->repository->findIn($this->nodes_list);
-
-        // Приведение массива в вид с индексами в качестве ID нод.
+        // Заполнение массива с нодами сущностями нод.
         /** @var \SmartCore\Bundle\EngineBundle\Entity\Node $node */
-        foreach ($nodes as $node) {
+        foreach ($this->repository->findIn($this->nodes_list) as $node) {
             if (isset($router_data['node_route']['response']) and $router_data['node_route']['id'] == $node->getId()) {
                 $node->setRouterResponse($router_data['node_route']['response']);
             }
