@@ -19,7 +19,6 @@ class EngineFolder
      */
     public function findByParent(Folder $parent_folder = null)
     {
-        /** @var \SmartCore\Bundle\EngineBundle\Entity\FolderRepository */
         return $this->repository->findByParent($parent_folder);
     }
 

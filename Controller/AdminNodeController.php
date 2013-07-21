@@ -26,30 +26,31 @@ class AdminNodeController extends Controller
      *
      * @param Request $request
      * @param $id
-     * @return string|JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse
+     * @return JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse
      */
     public function editAction(Request $request, $id)
     {
-        $node = $this->get('engine.node')->get($id);
+        $engineNodeManager = $this->get('engine.node');
+        $node = $engineNodeManager->get($id);
 
         if (empty($node)) {
             return $this->redirect($this->generateUrl('cmf_admin_structure'));
         }
 
-        $form = $this->get('engine.node')->createForm($node);
-        $form_properties = $this->createForm($this->get('engine.node')->getPropertiesFormType($node->getModule()), $node->getParams());
+        $form = $engineNodeManager->createForm($node);
+        $form_properties = $this->createForm($engineNodeManager->getPropertiesFormType($node->getModule()), $node->getParams());
 
         $form->remove('module');
 
         if ($request->isMethod('POST')) {
             if ($request->request->has('update')) {
-                $form->bind($request);
+                $form->submit($request);
                 $form_properties->bind($request);
                 if ($form->isValid() and $form_properties->isValid()) {
                     /** @var $updated_node \SmartCore\Bundle\EngineBundle\Entity\Node */
                     $updated_node = $form->getData();
                     $updated_node->setParams($form_properties->getData());
-                    $this->get('engine.node')->update($updated_node);
+                    $engineNodeManager->update($updated_node);
 
                     if ($request->isXmlHttpRequest()) {
                         // @todo проверять referer, и если нода по прежнему находится в наследованном пути, то редиректиться в реферер.
@@ -79,23 +80,24 @@ class AdminNodeController extends Controller
      *
      * @param Request $request
      * @param int $folder_pid
-     * @return string|JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse
+     * @return JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse
      */
     public function createAction(Request $request, $folder_pid = 1)
     {
-        $node = $this->get('engine.node')->create();
+        $engineNodeManager = $this->get('engine.node');
+        $node = $engineNodeManager->create();
         $node->setCreateByUserId($this->getUser()->getId());
         $node->setFolder($this->get('engine.folder')->get($folder_pid));
 
-        $form = $this->get('engine.node')->createForm($node);
+        $form = $engineNodeManager->createForm($node);
 
         if ($request->isMethod('POST')) {
             if ($request->request->has('create')) {
-                $form->bind($request);
+                $form->submit($request);
                 if ($form->isValid()) {
                     /** @var $updated_node \SmartCore\Bundle\EngineBundle\Entity\Node */
                     $created_node = $form->getData();
-                    $this->get('engine.node')->update($created_node);
+                    $engineNodeManager->update($created_node);
 
                     if ($request->isXmlHttpRequest()) {
                         return new JsonResponse(['redirect' => $this->get('engine.folder')->getUri($created_node->getFolder()->getId())]);

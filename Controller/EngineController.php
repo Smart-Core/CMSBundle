@@ -186,7 +186,7 @@ class EngineController extends Controller
                     $Module = $Node->getModuleInstance($node_id, false);
                 } */
 
-                // Выполняется модуль, все параметры ноды берутся в SmartCore\Bundle\EngineBundle\Listener\ModuleControllerModifier
+                // Выполняется модуль, все параметры ноды берутся в SmartCore\Bundle\EngineBundle\Listener\ModuleControllerModifierListener
                 \Profiler::start($node_id . ' ' . $node->getModule(), 'node');
                 $Module = $this->forward($node_id, [ '_eip' => true ]);
                 \Profiler::end($node_id . ' ' . $node->getModule(), 'node');

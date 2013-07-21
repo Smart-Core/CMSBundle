@@ -66,7 +66,7 @@ class EngineBlock
 
     /**
      * @param integer $id
-     * @return Block
+     * @return Block|null
      */
     public function get($id)
     {

@@ -10,13 +10,22 @@ use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 use Symfony\Component\HttpKernel\Event\GetResponseForControllerResultEvent;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 
-class ModuleControllerModifier
+class ModuleControllerModifierListener
 {
-    private $container;
+    /**
+     * @var \SmartCore\Bundle\EngineBundle\Engine\EngineContext
+     */
+    protected $engineContext;
 
-    public function __construct(ContainerInterface $container)
+    /**
+     * @var \SmartCore\Bundle\EngineBundle\Engine\EngineNode
+     */
+    protected $engineNodeManager;
+
+    public function __construct($engineContext, $engineNodeManager)
     {
-        $this->container = $container;
+        $this->engineContext = $engineContext;
+        $this->engineNodeManager = $engineNodeManager;
     }
 
     public function onView(GetResponseForControllerResultEvent $event)
@@ -43,7 +52,7 @@ class ModuleControllerModifier
             /** @var $node \SmartCore\Bundle\EngineBundle\Entity\Node */
             $node = $event->getRequest()->attributes->get('_node');
             $controller[0]->setNode($node);
-            $this->container->get('engine.context')->setCurrentNodeId($node->getId());
+            $this->engineContext->setCurrentNodeId($node->getId());
             $event->getRequest()->attributes->remove('_node');
         }
     }
@@ -55,7 +64,7 @@ class ModuleControllerModifier
             
             if (is_numeric($controller[0])) {
                 /** @var $node \SmartCore\Bundle\EngineBundle\Entity\Node */
-                $node = $this->container->get('engine.node')->get($controller[0]);
+                $node = $this->engineNodeManager->get($controller[0]);
 
                 if (empty($controller[1])) {
                     $controller[1] = $node->getController();
@@ -76,6 +85,6 @@ class ModuleControllerModifier
 
     public function onResponse(FilterResponseEvent $event)
     {
-        $this->container->get('engine.context')->setCurrentNodeId(null);
+        $this->engineContext->setCurrentNodeId(null);
     }
 }

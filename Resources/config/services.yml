@@ -1,25 +1,26 @@
 services:
     db.logger:
         class: Doctrine\DBAL\Logging\DebugStack
+
 # Listeners
     engine.controller.listener:
-        class: SmartCore\Bundle\EngineBundle\Listener\ModuleControllerModifier
-        arguments: [ @service_container ]
+        class: SmartCore\Bundle\EngineBundle\Listener\ModuleControllerModifierListener
+        arguments: [ @engine.context, @engine.node ]
         tags:
             - { name: kernel.event_listener, event: kernel.controller, method: onController }
     engine.request.listener:
-        class: SmartCore\Bundle\EngineBundle\Listener\ModuleControllerModifier
-        arguments: [ @service_container ]
+        class: SmartCore\Bundle\EngineBundle\Listener\ModuleControllerModifierListener
+        arguments: [ @engine.context, @engine.node ]
         tags:
             - { name: kernel.event_listener, event: kernel.request, method: onRequest }
     engine.response.listener:
-        class: SmartCore\Bundle\EngineBundle\Listener\ModuleControllerModifier
-        arguments: [ @service_container ]
+        class: SmartCore\Bundle\EngineBundle\Listener\ModuleControllerModifierListener
+        arguments: [ @engine.context, @engine.node ]
         tags:
             - { name: kernel.event_listener, event: kernel.response, method: onResponse }
     engine.view.listener:
-        class: SmartCore\Bundle\EngineBundle\Listener\ModuleControllerModifier
-        arguments: [ @service_container ]
+        class: SmartCore\Bundle\EngineBundle\Listener\ModuleControllerModifierListener
+        arguments: [ @engine.context, @engine.node ]
         tags:
             - { name: kernel.event_listener, event: kernel.view, method: onView }
     engine.db.table_prefix_subscriber:
@@ -47,7 +48,7 @@ services:
         arguments: [ @kernel ]
     engine.node:
         class: SmartCore\Bundle\EngineBundle\Engine\EngineNode
-        arguments: [ @service_container ]
+        arguments: [ @service_container, @doctrine.orm.default_entity_manager, @form.factory, @kernel ]
     engine.permissions:
         class: SmartCore\Bundle\EngineBundle\Engine\Permissions
         arguments: [ @service_container ]
