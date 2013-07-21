@@ -3,8 +3,6 @@
 namespace SmartCore\Bundle\EngineBundle\Controller;
 
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\JsonResponse;
 
 class AdminBlockController extends Controller
 {
@@ -12,25 +10,27 @@ class AdminBlockController extends Controller
      * Отображение списка всех блоков, а также форма добавления нового.
      *
      * @param Request $request
+     * @return \Symfony\Component\HttpFoundation\Response
      */
     public function indexAction(Request $request)
     {
-        $block = $this->get('engine.block')->create();
+        $engineBlock = $this->get('engine.block');
+        $block = $engineBlock->create();
         $block->setCreateByUserId($this->getUser()->getId());
 
-        $form = $this->get('engine.block')->createForm($block);
+        $form = $engineBlock->createForm($block);
 
         if ($request->isMethod('POST')) {
-            $form->bind($request);
+            $form->submit($request);
             if ($form->isValid()) {
-                $this->get('engine.block')->update($form->getData());
+                $engineBlock->update($form->getData());
                 $this->get('session')->getFlashBag()->add('notice', 'Блок создан.');
                 return $this->redirect($this->generateUrl('cmf_admin_structure_block'));
             }
         }
 
         return $this->render('SmartCoreEngineBundle:Admin:block.html.twig', [
-            'all_blocks'  => $this->get('engine.block')->all(),
+            'all_blocks'  => $engineBlock->all(),
             'form_create' => $form->createView(),
         ]);
     }
@@ -40,28 +40,31 @@ class AdminBlockController extends Controller
      *
      * @param Request $request
      * @param int $id
+     * @return \Symfony\Component\HttpFoundation\Response|\Symfony\Component\HttpFoundation\RedirectResponse
      */
     public function editAction(Request $request, $id = 0)
     {
-        $block = $this->get('engine.block')->get($id);
+        $engineBlock = $this->get('engine.block');
+        $block = $engineBlock->get($id);
 
         if (empty($block)) {
             return $this->redirect($this->generateUrl('cmf_admin_structure_block'));
         }
 
-        $form = $this->get('engine.block')->createForm($block);
+        $form = $engineBlock->createForm($block);
 
         if ($request->isMethod('POST')) {
+            $sessionFlashBag = $this->get('session')->getFlashBag();
             if ($request->request->has('update')) {
-                $form->bind($request);
+                $form->submit($request);
                 if ($form->isValid()) {
-                    $this->get('engine.block')->update($form->getData());
-                    $this->get('session')->getFlashBag()->add('notice', 'Блок обновлён.');
+                    $engineBlock->update($form->getData());
+                    $sessionFlashBag->add('notice', 'Блок обновлён.'); // @todo перевод
                     return $this->redirect($this->generateUrl('cmf_admin_structure_block'));
                 }
             } else if ($request->request->has('delete')) {
-                $this->get('engine.block')->remove($form->getData());
-                $this->get('session')->getFlashBag()->add('notice', 'Блок удалён.');
+                $engineBlock->remove($form->getData());
+                $sessionFlashBag->add('notice', 'Блок удалён.'); // @todo перевод
                 return $this->redirect($this->generateUrl('cmf_admin_structure_block'));
             }
         }

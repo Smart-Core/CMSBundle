@@ -30,7 +30,7 @@ services:
 # Core
     engine.block:
         class: SmartCore\Bundle\EngineBundle\Engine\EngineBlock
-        arguments: [ @service_container ]
+        arguments: [ @doctrine.orm.default_entity_manager, @form.factory ]
     engine.context:
         class: SmartCore\Bundle\EngineBundle\Engine\EngineContext
         arguments: [ @service_container ]
