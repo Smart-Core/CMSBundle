@@ -30,15 +30,15 @@ class AdminNodeController extends Controller
      */
     public function editAction(Request $request, $id)
     {
-        $engineNodeManager = $this->get('engine.node');
-        $node = $engineNodeManager->get($id);
+        $engineNode = $this->get('engine.node');
+        $node = $engineNode->get($id);
 
         if (empty($node)) {
             return $this->redirect($this->generateUrl('cmf_admin_structure'));
         }
 
-        $form = $engineNodeManager->createForm($node);
-        $form_properties = $this->createForm($engineNodeManager->getPropertiesFormType($node->getModule()), $node->getParams());
+        $form = $engineNode->createForm($node);
+        $form_properties = $this->createForm($engineNode->getPropertiesFormType($node->getModule()), $node->getParams());
 
         $form->remove('module');
 
@@ -50,7 +50,7 @@ class AdminNodeController extends Controller
                     /** @var $updated_node \SmartCore\Bundle\EngineBundle\Entity\Node */
                     $updated_node = $form->getData();
                     $updated_node->setParams($form_properties->getData());
-                    $engineNodeManager->update($updated_node);
+                    $engineNode->update($updated_node);
 
                     if ($request->isXmlHttpRequest()) {
                         // @todo проверять referer, и если нода по прежнему находится в наследованном пути, то редиректиться в реферер.
@@ -84,12 +84,12 @@ class AdminNodeController extends Controller
      */
     public function createAction(Request $request, $folder_pid = 1)
     {
-        $engineNodeManager = $this->get('engine.node');
-        $node = $engineNodeManager->create();
+        $engineNode = $this->get('engine.node');
+        $node = $engineNode->create();
         $node->setCreateByUserId($this->getUser()->getId());
         $node->setFolder($this->get('engine.folder')->get($folder_pid));
 
-        $form = $engineNodeManager->createForm($node);
+        $form = $engineNode->createForm($node);
 
         if ($request->isMethod('POST')) {
             if ($request->request->has('create')) {
@@ -97,7 +97,7 @@ class AdminNodeController extends Controller
                 if ($form->isValid()) {
                     /** @var $updated_node \SmartCore\Bundle\EngineBundle\Entity\Node */
                     $created_node = $form->getData();
-                    $engineNodeManager->update($created_node);
+                    $engineNode->update($created_node);
 
                     if ($request->isXmlHttpRequest()) {
                         return new JsonResponse(['redirect' => $this->get('engine.folder')->getUri($created_node->getFolder()->getId())]);

@@ -64,6 +64,8 @@ class EngineNode
      * Применяется для вызова метода createNode() модуля после создания ноды.
      *
      * @var bool
+     *
+     * @todo пересмотреть логику, может быть в сущности запоминать этот флаг?
      */
     protected $is_just_created = false;
 
