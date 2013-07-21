@@ -2,16 +2,33 @@
 
 namespace SmartCore\Bundle\EngineBundle\Engine;
 
+use Doctrine\ORM\EntityManager;
+use SmartCore\Bundle\EngineBundle\Form\Type\NodeFormType;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Form\FormTypeInterface;
 use SmartCore\Bundle\EngineBundle\Entity\Node;
 use SmartCore\Bundle\EngineBundle\Form\Type\NodeDefaultPropertiesFormType;
+use Symfony\Component\Form\FormFactoryInterface;
+use Symfony\Component\HttpKernel\KernelInterface;
 
 class EngineNode
 {
-    use TraitEngine;
-
     protected $db;
+
+    /**
+     * @var EntityManager
+     */
+    protected $em;
+
+    /**
+     * @var FormFactoryInterface
+     */
+    protected $form_factory;
+
+    /**
+     * @var \SmartCore\Bundle\EngineBundle\Entity\NodeRepository
+     */
+    protected $repository;
 
     /**
      * @todo запаковать database_table_prefix в конфиг движка.
@@ -25,22 +42,9 @@ class EngineNode
     protected $context;
 
     /**
-     * Является ли нода только что созданной?
-     *
-     * Применяется для вызова метода createNote() модуля после создания ноды.
-     *
-     * @var bool
+     * @var KernelInterface
      */
-    protected $is_just_created = false;
-
-    public function __construct(ContainerInterface $container)
-    {
-        $this->constructTrait($container);
-
-        $this->context   = $container->get('engine.context');
-        $this->db        = $container->get('database_connection');
-        $this->db_prefix = $container->getParameter('database_table_prefix');
-    }
+    protected $kernel;
 
     /**
      * Список всех нод, запрошенных в текущем контексте.
@@ -50,8 +54,35 @@ class EngineNode
     protected $nodes_list = [];
 
     /**
-     * Create node.
+     * Является ли нода только что созданной?
      *
+     * Применяется для вызова метода createNode() модуля после создания ноды.
+     *
+     * @var bool
+     */
+    protected $is_just_created = false;
+
+    /**
+     * Constructor.
+     */
+    public function __construct(
+        ContainerInterface $container,
+        EntityManager $em,
+        FormFactoryInterface $form_factory,
+        KernelInterface $kernel
+    ) {
+        $this->em           = $em;
+        $this->form_factory = $form_factory;
+        $this->kernel       = $kernel;
+        $this->repository = $em->getRepository('SmartCoreEngineBundle:Node');
+
+        $this->context   = $container->get('engine.context');
+        $this->db        = $container->get('database_connection');
+        $this->db_prefix = $container->getParameter('database_table_prefix');
+
+    }
+
+    /**
      * @return Node
      */
     public function create()
@@ -61,8 +92,19 @@ class EngineNode
     }
 
     /**
-     * Получить объект ноды.
+     * Creates and returns a Form instance from the type of the form.
      *
+     * @param mixed $data    The initial data for the form
+     * @param array $options Options for the form
+     *
+     * @return \Symfony\Component\Form\Form
+     */
+    public function createForm($data = null, array $options = [])
+    {
+        return $this->form_factory->create(new NodeFormType(), $data, $options);
+    }
+
+    /**
      * @param int $id
      * @return Node|null
      */
@@ -85,13 +127,13 @@ class EngineNode
     }
 
     /**
-     * Обновление ноды.
+     * @param Node $node
      */
     public function update(Node $node)
     {
         // Свежесозданная нода выполняет свои действия, а также устанавливает параметры по умолчанию.
         if ($this->is_just_created) {
-            $module = $this->container->get('kernel')->getBundle($node->getModule() . 'Module');
+            $module = $this->kernel->getBundle($node->getModule() . 'Module');
 
             if (method_exists($module, 'createNode')) {
                 $module->createNode($node);
@@ -112,7 +154,7 @@ class EngineNode
      */
     public function getPropertiesFormType($module_name)
     {
-        $reflector = new \ReflectionClass(get_class($this->container->get('kernel')->getBundle($module_name . 'Module')));
+        $reflector = new \ReflectionClass(get_class($this->kernel->getBundle($module_name . 'Module')));
         $form_class_name = '\\' . $reflector->getNamespaceName() . '\Form\Type\NodePropertiesFormType';
 
         if (class_exists($form_class_name)) {
@@ -309,5 +351,14 @@ class EngineNode
         \Profiler::end('buildNodesList');
 
         return $this->nodes_list;
+    }
+
+    /**
+     * @param Node $entity
+     */
+    public function remove(Node $entity)
+    {
+        $this->em->remove($entity);
+        $this->em->flush();
     }
 }
