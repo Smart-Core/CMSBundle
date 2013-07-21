@@ -48,7 +48,7 @@ services:
         arguments: [ @kernel ]
     engine.node:
         class: SmartCore\Bundle\EngineBundle\Engine\EngineNode
-        arguments: [ @service_container, @doctrine.orm.default_entity_manager, @form.factory, @kernel ]
+        arguments: [ @service_container, @doctrine.orm.default_entity_manager, @form.factory, @kernel, @engine.context ]
     engine.permissions:
         class: SmartCore\Bundle\EngineBundle\Engine\Permissions
         arguments: [ @service_container ]

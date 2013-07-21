@@ -21,6 +21,11 @@ class EngineNode
     protected $em;
 
     /**
+     * @var EngineContext
+     */
+    protected $engine_context;
+
+    /**
      * @var FormFactoryInterface
      */
     protected $form_factory;
@@ -69,17 +74,17 @@ class EngineNode
         ContainerInterface $container,
         EntityManager $em,
         FormFactoryInterface $form_factory,
-        KernelInterface $kernel
+        KernelInterface $kernel,
+        $engine_context
     ) {
+        $this->context      = $engine_context;
         $this->em           = $em;
         $this->form_factory = $form_factory;
         $this->kernel       = $kernel;
-        $this->repository = $em->getRepository('SmartCoreEngineBundle:Node');
+        $this->repository   = $em->getRepository('SmartCoreEngineBundle:Node');
 
-        $this->context   = $container->get('engine.context');
         $this->db        = $container->get('database_connection');
         $this->db_prefix = $container->getParameter('database_table_prefix');
-
     }
 
     /**
