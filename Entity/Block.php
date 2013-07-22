@@ -62,7 +62,6 @@ class Block
      *      joinColumns={@ORM\JoinColumn(name="block_id", referencedColumnName="block_id")},
      *      inverseJoinColumns={@ORM\JoinColumn(name="folder_id", referencedColumnName="folder_id")}
      *      )
-     *
      * @var ArrayCollection
      */
     protected $folders;
@@ -76,6 +75,9 @@ class Block
         $this->folders = new ArrayCollection();
     }
 
+    /**
+     * @return string
+     */
     public function __toString()
     {
         $descr = $this->getDescr();
@@ -89,41 +91,72 @@ class Block
         return $full_title;
     }
 
+    /**
+     * @return integer
+     */
     public function getId()
     {
         return $this->block_id;
     }
 
+    /**
+     * @param string $descr
+     * @return $this
+     */
     public function setDescr($descr)
     {
         $this->descr = $descr;
+        return $this;
     }
 
+    /**
+     * @return string|null
+     */
     public function getDescr()
     {
         return $this->descr;
     }
 
-    public function setFolders($folder)
+    /**
+     * @param Folder $folder
+     * @return $this
+     */
+    public function setFolder(Folder $folder)
     {
         $this->folders->add($folder);
+        return $this;
     }
 
+    /**
+     * @return Folder[]
+     */
     public function getFolders()
     {
         return $this->folders;
     }
 
+    /**
+     * @param string $name
+     * @return $this
+     */
     public function setName($name)
     {
         $this->name = $name;
+        return $this;
     }
 
+    /**
+     * @return string
+     */
     public function getName()
     {
         return $this->name;
     }
 
+    /**
+     * @param integer $pos
+     * @return $this
+     */
     public function setPosition($pos)
     {
         if (empty($pos)) {
@@ -131,18 +164,30 @@ class Block
         }
 
         $this->position = $pos;
+        return $this;
     }
 
+    /**
+     * @return integer
+     */
     public function getPosition()
     {
         return $this->position;
     }
 
+    /**
+     * @param integer $create_by_user_id
+     * @return $this
+     */
     public function setCreateByUserId($create_by_user_id)
     {
         $this->create_by_user_id = $create_by_user_id;
+        return $this;
     }
 
+    /**
+     * @return integer
+     */
     public function getCreateByUserId()
     {
         return $this->create_by_user_id;
@@ -150,6 +195,8 @@ class Block
 
     /**
      * Получить кол-во включенных нод.
+     *
+     * @todo убрать отсюда.
      */
     public function getNodesCount()
     {
