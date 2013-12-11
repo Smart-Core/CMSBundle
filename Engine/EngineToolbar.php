@@ -6,16 +6,10 @@ use Symfony\Component\DependencyInjection\ContainerAware;
 
 class EngineToolbar extends ContainerAware
 {
-    /**
-     * @var \Symfony\Bundle\FrameworkBundle\Routing\Router
-     */
-    //protected $router;
-
     public function getArray()
     {
         $current_folder_id = $this->container->get('engine.context')->getCurrentFolderId();
 
-        /** @var $router \Symfony\Bundle\FrameworkBundle\Routing\Router */
         $router = $this->container->get('router');
 
         return [
@@ -102,10 +96,16 @@ class EngineToolbar extends ContainerAware
                     'title' => $this->container->get('security.context')->getToken()->getUser()->getUserName(),
                     'icon' => 'user',
                     'items' => [
+                        'admin' => [
+                            'title' => 'Admin',
+                            'uri' => $router->generate('cmf_admin_structure'),
+                            'icon' => 'cog',
+                            'overalay' => false,
+                        ],
                         'profile' => [
                             'title' => 'Мой профиль',
                             'uri' => $router->generate('fos_user_profile_show'),
-                            'icon' => 'cog',
+                            'icon' => 'user',
                             'overalay' => false,
                         ],
                         'diviver_1' => 'diviver',

@@ -1,6 +1,6 @@
 {% extends app.request.xmlHttpRequest ? '@SmartCoreEngine/ajax.html.twig' : '@SmartCoreEngine/Admin/index.html.twig' %}
 
-{% block html_head_title %}Блоки / {{ parent() }}{% endblock html_head_title %}
+{% block html_head_title %}{{ 'Blocks'|trans }} / {{ parent() }}{% endblock html_head_title %}
 
 {% block subnav %}
     {% if not app.request.xmlHttpRequest %}

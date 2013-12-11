@@ -16,13 +16,17 @@ class EngineController extends Controller
      */
     protected $cmf_front_controls;
 
+    /**
+     * @param Request $request
+     * @param $slug
+     * @return Response
+     */
     public function runAction(Request $request, $slug)
     {
         $router_data = $this->get('engine.folder')->getRouterData();
         //ld($router_data, $router_data['node_route']);
 
         $nodes_list = $this->get('engine.node')->buildList($router_data);
-        //ld($nodes_list);
 
         $this->View->setOptions([
             'comment'   => 'Базовый шаблон',
@@ -74,8 +78,8 @@ class EngineController extends Controller
                 'node' => $this->cmf_front_controls['node'],
             ];
 
-            $this->get('engine.JsLib')->request('bootstrap');
-            $this->get('engine.JsLib')->request('jquery-cookie');
+            $this->get('engine.jslib')->request('bootstrap');
+            $this->get('engine.jslib')->request('jquery-cookie');
             $this->get('html')
                 ->css($this->get('engine.context')->getGlobalAssets() . 'cmf/frontend.css')
                 ->js($this->get('engine.context')->getGlobalAssets() . 'cmf/frontend.js')
@@ -95,7 +99,7 @@ class EngineController extends Controller
 
         $this->get('engine.theme')->processConfig($this->View);
 
-        foreach ($this->get('engine.JsLib')->all() as $res) {
+        foreach ($this->get('engine.jslib')->all() as $res) {
             if (isset($res['js']) and is_array($res['js'])) {
                 foreach ($res['js'] as $js) {
                     $this->get('html')->js($js, 200);
@@ -214,6 +218,7 @@ class EngineController extends Controller
                 // @todo также тут надо учитывать режим Фронт-Админки. если он выключен, то вытягивать фронт-контролсы нет смысла.
                 
                 //if ($this->Permissions->isAllowed('node', 'write', $node_properties['permissions']) and $this->Cookie->sc_frontend_mode == 'edit') {
+                /*
                 if ( false ) {
                     $front_controls = $Module->getFrontControls();
                     
@@ -244,6 +249,7 @@ class EngineController extends Controller
 
                     $Module->View->setDecorators("<div class=\"cmf-frontadmin-node\" id=\"_node$node_id\">", "</div>");
                 }
+                */
             }
 
             if (method_exists($Module, 'getContentRaw')) {
@@ -253,11 +259,11 @@ class EngineController extends Controller
             }
 
             // @todo пока так выставляются декораторы обрамления ноды.
-            if ($this->get('security.context')->isGranted('ROLE_ADMIN') && !$this->get('request')->isXmlHttpRequest()) {
-                //ld($this->View->blocks->$block_name->$node_id);
-                if ($this->View->blocks->$block_name->$node_id instanceof View) {
-                    $this->View->blocks->$block_name->$node_id->setDecorators("<div class=\"cmf-frontadmin-node\" id=\"__node_{$node_id}\">", "</div>");
-                }
+            if ($this->get('security.context')->isGranted('ROLE_ADMIN')
+                and !$this->get('request')->isXmlHttpRequest()
+                and $this->View->blocks->$block_name->$node_id instanceof View
+            ) {
+                $this->View->blocks->$block_name->$node_id->setDecorators("<div class=\"cmf-frontadmin-node\" id=\"__node_{$node_id}\">", "</div>");
             }
 
             unset($Module);
@@ -310,7 +316,7 @@ class EngineController extends Controller
 
         if (!$this->get('security.context')->isGranted('ROLE_ADMIN')) {
             return new JsonResponse([
-                'status' => 'INVALID',
+                'status'  => 'INVALID',
                 'message' => 'Access denied',
             ], 403);
         }

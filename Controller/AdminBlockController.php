@@ -24,7 +24,7 @@ class AdminBlockController extends Controller
             $form->submit($request);
             if ($form->isValid()) {
                 $engineBlock->update($form->getData());
-                $this->get('session')->getFlashBag()->add('notice', 'Блок создан.');
+                $this->get('session')->getFlashBag()->add('notice', 'Блок создан.'); // @todo перевод
                 return $this->redirect($this->generateUrl('cmf_admin_structure_block'));
             }
         }

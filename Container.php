@@ -2,6 +2,9 @@
 
 namespace SmartCore\Bundle\EngineBundle;
 
+/**
+ * @todo избавиться
+ */
 class Container
 {
     static private $container;
