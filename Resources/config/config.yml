@@ -13,6 +13,7 @@ mopa_bootstrap:
     form:
         templating: false
         show_legend: false # default is true
+        checkbox_label: label
         error_type: block # or inline which is default
         render_optional_text: false
         render_required_asterisk: true
