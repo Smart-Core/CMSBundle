@@ -65,7 +65,7 @@
         "predis/predis": "0.8.*",
         "rickysu/tagcache-bundle": "dev-master",
         "snc/redis-bundle": "1.1.*",
-        "smart-core/accelerator-cache-bundle": "dev-master",
+        "smart-core/accelerator-cache-bundle": "~1.0@dev",
         "smart-core/cms-generator-bundle": "dev-master",
         "smart-core/core-bundle": "dev-master",
         "smart-core/felib-bundle": "dev-master",
