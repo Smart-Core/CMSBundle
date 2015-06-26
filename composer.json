@@ -63,7 +63,7 @@
         "mopa/bootstrap-bundle":  "dev-master",
         "pagerfanta/pagerfanta": "v1.0.1",
         "predis/predis": "0.8.*",
-        "rickysu/tagcache-bundle": "dev-master",
+        "rickysu/tagcache-bundle": "~0.1",
         "snc/redis-bundle": "1.1.*",
         "smart-core/accelerator-cache-bundle": "~1.0@dev",
         "smart-core/cms-generator-bundle": "dev-master",
