@@ -54,7 +54,6 @@
         "leafo/scssphp": "*",
         "liip/theme-bundle": "~1.0@dev",
         "misd/guzzle-bundle": "~1.0",
-        "pagerfanta/pagerfanta": "v1.0.1",
         "predis/predis": "0.8.*",
         "rickysu/tagcache-bundle": "~0.1",
         "snc/redis-bundle": "1.1.*",
