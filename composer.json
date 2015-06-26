@@ -94,8 +94,12 @@
         "zenstruck/imagine-extra-bundle": "*"
     },
     "autoload": {
-        "psr-4": {
-            "SmartCore\\Bundle\\CMSBundle\\": ""
+        "psr-4": {"SmartCore\\Bundle\\CMSBundle\\": ""}
+    },
+    "minimum-stability": "alpha",
+    "extra": {
+        "branch-alias": {
+            "dev-master": "2.6-dev"
         }
     }
 }
