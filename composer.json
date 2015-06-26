@@ -95,10 +95,5 @@
     },
     "autoload": {
         "psr-4": {"SmartCore\\Bundle\\CMSBundle\\": ""}
-    },
-    "extra": {
-        "branch-alias": {
-            "dev-master": "2.6-dev"
-        }
     }
 }
