@@ -51,7 +51,7 @@
         "hakre/dropbox-uploader": "*",
         "happyr/google-site-authenticator-bundle": "*",
         "happyr/slugify-bundle": "*",
-        "hwi/oauth-bundle": "~0.4@dev",
+        "hwi/oauth-bundle": "~0.4.0@dev",
         "knplabs/knp-disqus-bundle":"dev-master",
         "knplabs/knp-menu": "dev-master",
         "knplabs/knp-menu-bundle": "dev-master",
