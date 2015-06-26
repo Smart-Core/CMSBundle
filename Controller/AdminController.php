@@ -73,7 +73,7 @@ class AdminController extends Controller
         $data = [];
         $data[] = [
             'title' => 'Smart Core CMS version',
-            'value' => 'v0.5',
+            'value' => 'v0.1',
             'required' => '',
             'recomended' => '',
             'hint' => '',
