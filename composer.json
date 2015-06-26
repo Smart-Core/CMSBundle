@@ -99,7 +99,7 @@
     "minimum-stability": "alpha",
     "extra": {
         "branch-alias": {
-            "9999999-dev": "dev-master"
+            "9999999-dev": "2.6-dev"
         }
     }
 }
