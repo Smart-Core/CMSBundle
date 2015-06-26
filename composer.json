@@ -60,6 +60,18 @@
         "snc/redis-bundle": "1.1.*",
 
         "smart-core/accelerator-cache-bundle": "~1.0@dev",
+        "smart-core/cms-generator-bundle": "*",
+        "smart-core/core-bundle": "*",
+        "smart-core/felib-bundle": "*",
+        "smart-core/html-bundle": "*",
+        "smart-core/ladybug-bundle": "~0.7",
+        "smart-core/media-bundle": "*",
+        "smart-core/rich-editor-bundle": "*",
+        "smart-core/seo-bundle": "*",
+        "smart-core/session-bundle": "*",
+        "smart-core/settings-bundle": "*",
+        "smart-core/simple-profiler-bundle": "*",
+        "smart-core/sitemap-bundle": "*",
 
         "sonata-project/intl-bundle": "~2.0@dev",
         "sp/bower-bundle": "*",
