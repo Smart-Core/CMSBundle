@@ -127,7 +127,6 @@ abstract class Kernel extends BaseKernel
         $bundles[] = new \Symfony\Bundle\AsseticBundle\AsseticBundle();
         $bundles[] = new \Symfony\Bundle\DebugBundle\DebugBundle();
 
-        $bundles[] = new \Dizda\CloudBackupBundle\DizdaCloudBackupBundle();
         $bundles[] = new \Doctrine\Bundle\DoctrineCacheBundle\DoctrineCacheBundle();
         $bundles[] = new \FM\ElfinderBundle\FMElfinderBundle();
         $bundles[] = new \FOS\RestBundle\FOSRestBundle();
