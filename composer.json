@@ -39,7 +39,7 @@
         "elao/web-profiler-extra-bundle": "dev-master",
         "facebook/php-sdk": "*",
         "friendsofsymfony/rest-bundle": "*",
-        "friendsofsymfony/user-bundle": "dev-master",
+        "friendsofsymfony/user-bundle": "~2.0@dev",
         "genemu/form-bundle": "*",
         "helios-ag/fm-elfinder-bundle": "~4.0",
         "incenteev/composer-parameter-handler": "~2.0",
