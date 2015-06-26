@@ -43,7 +43,6 @@
         "genemu/form-bundle": "*",
         "incenteev/composer-parameter-handler": "~2.0",
         "intervention/image": "*",
-        "jms/debugging-bundle": "~0.1@dev",
         "jms/di-extra-bundle": "*",
         "jms/serializer-bundle": "*",
         "jms/security-extra-bundle": "*",
