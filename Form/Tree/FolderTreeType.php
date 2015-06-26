@@ -1,6 +1,6 @@
 <?php
 
-namespace SmartCore\Bundle\EngineBundle\Form\Tree;
+namespace SmartCore\Bundle\CMSBundle\Form\Tree;
 
 use Doctrine\Common\Persistence\ObjectManager;
 use Symfony\Bridge\Doctrine\Form\Type\DoctrineType;
@@ -13,17 +13,18 @@ class FolderTreeType extends DoctrineType
     {
         parent::setDefaultOptions($resolver);
 
-        $type = $this;
+        $loader = function (Options $options) {
+            $loader = $this->getLoader($options['em'], $options['query_builder'], $options['class']);
+            $loader->setOnlyActive($options['only_active']);
 
-        $loader = function (Options $options) use ($type) {
-            return $type->getLoader($options['em'], $options['query_builder'], $options['class']);
+            return $loader;
         };
 
         $resolver->setDefaults([
-            'property'  => 'form_title',
-            'loader'    => $loader,
-            'class'     => 'SmartCoreEngineBundle:Folder',
-            'attr'      => ['class' => 'input-block-level'],
+            'only_active' => false,
+            'property'    => 'form_title',
+            'loader'      => $loader,
+            'class'       => 'CMSBundle:Folder',
         ]);
     }
 
@@ -34,6 +35,6 @@ class FolderTreeType extends DoctrineType
 
     public function getName()
     {
-        return 'folder_tree';
+        return 'cms_folder_tree';
     }
 }

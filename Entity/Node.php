@@ -1,77 +1,97 @@
 <?php
 
-namespace SmartCore\Bundle\EngineBundle\Entity;
+namespace SmartCore\Bundle\CMSBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Smart\CoreBundle\Doctrine\ColumnTrait;
+use SmartCore\Bundle\CMSBundle\Tools\FrontControl;
 use Symfony\Component\Validator\Constraints as Assert;
-use SmartCore\Bundle\EngineBundle\Module\RouterResponse;
-use SmartCore\Bundle\EngineBundle\Container;
 
 /**
  * @ORM\Entity(repositoryClass="NodeRepository")
  * @ORM\HasLifecycleCallbacks
  * @ORM\Table(name="engine_nodes",
  *      indexes={
- *          @ORM\Index(name="is_active", columns={"is_active"}),
- *          @ORM\Index(name="position",  columns={"position"}),
- *          @ORM\Index(name="block_id",  columns={"block_id"}),
- *          @ORM\Index(name="module",    columns={"module"})
+ *          @ORM\Index(columns={"is_active"}),
+ *          @ORM\Index(columns={"is_deleted"}),
+ *          @ORM\Index(columns={"position"}),
+ *          @ORM\Index(columns={"region_id"}),
+ *          @ORM\Index(columns={"module"})
  *      }
  * )
  */
 class Node implements \Serializable
 {
-    /**
-     * @ORM\Id
-     * @ORM\Column(type="integer")
-     * @ORM\GeneratedValue(strategy="AUTO")
-     */
-    protected $node_id;
+    // Получать элементы управления для тулбара.
+    const TOOLBAR_NO                    = 0; // Никогда
+    const TOOLBAR_ONLY_IN_SELF_FOLDER   = 1; // Только в собственной папке
+    const TOOLBAR_ALWAYS                = 2; // Всегда
+
+    use ColumnTrait\Id;
+    use ColumnTrait\IsActive;
+    use ColumnTrait\IsDeleted;
+    use ColumnTrait\CreatedAt;
+    use ColumnTrait\DeletedAt;
+    use ColumnTrait\Description;
+    use ColumnTrait\Position;
+    use ColumnTrait\UserId;
 
     /**
-     * @ORM\Column(type="boolean", nullable=TRUE)
+     * @var int
+     *
+     * @ORM\Column(type="smallint")
      */
-    protected $is_active;
+    protected $controls_in_toolbar;
 
     /**
+     * @var string
+     *
      * @ORM\Column(type="string", length=50)
      * @Assert\NotBlank()
      */
     protected $module;
 
     /**
-     * @ORM\Column(type="array", nullable=FALSE)
+     * @var array
+     *
+     * @ORM\Column(type="array", nullable=false)
      */
     protected $params;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(type="string", length=30, nullable=true)
+     */
+    protected $template;
+
+    /**
+     * @var Folder
+     *
      * @ORM\ManyToOne(targetEntity="Folder", inversedBy="nodes")
-     * @ORM\JoinColumn(name="folder_id", referencedColumnName="folder_id")
      * @Assert\NotBlank()
      */
     protected $folder;
 
     /**
      * Хранение folder_id для минимизации кол-ва запросов.
+     *
+     * @var int|null
      */
     protected $folder_id = null;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Block")
-     * @ORM\JoinColumn(name="block_id", referencedColumnName="block_id")
+     * @var Region
+     *
+     * @ORM\ManyToOne(targetEntity="Region", fetch="EAGER")
      * @Assert\NotBlank()
      */
-    protected $block;
-
-    /**
-     * Позиция в внутри блока.
-     *
-     * @ORM\Column(type="smallint", nullable=true)
-     */
-    protected $position;
+    protected $region;
 
     /**
      * Приоритет порядка выполнения.
+     *
+     * @var int
      *
      * @ORM\Column(type="smallint")
      */
@@ -80,234 +100,325 @@ class Node implements \Serializable
     /**
      * Может ли нода кешироваться.
      *
-     * @ORM\Column(type="boolean", nullable=TRUE)
+     * @var bool
+     *
+     * @ORM\Column(type="boolean")
      */
     protected $is_cached;
 
     /**
-     * @ORM\Column(type="text", nullable=TRUE)
+     * Использовать Edit-In-Place. Если отключить также не будет генерироваться div вокруг ноды.
+     *
+     * @var bool
+     *
+     * @ORM\Column(type="boolean", options={"default":1})
+     */
+    protected $is_use_eip;
+
+    /**
+     * @ORM\Column(type="text", nullable=true)
      */
     //protected $cache_params;
 
     /**
-     * @ORM\Column(type="text", nullable=TRUE)
-     * 
-     * @todo !!! Убрать !!! это временное поле...
-     */
-    //protected $cache_params_yaml;
-
-    /**
-     * @todo пересмотреть.
-     * 
-     * @ORM\Column(type="text", nullable=TRUE)
+     * @ORM\Column(type="text", nullable=true)
      */
     //protected $plugins;
 
     /**
-     * @todo пересмотреть.
-     * 
-     * @ORM\Column(type="text", nullable=TRUE)
+     * @ORM\Column(type="text", nullable=true)
      */
     //protected $permissions;
 
-    /**
-     * @ORM\Column(type="smallint")
-     */
-    //protected $database_id = 0;
+    // ================================= Unmapped properties =================================
 
     /**
-     * @ORM\Column(type="string")
+     * @var array
      */
-    //protected $node_action_mode = 'popup';
+    protected $controller = [];
 
     /**
-     * @ORM\Column(type="string", nullable=TRUE)
+     * Edit-In-Place.
+     *
+     * @var bool
      */
-    protected $descr;
+    protected $eip = false;
 
     /**
-     * @ORM\Column(type="integer")
+     * @var FrontControl[]
      */
-    protected $create_by_user_id;
+    protected $front_controls = [];
 
     /**
-     * @ORM\Column(type="datetime")
+     * @var string
      */
-    protected $create_datetime;
+    protected $region_name = null;
 
     /**
-     * Ответ роутинга ноды, если таковой есть.
-     * @var RouterResponse|null
+     * Constructor.
      */
-    protected $router_response = null;
-
-    protected $controller = null;
-    protected $action = 'index';
-    protected $arguments = [];
-
     public function __construct()
     {
-        $this->create_by_user_id = 0;
-        $this->create_datetime = new \DateTime();
-        $this->is_active = true;
-        $this->is_cached = false;
-        $this->params = [];
-        $this->position = 0;
-        $this->priority = 0;
+        $this->controls_in_toolbar = self::TOOLBAR_ONLY_IN_SELF_FOLDER;
+        $this->created_at   = new \DateTime();
+        $this->is_active    = true;
+        $this->is_cached    = false;
+        $this->is_deleted   = false;
+        $this->is_use_eip   = true;
+        $this->params       = [];
+        $this->position     = 0;
+        $this->priority     = 0;
+        $this->user_id      = 1;
     }
 
     /**
-     * Сериализация
+     * Сериализация.
      */
     public function serialize()
     {
         $this->getFolderId();
-        $this->getBlock()->getId();
+
         return serialize([
             //return igbinary_serialize([
-            $this->node_id,
+            $this->id,
             $this->is_active,
             $this->is_cached,
+            $this->is_deleted,
+            $this->is_use_eip,
             $this->module,
             $this->params,
             $this->folder,
             $this->folder_id,
-            $this->block,
+            $this->region,
+            $this->region_name,
             $this->position,
             $this->priority,
-            $this->descr,
-            $this->create_by_user_id,
-            $this->create_datetime,
+            $this->template,
+            $this->description,
+            $this->controls_in_toolbar,
+            $this->user_id,
+            $this->created_at,
+            $this->controller,
         ]);
     }
 
     /**
      * @param string $serialized
-     * @return mixed|void
      */
     public function unserialize($serialized)
     {
         list(
-            $this->node_id,
+            $this->id,
             $this->is_active,
             $this->is_cached,
+            $this->is_deleted,
+            $this->is_use_eip,
             $this->module,
             $this->params,
             $this->folder,
             $this->folder_id,
-            $this->block,
+            $this->region,
+            $this->region_name,
             $this->position,
             $this->priority,
-            $this->descr,
-            $this->create_by_user_id,
-            $this->create_datetime,
-            ) = unserialize($serialized);
+            $this->template,
+            $this->description,
+            $this->controls_in_toolbar,
+            $this->user_id,
+            $this->created_at,
+            $this->controller) = unserialize($serialized);
         //) = igbinary_unserialize($serialized);
     }
 
-    public function getId()
+    /**
+     * @param int $controls_in_toolbar
+     *
+     * @return $this
+     */
+    public function setControlsInToolbar($controls_in_toolbar)
     {
-        return $this->node_id;
+        $this->controls_in_toolbar = $controls_in_toolbar;
+
+        return $this;
     }
 
-    public function setCreateByUserId($create_by_user_id)
+    /**
+     * @return int
+     */
+    public function getControlsInToolbar()
     {
-        $this->create_by_user_id = $create_by_user_id;
+        return $this->controls_in_toolbar;
     }
 
-    public function getCreateByUserId()
-    {
-        return $this->create_by_user_id;
-    }
-
-    public function setIsActive($is_active)
-    {
-        $this->is_active = $is_active;
-    }
-
-    public function getIsActive()
-    {
-        return $this->is_active;
-    }
-
+    /**
+     * @param bool $is_cached
+     *
+     * @return $this
+     */
     public function setIsCached($is_cached)
     {
         $this->is_cached = $is_cached;
+
+        return $this;
     }
 
+    /**
+     * @return bool
+     */
     public function getIsCached()
     {
         return $this->is_cached;
     }
 
-    public function setDescr($descr)
+    /**
+     * @param Region $region
+     *
+     * @return $this
+     */
+    public function setRegion(Region $region)
     {
-        $this->descr = $descr;
+        $this->region = $region;
+
+        return $this;
     }
 
-    public function getDescr()
+    /**
+     * @return Region
+     */
+    public function getRegion()
     {
-        return $this->descr;
+        return $this->region;
     }
 
-    public function setPosition($position)
+    /**
+     * @return string
+     */
+    public function getRegionName()
     {
-        if (empty($position)) {
-            $position = 0;
+        if (null === $this->region_name) {
+            $this->region_name = $this->getRegion()->getName();
         }
 
-        $this->position = $position;
+        return $this->region_name;
     }
 
-    public function getPosition()
-    {
-        return $this->position;
-    }
-
-    public function setBlock($block)
-    {
-        $this->block = $block;
-    }
-
-    public function getBlock()
-    {
-        return $this->block;
-    }
-
-    public function setFolder($folder)
+    /**
+     * @param Folder $folder
+     *
+     * @return $this
+     */
+    public function setFolder(Folder $folder)
     {
         $this->folder = $folder;
+
+        return $this;
     }
 
+    /**
+     * @return Folder
+     */
     public function getFolder()
     {
         return $this->folder;
     }
 
+    /**
+     * @param string $module
+     *
+     * @return $this
+     */
     public function setModule($module)
     {
         $this->module = $module;
+
+        return $this;
     }
 
+    /**
+     * @return string
+     */
     public function getModule()
     {
         return $this->module;
     }
 
-    public function setParams($params)
+    /**
+     * @param array $params
+     *
+     * @return $this
+     */
+    public function setParams(array $params)
     {
         $this->params = $params;
+
+        return $this;
     }
 
+    /**
+     * @return array
+     */
     public function getParams()
     {
-        if (empty($this->params)) {
-            return [];
-        } else {
-            return $this->params;
-        }
+        return (empty($this->params)) ? [] : $this->params;
     }
-    
+
+    /**
+     * @param string $key
+     *
+     * @return mixed
+     */
+    public function getParam($key, $default = null)
+    {
+        return (isset($this->params[$key])) ? $this->params[$key] : $default;
+    }
+
+    /**
+     * @param int $priority
+     *
+     * @return $this
+     */
+    public function setPriority($priority)
+    {
+        if (empty($priority)) {
+            $priority = 0;
+        }
+
+        $this->priority = $priority;
+
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getPriority()
+    {
+        return $this->priority;
+    }
+
+    /**
+     * @param string $template
+     *
+     * @return $this
+     */
+    public function setTemplate($template)
+    {
+        $this->template = $template;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getTemplate($default = null)
+    {
+        return empty($this->template) ? $default : $this->template;
+    }
+
+    /**
+     * @return int
+     */
     public function getFolderId()
     {
         if ($this->folder_id == null) {
@@ -317,51 +428,152 @@ class Node implements \Serializable
         return $this->folder_id;
     }
 
-    public function setRouterResponse(RouterResponse $router_response)
+    /**
+     * @param bool $eip
+     *
+     * @return $this
+     */
+    public function setEip($eip)
     {
-        $this->setController($router_response->getController());
-        $this->setAction($router_response->getAction());
-        $this->setArguments($router_response->getAllArguments());
+        $this->eip = $eip;
 
-        $this->router_response = $router_response;
+        return $this;
     }
 
-    public function getRouterResponse()
+    /**
+     * @return bool
+     */
+    public function getEip()
     {
-        return $this->router_response;
+        return $this->eip;
     }
 
-    public function setAction($action)
+    /**
+     * @return bool
+     */
+    public function isEip()
     {
-        $this->action = $action;
+        return $this->eip;
     }
 
-    public function getAction()
+    /**
+     * @return boolean
+     */
+    public function getIsUseEip()
     {
-        return $this->action;
+        return $this->is_use_eip;
     }
 
-    public function setArguments($arguments)
+    /**
+     * @param boolean $is_use_eip
+     *
+     * @return $this
+     */
+    public function setIsUseEip($is_use_eip)
     {
-        $this->arguments = $arguments;
+        $this->is_use_eip = $is_use_eip;
+
+        return $this;
     }
 
-    public function getArguments()
+    /**
+     * @param string $name
+     *
+     * @return FrontControl
+     *
+     * @throws \Exception
+     */
+    public function addFrontControl($name)
     {
-        return $this->arguments;
+        if (isset($this->front_controls[$name])) {
+            throw new \Exception("From control: '{$name}' already exists.");
+        }
+
+        $this->front_controls[$name] = new FrontControl();
+        $this->front_controls[$name]->setDescription($this->getDescription());
+
+        return $this->front_controls[$name];
     }
 
+    /**
+     * @param array $front_controls
+     *
+     * @return $this
+     *
+     * @deprecated
+     */
+    public function setFrontControls($front_controls)
+    {
+        if ($this->isEip() and $this->getIsUseEip()) {
+            $this->front_controls = $front_controls;
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return FrontControl[]
+     */
+    public function getFrontControls()
+    {
+        $data = [];
+
+        if ($this->isEip() and $this->getIsUseEip()) {
+            foreach ($this->front_controls as $name => $control) {
+                $data[$name] = $control->getData();
+            }
+        }
+
+        return $data;
+    }
+
+    /**
+     * @param string $controller
+     *
+     * @return $this
+     */
     public function setController($controller)
     {
         $this->controller = $controller;
+
+        return $this;
     }
 
-    public function getController()
+    /**
+     * @return array
+     */
+    public function getControllerParams()
     {
-        if (!empty($this->controller)) {
-            return $this->controller;
-        } else {
-            return $this->module;
+        $params = [];
+        foreach ($this->controller as $key => $val) {
+            if ($key !== '_controller' and $key !== '_route') {
+                $params[$key] = $val;
+            }
         }
+
+        return $params;
+    }
+
+    /**
+     * @todo Продумать где подменять action у нод.
+     *
+     * @return array
+     */
+    public function getController($controllerName = null, $actionName = 'index')
+    {
+        if (null !== $controllerName or 'index' !== $actionName) {
+            $className = (null === $controllerName) ? $this->module : $controllerName;
+
+            return [
+                '_controller' => $this->module.'Module:'.$className.':'.$actionName,
+            ];
+        }
+
+        if (empty($this->controller)) {
+            $className = (null === $controllerName) ? $this->module : $controllerName;
+            $this->controller['_controller'] = $this->module.'Module:'.$className.':'.$actionName;
+        }
+
+        return $this->controller;
     }
 }

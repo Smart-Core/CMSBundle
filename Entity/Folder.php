@@ -1,373 +1,399 @@
 <?php
 
-namespace SmartCore\Bundle\EngineBundle\Entity;
+namespace SmartCore\Bundle\CMSBundle\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+use Smart\CoreBundle\Doctrine\ColumnTrait;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
-use SmartCore\Bundle\EngineBundle\Container;
-use SmartCore\Bundle\EngineBundle\Entity\Node;
 
 /**
  * @ORM\Entity(repositoryClass="FolderRepository")
- * @ORM\HasLifecycleCallbacks
  * @ORM\Table(name="engine_folders",
  *      indexes={
- *          @ORM\Index(name="is_active", columns={"is_active"}),
- *          @ORM\Index(name="is_deleted", columns={"is_deleted"}),
- *          @ORM\Index(name="position", columns={"position"})
+ *          @ORM\Index(columns={"is_active"}),
+ *          @ORM\Index(columns={"is_deleted"}),
+ *          @ORM\Index(columns={"position"})
  *      },
  *      uniqueConstraints={
- *          @ORM\UniqueConstraint(name="folder_pid_uri_part", columns={"folder_pid", "uri_part"}),
+ *          @ORM\UniqueConstraint(columns={"folder_pid", "uri_part"}),
  *      }
  * )
  * @UniqueEntity(fields={"uri_part", "parent_folder"}, message="в каждой подпапке должен быть уникальный сегмент URI")
  */
 class Folder
 {
+    use ColumnTrait\Id;
+    use ColumnTrait\IsActive;
+    use ColumnTrait\IsDeleted;
+    use ColumnTrait\CreatedAt;
+    use ColumnTrait\DeletedAt;
+    use ColumnTrait\Description;
+    use ColumnTrait\Position;
+    use ColumnTrait\UserId;
+
     /**
-     * @ORM\Id
-     * @ORM\Column(type="integer")
-     * @ORM\GeneratedValue(strategy="AUTO")
-     */
-    protected $folder_id;
-    
-    /**
+     * @var Folder
+     *
      * @ORM\ManyToOne(targetEntity="Folder", inversedBy="children")
-     * @ORM\JoinColumn(name="folder_pid", referencedColumnName="folder_id")
+     * @ORM\JoinColumn(name="folder_pid")
      */
     protected $parent_folder;
 
     /**
+     * @var Folder[]|ArrayCollection
+     *
      * @ORM\OneToMany(targetEntity="Folder", mappedBy="parent_folder")
      * @ORM\OrderBy({"position" = "ASC"})
      */
     protected $children;
 
     /**
+     * @var Node[]|ArrayCollection
+     *
      * @ORM\OneToMany(targetEntity="Node", mappedBy="folder")
      * @ORM\OrderBy({"position" = "ASC"})
      */
     protected $nodes;
 
     /**
+     * @var Region[]|ArrayCollection
+     *
+     * @ORM\ManyToMany(targetEntity="Region", mappedBy="folders", fetch="EXTRA_LAZY")
+     */
+    protected $regions;
+
+    /**
+     * @var string
+     *
      * @ORM\Column(type="string")
      * @Assert\NotBlank()
      */
     protected $title;
 
     /**
-     * @ORM\Column(type="boolean", nullable=TRUE)
+     * @var string
+     *
+     * @ORM\Column(type="string", nullable=true)
+     */
+    protected $uri_part;
+
+    /**
+     * @var bool
+     *
+     * @ORM\Column(type="boolean")
      */
     protected $is_file;
 
     /**
-     * @ORM\Column(type="smallint", nullable=TRUE)
-     */
-    protected $position;
-    
-    /**
-     * @ORM\Column(type="string", nullable=TRUE)
-     */
-    protected $uri_part;
-    
-    /**
-     * @ORM\Column(type="boolean", nullable=TRUE)
-     */
-    protected $is_active;
-    
-    /**
-     * @ORM\Column(type="boolean", nullable=TRUE)
-     */
-    protected $is_deleted;
-    
-    /**
-     * @ORM\Column(type="string", nullable=TRUE)
-     */
-    protected $descr;
-    
-    /**
-     * @ORM\Column(type="array", nullable=TRUE)
+     * @var array
+     *
+     * @ORM\Column(type="array", nullable=true)
      */
     protected $meta;
 
     /**
-     * @ORM\Column(type="string", nullable=TRUE)
+     * @var string
+     *
+     * @ORM\Column(type="string", nullable=true)
      */
     protected $redirect_to;
-    
+
     /**
-     * @ORM\Column(type="integer", nullable=TRUE)
+     * @var string
+     *
+     * @ORM\Column(type="integer", nullable=true)
+     *
+     * @todo можно сделать через связь
      */
     protected $router_node_id;
-    
+
     /**
-     * @ORM\Column(type="boolean", nullable=TRUE)
-     */
-    protected $has_inherit_nodes;
-    
-    /**
-     * @ORM\Column(type="array", nullable=TRUE)
+     * @var array
+     *
+     * @ORM\Column(type="array", nullable=true)
      */
     protected $permissions;
 
     /**
-     * @ORM\Column(type="array", nullable=TRUE)
+     * @var array
+     *
+     * @ORM\Column(type="array", nullable=true)
      */
     protected $lockout_nodes;
 
     /**
-     * @ORM\Column(type="string", length=30, nullable=TRUE)
+     * @var string
+     *
+     * @ORM\Column(type="string", length=30, nullable=true)
      */
-    protected $template;
+    protected $template_inheritable;
 
     /**
-     * @ORM\Column(type="integer")
+     * @var string
+     *
+     * @ORM\Column(type="string", length=30, nullable=true)
      */
-    protected $create_by_user_id;
-
-    /**
-     * @ORM\Column(type="datetime")
-     */
-    protected $create_datetime;
+    protected $template_self;
 
     /**
      * Для отображения в формах. Не маппится в БД.
      */
-    protected $form_title;
+    protected $form_title = '';
 
     /**
-     * Полный URI. Генерируется динамически.
+     * Constructor.
      */
-    protected $uri;
-
-    public function setUri($uri)
-    {
-        $this->uri = $uri;
-    }
-
-    public function getUri()
-    {
-        return $this->uri;
-    }
-
     public function __construct()
     {
-        $this->children = new ArrayCollection();
-        $this->create_by_user_id = 0;
-        $this->create_datetime = new \DateTime();
-        $this->form_title = '';
-        $this->meta = null;
-        $this->is_active = true;
-        $this->is_deleted = false;
-        $this->is_file = false;
-        $this->has_inherit_nodes = false;
-        $this->lockout_nodes = null;
-        $this->nodes = new ArrayCollection();
-        $this->parent_folder = null;
-        $this->permissions = null;
-        $this->position = 0;
-        $this->redirect_to = null;
-        $this->router_node_id = null;
-        $this->template = null;
-        $this->uri_part = '';
+        $this->children             = new ArrayCollection();
+        $this->created_at           = new \DateTime();
+        $this->is_active            = true;
+        $this->is_deleted           = false;
+        $this->is_file              = false;
+        $this->lockout_nodes        = null;
+        $this->meta                 = [];
+        $this->nodes                = new ArrayCollection();
+        $this->parent_folder        = null;
+        $this->permissions          = null;
+        $this->position             = 0;
+        $this->regions              = new ArrayCollection();
+        $this->redirect_to          = null;
+        $this->router_node_id       = null;
+        $this->template_inheritable = null;
+        $this->template_self        = null;
+        $this->uri_part             = null;
+        $this->user_id              = 1;
     }
 
+    /**
+     * @return string
+     */
     public function __toString()
     {
         return $this->getTitle();
     }
 
+    /**
+     * @return Folder[]|ArrayCollection
+     */
     public function getChildren()
     {
         return $this->children;
     }
 
+    /**
+     * @return Node[]|ArrayCollection
+     */
     public function getNodes()
     {
         return $this->nodes;
     }
 
+    /**
+     * @param string $title
+     *
+     * @return $this
+     */
     public function setTitle($title)
     {
         $this->title = $title;
+
+        return $this;
     }
 
+    /**
+     * @return string
+     */
     public function getTitle()
     {
         return $this->title;
     }
 
+    /**
+     * @param bool $is_file
+     *
+     * @return $this
+     */
     public function setIsFile($is_file)
     {
         $this->is_file = $is_file;
+
+        return $this;
     }
 
+    /**
+     * @return bool
+     */
     public function getIsFile()
     {
         return $this->is_file;
     }
 
-    public function setIsActive($is_active)
-    {
-        $this->is_active = $is_active;
-    }
-
-    public function getIsActive()
-    {
-        return $this->is_active;
-    }
-
-    public function setHasInheritNodes($has_inherit_nodes)
-    {
-        $this->has_inherit_nodes = $has_inherit_nodes;
-    }
-
-    public function getHasInheritNodes()
-    {
-        return $this->has_inherit_nodes;
-    }
-
-    public function setDescr($descr)
-    {
-        $this->descr = $descr;
-    }
-
-    public function getDescr()
-    {
-        return $this->descr;
-    }
-
+    /**
+     * @param string $uri_part
+     *
+     * @return $this
+     */
     public function setUriPart($uri_part)
     {
         $this->uri_part = $uri_part;
+
+        return $this;
     }
 
+    /**
+     * @return string
+     */
     public function getUriPart()
     {
         return $this->uri_part;
     }
 
-    public function setMeta($meta)
+    /**
+     * @param array $meta
+     *
+     * @return $this
+     */
+    public function setMeta(array $meta)
     {
+        foreach ($meta as $name => $value) {
+            if (empty($value)) {
+                unset($meta[$name]);
+            }
+        }
+
         $this->meta = $meta;
+
+        return $this;
     }
 
+    /**
+     * @return array
+     */
     public function getMeta()
     {
-        if (empty($this->meta)) {
-            return [];
-        } else {
-            return $this->meta;
-        }
+        return empty($this->meta) ? [] : $this->meta;
     }
 
-    public function getId()
+    /**
+     * @param Folder $parent_folder
+     *
+     * @return $this
+     */
+    public function setParentFolder(Folder $parent_folder)
     {
-        return $this->folder_id;
+        $this->parent_folder = ($this->getId() == 1) ? null : $parent_folder;
+
+        return $this;
     }
 
-    public function setCreateByUserId($create_by_user_id)
-    {
-        $this->create_by_user_id = $create_by_user_id;
-    }
-
-    public function getCreateByUserId()
-    {
-        return $this->create_by_user_id;
-    }
-
-    public function setParentFolder($parent_folder)
-    {
-        if ($this->getId() == 1) {
-            $this->parent_folder = null;
-        } else {
-            $this->parent_folder = $parent_folder;
-        }
-    }
-
+    /**
+     * @return Folder|null
+     */
     public function getParentFolder()
     {
         return $this->parent_folder;
     }
 
-    public function setPosition($position)
-    {
-        if (empty($position)) {
-            $position = 0;
-        }
-
-        $this->position = $position;
-    }
-
-    public function getPosition()
-    {
-        return $this->position;
-    }
-
+    /**
+     * @param string $form_title
+     *
+     * @return $this
+     */
     public function setFormTitle($form_title)
     {
         $this->form_title = $form_title;
+
+        return $this;
     }
 
+    /**
+     * @return string
+     */
     public function getFormTitle()
     {
         return $this->form_title;
     }
 
+    /**
+     * @param int|null $router_node_id
+     *
+     * @return $this
+     */
     public function setRouterNodeId($router_node_id)
     {
-        $this->router_node_id = $router_node_id;
+        $this->router_node_id = empty($router_node_id) ? null : $router_node_id;
+
+        return $this;
     }
 
+    /**
+     * @return int|null
+     */
     public function getRouterNodeId()
     {
         return $this->router_node_id;
     }
 
-    public function setTemplate($template)
+    /**
+     * @param string $template_inheritable
+     *
+     * @return $this
+     */
+    public function setTemplateInheritable($template_inheritable)
     {
-        $this->template = $template;
-    }
+        $this->template_inheritable = $template_inheritable;
 
-    public function getTemplate()
-    {
-        return $this->template;
+        return $this;
     }
 
     /**
-     * @ORM\PrePersist()
-     * @ORM\PreUpdate()
+     * @return string
      */
-    public function checkRelations()
+    public function getTemplateInheritable()
     {
-        if (empty($this->uri_part) and $this->getId() != 1) {
-            $this->setUriPart($this->getId());
-        }
+        return $this->template_inheritable;
+    }
 
-        // Защита от цикличных зависимостей.
-        $parent = $this->getParentFolder();
+    /**
+     * @param string $template_self
+     *
+     * @return $this
+     */
+    public function setTemplateSelf($template_self)
+    {
+        $this->template_self = $template_self;
 
-        if(null == $parent) {
-            return;
-        }
+        return $this;
+    }
 
-        $cnt = 30;
-        $ok = false;
-        while ($cnt--) {
-            if ($parent->getId() == 1) {
-                $ok = true;
-                break;
-            } else {
-                $parent = $parent->getParentFolder();
-                continue;
-            }
-        }
+    /**
+     * @return string
+     */
+    public function getTemplateSelf()
+    {
+        return $this->template_self;
+    }
 
-        // Если обнаружена циклическая зависимость, тогда родитель выставляется корневая папка, которая имеет id = 1.
-        if (!$ok) {
-            $this->setParentFolder(Container::get('engine.folder')->get(1));
-        }
+    /**
+     * @return Region[]|ArrayCollection
+     */
+    public function getRegions()
+    {
+        return $this->regions;
+    }
+
+    /**
+     * @param Region[]|ArrayCollection $regions
+     *
+     * @return $this
+     */
+    public function setRegions($regions)
+    {
+        $this->regions = $regions;
+
+        return $this;
     }
 }

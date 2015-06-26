@@ -1,35 +1,59 @@
 <?php
 
-namespace SmartCore\Bundle\EngineBundle\Menu;
+namespace SmartCore\Bundle\CMSBundle\Menu;
 
 use Knp\Menu\ItemInterface;
 use Knp\Menu\Matcher\Voter\VoterInterface;
-use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\HttpFoundation\RequestStack;
 
 class RequestVoter implements VoterInterface
 {
-    private $container;
+    /** @var string */
+    protected $adminPath;
 
-    public function __construct(ContainerInterface $container)
+    /** @var RequestStack */
+    protected $requestStack;
+
+    /**
+     * @param RequestStack $requestStack
+     */
+    public function __construct(RequestStack $requestStack, $adminPath)
     {
-        $this->container = $container;
+        $this->adminPath    = $adminPath;
+        $this->requestStack = $requestStack;
     }
 
+    /**
+     * @param ItemInterface $item
+     *
+     * @return bool|null
+     */
     public function matchItem(ItemInterface $item)
     {
-        $request = $this->container->get('request');
+        $request = $this->requestStack->getCurrentRequest();
 
-        if ($item->getUri() === $request->getRequestUri()) {
+        $parent = $item->getParent();
+
+        while (null !== $parent->getParent()) {
+            $parent = $parent->getParent();
+        }
+
+        if ($item->getUri() === $request->getRequestUri() or
+            $item->getUri() === $request->attributes->get('__current_folder_path', false)
+        ) {
             // URL's completely match
             return true;
-        } else if(
+        } elseif (
             $item->getUri() !== $request->getBaseUrl().'/' and
+            $item->getUri() !== $request->getBaseUrl().'/admin/' and
             $item->getUri() === substr($request->getRequestUri(), 0, strlen($item->getUri())) and
-            $request->attributes->get('__selected_inheritance', true)
+            $request->attributes->get('__selected_inheritance', true) and
+            $parent->getExtra('select_intehitance', true)
         ) {
             // URL isn't just "/" and the first part of the URL match
             return true;
         }
-        return null;
+
+        return false;
     }
 }

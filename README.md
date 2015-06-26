@@ -1,4 +1,4 @@
-SmartCoreEngineBundle
+SmartCoreCMSBundle
 =====================
 
-Base Bundle of Smart Core CMF
+Base Bundle of Smart Core CMS

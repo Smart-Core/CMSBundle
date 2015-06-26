@@ -1,26 +1,69 @@
 <?php
 
-namespace SmartCore\Bundle\EngineBundle;
+namespace SmartCore\Bundle\CMSBundle;
 
-/**
- * @todo избавиться
- */
+use Symfony\Component\DependencyInjection\ContainerInterface;
+
 class Container
 {
-    static private $container;
+    /**
+     * @var ContainerInterface
+     */
+    private static $container;
 
-    static public function get($name)
+    /**
+     * @param  string $name
+     *
+     * @return ContainerInterface
+     */
+    public static function get($name)
     {
         return self::$container->get($name);
     }
 
-    static public function set($container)
+    /**
+     * @param  string $name
+     *
+     * @return ContainerInterface
+     */
+    public static function has($name)
+    {
+        return self::$container->has($name);
+    }
+
+    /**
+     * @param ContainerInterface $container
+     */
+    public static function setContainer(ContainerInterface $container)
     {
         self::$container = $container;
     }
 
-    static public function getContainer()
+    /**
+     * @return ContainerInterface
+     */
+    public static function getContainer()
     {
         return self::$container;
+    }
+
+    /**
+     * @param  string $name
+     *
+     * @return mixed
+     */
+    public static function getParameter($name)
+    {
+        return self::$container->getParameter($name);
+    }
+
+    /**
+     * @param  string $name
+     *
+     * @return mixed
+     */
+    public static function hasParameter($name)
+    {
+        return self::$container->hasParameter($name);
     }
 }

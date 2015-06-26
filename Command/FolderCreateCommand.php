@@ -1,6 +1,6 @@
 <?php
 
-namespace SmartCore\Bundle\EngineBundle\Command;
+namespace SmartCore\Bundle\CMSBundle\Command;
 
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 //use Symfony\Component\Console\Command\Command;
@@ -14,7 +14,7 @@ class FolderCreateCommand extends ContainerAwareCommand
     protected function configure()
     {
         $this
-            ->setName('engine:folder:create')
+            ->setName('cms:folder:create')
             ->setDescription('@todo| Create new folder.')
             ->addArgument('uri_part', InputArgument::OPTIONAL, 'URI part')
             ->addArgument('name', InputArgument::OPTIONAL, 'Name')
@@ -24,6 +24,5 @@ class FolderCreateCommand extends ContainerAwareCommand
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-
     }
 }

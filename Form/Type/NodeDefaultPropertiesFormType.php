@@ -1,6 +1,6 @@
 <?php
 
-namespace SmartCore\Bundle\EngineBundle\Form\Type;
+namespace SmartCore\Bundle\CMSBundle\Form\Type;
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
@@ -16,6 +16,14 @@ class NodeDefaultPropertiesFormType extends AbstractType
 
     public function getName()
     {
-        return 'default_node_properties';
+        return 'smart_core_cms_default_node_properties';
+    }
+
+    /**
+     * @return string
+     */
+    public function getTemplate()
+    {
+        return '@CMS/AdminStructure/node_properties_form.html.twig';
     }
 }

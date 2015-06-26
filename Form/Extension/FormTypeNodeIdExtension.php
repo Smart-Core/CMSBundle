@@ -1,19 +1,16 @@
 <?php
 
-namespace SmartCore\Bundle\EngineBundle\Form\Extension;
+namespace SmartCore\Bundle\CMSBundle\Form\Extension;
 
 use Symfony\Component\Form\AbstractTypeExtension;
-use Symfony\Component\Form\FormEvents;
-use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
-
 use Symfony\Component\Form\FormView;
 use Symfony\Component\Form\FormInterface;
 
 class FormTypeNodeIdExtension extends AbstractTypeExtension
 {
     /**
-     * @var \SmartCore\Bundle\EngineBundle\Engine\EngineContext
+     * @var \SmartCore\Bundle\CMSBundle\Engine\EngineContext
      */
     protected $context;
 
