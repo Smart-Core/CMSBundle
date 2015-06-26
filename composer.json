@@ -17,7 +17,7 @@
         "ext-curl": "*",
 
         "symfony/symfony": "2.6.*",
-        "symfony/assetic-bundle": "dev-master",
+        "symfony/assetic-bundle": "~1.0@dev",
         "symfony/swiftmailer-bundle": "*",
         "symfony/monolog-bundle": "*",
         "sensio/distribution-bundle": "*",
