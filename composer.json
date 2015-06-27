@@ -69,6 +69,9 @@
         "zendframework/zend-tag": "*",
         "zenstruck/imagine-extra-bundle": "*"
     },
+    "config": {
+        "preferred-install": "source"
+    },
     "autoload": {
         "psr-4": {"SmartCore\\Bundle\\CMSBundle\\": ""}
     }
