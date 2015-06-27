@@ -3,6 +3,7 @@
 namespace SmartCore\Bundle\CMSBundle\Controller;
 
 use Knp\RadBundle\Controller\Controller;
+use SmartCore\Bundle\CMSBundle\CMSAppKernel;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Output\BufferedOutput;
@@ -73,7 +74,7 @@ class AdminController extends Controller
         $data = [];
         $data[] = [
             'title' => 'Smart Core CMS version',
-            'value' => 'v0.1',
+            'value' => CMSAppKernel::VERSION,
             'required' => '',
             'recomended' => '',
             'hint' => '',

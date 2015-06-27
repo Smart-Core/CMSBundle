@@ -2,6 +2,7 @@
 
 namespace SmartCore\Bundle\CMSBundle\Twig;
 
+use SmartCore\Bundle\CMSBundle\CMSAppKernel;
 use SmartCore\Bundle\CMSBundle\Entity\Region;
 use Symfony\Component\DependencyInjection\ContainerAwareTrait;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -30,6 +31,7 @@ class CmsExtension extends \Twig_Extension
             'cms_folder_path'           => new \Twig_Function_Method($this, 'generateFolderPath'),
             'cms_nodes_count_in_region' => new \Twig_Function_Method($this, 'nodesCountInRegion'),
             'cms_get_notifications'     => new \Twig_Function_Method($this, 'getNotifications'),
+            'cms_version'               => new \Twig_Function_Method($this, 'getCMSKernelVersion'),
         ];
     }
 
@@ -96,6 +98,14 @@ class CmsExtension extends \Twig_Extension
         }
 
         return $data;
+    }
+
+    /**
+     * @return string
+     */
+    public function getCMSKernelVersion()
+    {
+        return CMSAppKernel::VERSION;
     }
 
     /**

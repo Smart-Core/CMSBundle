@@ -1,20 +1,39 @@
 <?php
 
-namespace SmartCore\Bundle\CMSBundle\HttpKernel;
+namespace SmartCore\Bundle\CMSBundle;
 
 use Symfony\Component\Config\Loader\LoaderInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\HttpKernel\Kernel as BaseKernel;
 
-abstract class Kernel extends BaseKernel
+abstract class CMSAppKernel extends BaseKernel
 {
+    const VERSION = 'v0.1-prealpha';
+
     /** @var string  */
     protected $siteName = null;
 
     /** @var array */
     protected $modules = [];
 
+    /**
+     * @return \Symfony\Component\HttpKernel\Bundle\BundleInterface[]
+     */
+    public function registerBundles()
+    {
+        $bundles = [];
+
+        $this->registerSmartCoreCmsBundles($bundles);
+
+        return $bundles;
+    }
+
+    /**
+     * Boots the current kernel.
+     *
+     * @api
+     */
     public function boot()
     {
         if (true === $this->booted) {
@@ -28,6 +47,11 @@ abstract class Kernel extends BaseKernel
         \Profiler::setKernel($this);
     }
 
+    /**
+     * Prepares the ContainerBuilder before it is compiled.
+     *
+     * @param ContainerBuilder $container A ContainerBuilder instance
+     */
     protected function prepareContainer(ContainerBuilder $container)
     {
         parent::prepareContainer($container);
@@ -45,6 +69,13 @@ abstract class Kernel extends BaseKernel
         return $this->modules;
     }
 
+    /**
+     * Получить данные о подключенном модуле.
+     *
+     * @param $name
+     *
+     * @return mixed
+     */
     public function getModule($name)
     {
         if (isset($this->modules[$name])) {
@@ -144,7 +175,6 @@ abstract class Kernel extends BaseKernel
         $bundles[] = new \RaulFraile\Bundle\LadybugBundle\RaulFraileLadybugBundle();
         $bundles[] = new \RickySu\TagcacheBundle\TagcacheBundle();
         $bundles[] = new \Smart\CoreBundle\SmartCoreBundle();
-        $bundles[] = new \SmartCore\Bundle\AcceleratorCacheBundle\AcceleratorCacheBundle();
         $bundles[] = new \SmartCore\Bundle\CMSBundle\CMSBundle();
         $bundles[] = new \SmartCore\Bundle\FelibBundle\FelibBundle();
         $bundles[] = new \SmartCore\Bundle\HtmlBundle\HtmlBundle();
@@ -162,7 +192,7 @@ abstract class Kernel extends BaseKernel
         $bundles[] = new \WhiteOctober\PagerfantaBundle\WhiteOctoberPagerfantaBundle();
         $bundles[] = new \Zenstruck\Bundle\ImagineExtraBundle\ZenstruckImagineExtraBundle();
 
-        if (in_array($this->getEnvironment(), array('dev', 'test'))) {
+        if (in_array($this->getEnvironment(), ['dev', 'test'])) {
             $bundles[] = new \Symfony\Bundle\WebProfilerBundle\WebProfilerBundle();
             $bundles[] = new \Sensio\Bundle\DistributionBundle\SensioDistributionBundle();
             $bundles[] = new \Sensio\Bundle\GeneratorBundle\SensioGeneratorBundle();
@@ -240,17 +270,6 @@ abstract class Kernel extends BaseKernel
             }
         }
     }
-
-    /*
-    protected function getContainerBaseClass()
-    {
-        if (in_array($this->getEnvironment(), ['dev', 'test'])) {
-            return '\JMS\DebuggingBundle\DependencyInjection\TraceableContainer';
-        }
-
-        return parent::getContainerBaseClass();
-    }
-    */
 
     /**
      * @param LoaderInterface $loader

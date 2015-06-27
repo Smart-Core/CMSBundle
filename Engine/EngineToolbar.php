@@ -66,12 +66,12 @@ class EngineToolbar extends Controller
                             'icon'  => 'picture',
                             'uri'   => $router->generate('cms_admin_appearance'),
                         ],
-                        /*
                         'reports' => [
                             'title' => $t->trans('Reports'),
                             'icon' => 'warning-sign',
                             'uri' => $router->generate('cms_admin_reports'),
                         ],
+                        /*
                         'help' => [
                             'title' => $t->trans('Help'),
                             'icon' => 'question-sign',
