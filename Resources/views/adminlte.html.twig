@@ -3,6 +3,7 @@
 {% set use_libs = {
     'bootstrap': '3',
     'font-awesome': null,
+    'ionicons': null,
 } %}
 
 {% block title %}{{ 'Control panel'|trans }} / Smart Core CMS{% endblock %}
@@ -16,11 +17,9 @@
     {{ parent() }}
 
     {% if app.debug %}
-        <link href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.css" rel="stylesheet" type="text/css" />
         <link href="{{ asset('bundles/cms/adminlte/css/AdminLTE.css') }}" rel="stylesheet" type="text/css" />
         <link href="{{ asset('bundles/cms/adminlte/css/skins/skin-blue.css') }}" rel="stylesheet" type="text/css" />
     {% else %}
-        <link href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css" rel="stylesheet" type="text/css" />
         <link href="{{ asset('bundles/cms/adminlte/css/AdminLTE.min.css') }}" rel="stylesheet" type="text/css" />
         <link href="{{ asset('bundles/cms/adminlte/css/skins/skin-blue.min.css') }}" rel="stylesheet" type="text/css" />
     {% endif %}
