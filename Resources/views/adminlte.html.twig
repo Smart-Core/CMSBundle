@@ -13,10 +13,19 @@
 
 {% block styles %}
     {{ parent() }}
-    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css" />
-    <link href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css" rel="stylesheet" type="text/css" />
-    <link href="{{ asset('bundles/cms/adminlte/css/AdminLTE.css') }}" rel="stylesheet" type="text/css" />
-    <link href="{{ asset('bundles/cms/adminlte/css/skins/skin-blue.min.css') }}" rel="stylesheet" type="text/css" />
+
+    {% if app.debug %}
+        <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.css" rel="stylesheet" type="text/css" />
+        <link href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.css" rel="stylesheet" type="text/css" />
+        <link href="{{ asset('bundles/cms/adminlte/css/AdminLTE.css') }}" rel="stylesheet" type="text/css" />
+        <link href="{{ asset('bundles/cms/adminlte/css/skins/skin-blue.css') }}" rel="stylesheet" type="text/css" />
+    {% else %}
+        <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css" />
+        <link href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css" rel="stylesheet" type="text/css" />
+        <link href="{{ asset('bundles/cms/adminlte/css/AdminLTE.min.css') }}" rel="stylesheet" type="text/css" />
+        <link href="{{ asset('bundles/cms/adminlte/css/skins/skin-blue.min.css') }}" rel="stylesheet" type="text/css" />
+    {% endif %}
+
     {#<link rel="stylesheet" href="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/themes/smoothness/jquery-ui.css" />#}
     <style media="all" type="text/css">
         body {
