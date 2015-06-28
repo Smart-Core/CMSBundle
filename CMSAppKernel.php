@@ -181,7 +181,6 @@ abstract class CMSAppKernel extends BaseKernel
         $bundles[] = new \SmartCore\Bundle\MediaBundle\SmartMediaBundle();
         $bundles[] = new \SmartCore\Bundle\RichEditorBundle\SmartRichEditorBundle();
         $bundles[] = new \SmartCore\Bundle\SimpleProfilerBundle\SmartSimpleProfilerBundle();
-        $bundles[] = new \SmartCore\Bundle\SitemapBundle\SmartSitemapBundle();
         $bundles[] = new \SmartCore\Bundle\SeoBundle\SmartSeoBundle();
         $bundles[] = new \SmartCore\Bundle\SessionBundle\SmartCoreSessionBundle();
         $bundles[] = new \SmartCore\Bundle\SettingsBundle\SmartSettingsBundle();
