@@ -17,5 +17,4 @@ Possibly required packages:
         "predis/predis": "0.8.*",
         "snc/redis-bundle": "1.1.*",
         "sp/bower-bundle": "*",
-
 ```
