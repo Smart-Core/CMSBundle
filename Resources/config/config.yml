@@ -14,6 +14,14 @@ cms:
         #path: %smart_core_cms_data_dir%
 
 liip_imagine:
+    loaders:
+        default:
+            filesystem:
+                data_root: '%web_dir%'
+    resolvers:
+        default:
+            web_path:
+                web_root: '%web_dir%'
     filter_sets:
         100_100:
             format: jpeg
