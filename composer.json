@@ -46,6 +46,7 @@
         "knplabs/knp-paginator-bundle": "*",
         "knplabs/rad-bundle": "*",
         "liip/theme-bundle": "~1.0@dev",
+        "pagerfanta/pagerfanta": "1.0.1",
         "rickysu/tagcache-bundle": "~0.1",
 
         "smart-core/accelerator-cache-bundle": "~1.0@dev",
