@@ -2,14 +2,13 @@
 
 namespace SmartCore\Bundle\CMSBundle\Form\Type;
 
-//use SmartCore\Bundle\CMSBundle\Form\EventListener\FolderSubscriber;
 use SmartCore\Bundle\SeoBundle\Form\Type\MetaFormType;
 use Symfony\Component\DependencyInjection\ContainerAwareTrait;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class FolderFormType extends AbstractType
 {
@@ -77,7 +76,7 @@ class FolderFormType extends AbstractType
         ;
     }
 
-    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
             'data_class' => 'SmartCore\Bundle\CMSBundle\Entity\Folder',

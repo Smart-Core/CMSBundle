@@ -4,7 +4,7 @@ namespace SmartCore\Bundle\CMSBundle\Form\Type;
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class RoleFormType extends AbstractType
 {
@@ -19,7 +19,7 @@ class RoleFormType extends AbstractType
        ;
     }
 
-    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
             'data_class' => 'SmartCore\Bundle\CMSBundle\Entity\Role',

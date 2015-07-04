@@ -7,7 +7,7 @@ use SmartCore\Bundle\CMSBundle\Container;
 use SmartCore\Bundle\CMSBundle\Entity\Node;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class NodeFormType extends AbstractType
 {
@@ -65,7 +65,7 @@ class NodeFormType extends AbstractType
         }
     }
 
-    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
             'data_class' => 'SmartCore\Bundle\CMSBundle\Entity\Node',
