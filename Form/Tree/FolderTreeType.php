@@ -21,10 +21,10 @@ class FolderTreeType extends DoctrineType
         };
 
         $resolver->setDefaults([
-            'only_active' => false,
-            'property'    => 'form_title',
-            'loader'      => $loader,
-            'class'       => 'CMSBundle:Folder',
+            'choice_label' => 'form_title',
+            'class'        => 'CMSBundle:Folder',
+            'loader'       => $loader,
+            'only_active'  => false,
         ]);
     }
 
