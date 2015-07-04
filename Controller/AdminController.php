@@ -20,7 +20,7 @@ class AdminController extends Controller
      */
     public function indexAction()
     {
-        if (!$this->get('security.context')->isGranted('ROLE_ADMIN')) {
+        if (!$this->get('security.authorization_checker')->isGranted('ROLE_ADMIN')) {
             return $this->render('CMSBundle:User:login.html.twig');
         }
 

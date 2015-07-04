@@ -108,7 +108,7 @@ class EngineController extends Controller
         foreach ($prioritySorted as $nodes) {
             /** @var \SmartCore\Bundle\CMSBundle\Entity\Node $node */
             foreach ($nodes as $node) {
-                if ($this->get('security.context')->isGranted('ROLE_ADMIN') and $node->getIsUseEip()) {
+                if ($this->get('security.authorization_checker')->isGranted('ROLE_ADMIN') and $node->getIsUseEip()) {
                     $node->setEip(true);
                 }
 
@@ -134,7 +134,7 @@ class EngineController extends Controller
                 }
 
                 // @todo сделать отправку front_controls в ответе метода.
-                if ($this->get('security.context')->isGranted('ROLE_ADMIN')) {
+                if ($this->get('security.authorization_checker')->isGranted('ROLE_ADMIN')) {
                     $this->front_controls['node']['__node_'.$node->getId()] = $node->getFrontControls();
                     $this->front_controls['node']['__node_'.$node->getId()]['cms_node_properties'] = [
                         'title' => 'Параметры модуля '.$node->getModule(), // @todo translate
@@ -142,7 +142,7 @@ class EngineController extends Controller
                     ];
                 }
 
-                if ($this->get('security.context')->isGranted('ROLE_ADMIN') and $node->getIsUseEip()) {
+                if ($this->get('security.authorization_checker')->isGranted('ROLE_ADMIN') and $node->getIsUseEip()) {
                     $moduleResponse->setContent(
                         "\n<div class=\"cms-frontadmin-node\" id=\"__node_{$node->getId()}\">\n".$moduleResponse->getContent()."\n</div>\n"
                     );

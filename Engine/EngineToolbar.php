@@ -107,7 +107,7 @@ class EngineToolbar extends Controller
             'right' => [
                 'eip_toggle' => ['Режим правки: ОТКЛ', 'Режим правки: ВКЛ.'], // @todo перевод // [$t->trans('Viewing'), $t->trans('Edit')],
                 'user' => [
-                    'title' => $this->container->get('security.context')->getToken()->getUser()->getUserName(),
+                    'title' => $this->container->get('security.token_storage')->getToken()->getUser()->getUserName(),
                     'icon' => 'user',
                     'items' => [
                         /*
@@ -120,7 +120,7 @@ class EngineToolbar extends Controller
                         */
                         'profile' => [
                             'title' => $t->trans('My profile'),
-                            'uri'   => $router->generate('cms_admin_user_edit', ['id' => $this->container->get('security.context')->getToken()->getUser()->getId()]),
+                            'uri'   => $router->generate('cms_admin_user_edit', ['id' => $this->container->get('security.token_storage')->getToken()->getUser()->getId()]),
                             'icon'  => 'user',
                             'overalay' => false,
                         ],
@@ -167,7 +167,7 @@ class EngineToolbar extends Controller
      */
     public function prepare(array $nodes_front_controls = null)
     {
-        if ($this->get('security.context')->isGranted('ROLE_ADMIN')) {
+        if ($this->get('security.authorization_checker')->isGranted('ROLE_ADMIN')) {
             $cms_front_controls = [
                 'twitterBootstrapVersion' => $this->get('settings')->get('cms', 'twitter_bootstrap_version'),
                 'toolbar' => $this->getArray(),
