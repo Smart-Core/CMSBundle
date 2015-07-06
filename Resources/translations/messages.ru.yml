@@ -15,6 +15,7 @@ Block: Блок
 Block edit: Редактирование блока
 Blocks: Блоки
 Briefly: Кратко
+Bundle: Пакет
 Cancel: Отменить
 Close: Закрыть
 Comment: Комментарий
@@ -47,6 +48,7 @@ Edit style: Редактировать стиль
 Edit template: Редактировать шаблон
 Edit templates and styles: Редактирование шаблонов и стилей
 Editor: Редактор
+Email: Email
 Enabled: Включен
 Exit: Выход
 Filemanager: Управление файлами
@@ -104,6 +106,7 @@ Region: Область
 Regions: Области
 Reports: Отчеты
 Priority: Приоритет
+Registred: Зарегистрирован
 Recomended: Рекомендуется
 Required: Требуется
 Role: Роль
@@ -122,6 +125,7 @@ String: Строка
 Structure: Структура
 Styles: Стили
 System: Система
+System information: Информация о системе
 Tag: Тэг
 Tags: Тэги
 Template: Шаблон
