@@ -37,7 +37,7 @@ abstract class AbstractNodePropertiesFormType extends AbstractType
     {
         $choices = [];
         foreach ($this->em->getRepository($entityName)->findAll() as $choice) {
-            $choices[$choice->getId()] = $choice;
+            $choices[$choice->getId()] = (string) $choice;
         }
 
         return $choices;
