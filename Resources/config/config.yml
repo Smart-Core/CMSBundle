@@ -237,6 +237,7 @@ smart_rich_editor:
 
 stfalcon_tinymce:
     use_callback_tinymce_init: true
+    selector: .wysiwyg
     theme:
         advanced:
             file_browser_callback: 'elFinderBrowser'
