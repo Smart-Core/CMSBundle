@@ -18,7 +18,7 @@ class EngineController extends Controller
      *
      * @var array
      */
-    protected $front_controls;
+    protected $front_controls = [];
 
     /**
      * @param Request $request
@@ -74,10 +74,10 @@ class EngineController extends Controller
 
         $this->get('cms.toolbar')->prepare($this->front_controls['node']);
 
-        // @todo выводить сообщение о тем, что неверно указано имя шаблона
+        // @todo выводить сообщение о том, что неверно указано имя шаблона
         return $this->get('templating')->exists("SiteBundle::{$router_data['template']}.html.twig")
-            ? new Response($this->renderView("SiteBundle::{$router_data['template']}.html.twig", $nodesResponses), $router_data['status'])
-            : $this->render('CMSBundle::welcome.html.twig');
+            ? new Response($this->get('twig')->render("SiteBundle::{$router_data['template']}.html.twig", $nodesResponses), $router_data['status'])
+            : $this->get('twig')->render('CMSBundle::welcome.html.twig');
     }
 
     /**
