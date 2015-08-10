@@ -72,7 +72,7 @@ class EngineController extends Controller
             return $nodesResponses;
         }
 
-        $this->get('cms.toolbar')->prepare($this->front_controls['node']);
+        $this->get('cms.toolbar')->prepare(isset($this->front_controls['node']) ? $this->front_controls['node'] : null);
 
         // @todo выводить сообщение о том, что неверно указано имя шаблона
         return $this->get('templating')->exists("SiteBundle::{$router_data['template']}.html.twig")
