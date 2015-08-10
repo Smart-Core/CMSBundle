@@ -10,7 +10,7 @@ $(document).ready(function() {
     }
 
     // Переключатель "просмотр" и "редактирование" на тулбаре.
-    $('.navbar .btn[data-toggle="button"]').click(function() {
+    $('.cms-toolbar-navbar .btn[data-toggle="button"]').click(function() {
         if ($(this).attr('class-toggle') != undefined && !$(this).hasClass('disabled')) {
             if ($(this).attr('data-toggle') == 'button') {
                 if ($(this).hasClass('active')) {
@@ -98,7 +98,7 @@ $(document).ready(function() {
     });
 
     if(typeof $.cookie('cms-frontadmin-mode') === 'string' && $.cookie('cms-frontadmin-mode').toString() === 'edit') {
-        $('.navbar .btn[data-toggle="button"]').click();
+        $('.cms-toolbar-navbar .btn[data-toggle="button"]').click();
     }
 });
 
@@ -106,7 +106,7 @@ function renderToolbar() {
     if (twitterBootstrapVersion == 2) {
         $('body') // Bootstrap 2
             .css('padding-top', '40px')
-            .prepend('<div class="navbar navbar-inverse navbar-fixed-top">' +
+            .prepend('<div class="navbar navbar-inverse navbar-fixed-top cms-toolbar-navbar">' +
                 '<div class="navbar-inner">' +
                 '<div class="container cms-toolbar">' +
                 '<button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse"><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button>' +
@@ -120,15 +120,15 @@ function renderToolbar() {
     } else {
         $('body') // Bootstrap 3
             .css('padding-top', '30px')
-            .prepend('<nav class="navbar navbar-inverse navbar-fixed-top">' +
+            .prepend('<nav class="navbar navbar-inverse navbar-fixed-top cms-toolbar-navbar">' +
                 '<div class="container cms-toolbar">' +
                 '<div class="navbar-header"><button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button>' +
-                '<a class="navbar-brand" href="' + basePath +'" title="На главную сайта"> <i class="glyphicon glyphicon-home glyphicon-white"></i></a>' + // @todo бренд Smart Core CMS
+                '<a class="navbar-brand cms-toolbar-navbar-brand" href="' + basePath +'" title="На главную сайта"> <i class="glyphicon glyphicon-home glyphicon-white"></i></a>' + // @todo бренд Smart Core CMS
                 '</div>' +
                 '<div class="navbar-collapse collapse" id="bs-example-navbar-collapse-1">' +
-                '<ul class="nav navbar-nav cms-navbar-left"></ul>' +
+                '<ul class="nav navbar-nav cms-toolbar-navbar-nav cms-navbar-left"></ul>' +
                 '<div class="pull-right">' +
-                '<ul class="nav navbar-nav navbar-right"></ul>' +
+                '<ul class="nav navbar-nav cms-toolbar-navbar-nav navbar-right"></ul>' +
                 '</div></div></div></nav>')
         ;
     }
@@ -138,9 +138,9 @@ function renderToolbar() {
         $.each(cms_front_controls.toolbar.right, function(index, value) {
             if (index === 'eip_toggle') {
                 if (twitterBootstrapVersion == 2) {
-                    var div_pull_right = $('body > div.navbar > div.navbar-inner > div.container > div.nav-collapse > div.pull-right');
+                    var div_pull_right = $('body > div.cms-toolbar-navbar > div.navbar-inner > div.container > div.nav-collapse > div.pull-right');
                 } else {
-                    var div_pull_right = $('body > nav.navbar > div.container > div.navbar-collapse > div.pull-right');
+                    var div_pull_right = $('body > nav.cms-toolbar-navbar > div.container > div.navbar-collapse > div.pull-right');
                 }
 
                 div_pull_right.prepend('<button type="button" class="btn btn-primary btn-sm span2" data-toggle="button" class-toggle="btn-danger">' + value[0] + '</button>');
@@ -161,9 +161,9 @@ function renderToolbar() {
                 }
 
                 if (twitterBootstrapVersion == 2) {
-                    $('body > div.navbar > div.navbar-inner > div.container > div.nav-collapse > div.pull-right > ul.nav').prepend(item + '</li>');
+                    $('body > div.cms-toolbar-navbar > div.navbar-inner > div.container > div.nav-collapse > div.pull-right > ul.nav').prepend(item + '</li>');
                 } else {
-                    $('body > nav.navbar > div.container > div.navbar-collapse > div.pull-right > ul.navbar-right').prepend(item + '</li>');
+                    $('body > nav.cms-toolbar-navbar > div.container > div.navbar-collapse > div.pull-right > ul.navbar-right').prepend(item + '</li>');
                 }
             }
         });
@@ -175,9 +175,9 @@ function renderToolbar() {
         $.each(cms_front_controls.toolbar.left, function(index, value) {
             if (index === 'eip_toggle') {
                 if (twitterBootstrapVersion == 2) {
-                    var div_pull_left = $('body > div.navbar > div.navbar-inner > div.container > div.nav-collapse');
+                    var div_pull_left = $('body > div.cms-toolbar-navbar > div.navbar-inner > div.container > div.nav-collapse');
                 } else {
-                    var div_pull_left = $('body > nav.navbar > div.container > div.navbar-collapse');
+                    var div_pull_left = $('body > nav.cms-toolbar-navbar > div.container > div.navbar-collapse');
                 }
 
                 div_pull_left.append('<button type="button" class="btn btn-inverse span2" data-toggle="button" class-toggle="btn-danger">' + value[0] + '</button>');
@@ -205,9 +205,9 @@ function renderToolbar() {
                 }
 
                 if (twitterBootstrapVersion == 2) {
-                    $('body > div.navbar > div.navbar-inner > div.container > div.nav-collapse > ul.nav').append(item + '</li>');
+                    $('body > div.cms-toolbar-navbar > div.navbar-inner > div.container > div.nav-collapse > ul.nav').append(item + '</li>');
                 } else {
-                    $('body > nav.navbar > div.container > div.navbar-collapse > ul.cms-navbar-left').append(item + '</li>');
+                    $('body > nav.cms-toolbar-navbar > div.container > div.navbar-collapse > ul.cms-navbar-left').append(item + '</li>');
                 }
             }
         });
@@ -236,9 +236,9 @@ function renderToolbar() {
             item += '</ul>';
 
             if (twitterBootstrapVersion == 2) {
-                $('body > div.navbar > div.navbar-inner > div.container > div.nav-collapse > div.pull-right > ul.nav').prepend(item + '</li>');
+                $('body > div.cms-toolbar-navbar > div.navbar-inner > div.container > div.nav-collapse > div.pull-right > ul.nav').prepend(item + '</li>');
             } else {
-                $('body > nav.navbar > div.container > div.navbar-collapse > div.pull-right > ul.navbar-right').prepend(item + '</li>');
+                $('body > nav.cms-toolbar-navbar > div.container > div.navbar-collapse > div.pull-right > ul.navbar-right').prepend(item + '</li>');
             }
         }
     }
