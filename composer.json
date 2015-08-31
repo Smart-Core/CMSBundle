@@ -14,8 +14,11 @@
     "require": {
         "php": ">=5.4.11",
         "ext-curl": "*",
+        "ext-dom": "*",
         "ext-intl": "*",
         "ext-mbstring": "*",
+        "ext-xml": "*",
+        "ext-json": "*",
 
         "symfony/assetic-bundle": "~2.0@dev",
         "symfony/swiftmailer-bundle": "*",
