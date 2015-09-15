@@ -1,15 +1,24 @@
 
-cms_admin_module_routes:
-    resource: .
-    type: module_admin
+cms_api:
+    resource: 'routing_api.yml'
+    prefix: /api/
 
 cms_admin:
     resource: 'routing_admin.yml'
     prefix: /%admin_path%/
 
-cms_api:
-    resource: 'routing_api.yml'
-    prefix: /api/
+cms_admin_module_routes:
+    resource: .
+    type: module_admin
+
+# ... other
+cms_admin_404:
+    path: /%admin_path%/{slug}
+    defaults:
+        _controller: CMSBundle:Admin:notFound
+        slug: ''
+    requirements:
+        slug: '.+'
 
 cms_getprocessor:
     path: /{slug}
