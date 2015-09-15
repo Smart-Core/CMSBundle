@@ -25,7 +25,7 @@ class AdminMenu extends ContainerAware
         foreach ($this->container->get('cms.module')->all() as $module) {
             if ($module->hasAdmin()) {
                 $menu->addChild($module->getShortName(), [
-                    'uri' => $this->container->get('router')->generate('cms_admin_index').$module->getShortName(),
+                    'uri' => $this->container->get('router')->generate('cms_admin_index').$module->getShortName().'/',
                 ])->setExtras(['beforeCode' => '<i class="fa fa-angle-right"></i>']);
             }
         }
