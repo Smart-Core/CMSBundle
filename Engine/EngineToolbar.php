@@ -32,7 +32,7 @@ class EngineToolbar extends Controller
                     'icon' => 'wrench',
                     'items' => [
                         'structure' => [
-                            'title' => $t->trans('Structure'),
+                            'title' => $t->trans('Site structure'),
                             'icon'  => 'book',
                             'uri'   => $router->generate('cms_admin_structure'),
                         ],
