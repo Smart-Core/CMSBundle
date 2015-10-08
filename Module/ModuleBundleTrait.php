@@ -2,6 +2,7 @@
 
 namespace SmartCore\Bundle\CMSBundle\Module;
 
+use Knp\Menu\MenuItem;
 use SmartCore\Bundle\CMSBundle\Entity\Node;
 
 trait ModuleBundleTrait
@@ -84,8 +85,30 @@ trait ModuleBundleTrait
         return $this->container->has('cms.router_module.'.$this->getShortName().'.admin') ? true : false;
     }
 
+    /**
+     * Получить обязательные параметры.
+     *
+     * @return array
+     */
     public function getRequiredParams()
     {
         return [];
+    }
+
+    /**
+     * @param MenuItem $menu
+     * @param array $extras
+     *
+     * @return MenuItem
+     */
+    public function buildAdminMenu(MenuItem $menu, array $extras = ['beforeCode' => '<i class="fa fa-angle-right"></i>'])
+    {
+        if ($this->hasAdmin()) {
+            $menu->addChild($this->getShortName(), [
+                'uri' => $this->container->get('router')->generate('cms_admin_index').$this->getShortName().'/',
+            ])->setExtras($extras);
+        }
+
+        return $menu;
     }
 }

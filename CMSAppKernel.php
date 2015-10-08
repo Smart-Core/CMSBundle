@@ -9,7 +9,7 @@ use Symfony\Component\HttpKernel\Kernel as BaseKernel;
 
 abstract class CMSAppKernel extends BaseKernel
 {
-    const VERSION = 'v0.1-prealpha';
+    const VERSION = 'v0.1';
 
     /** @var string  */
     protected $siteName = null;

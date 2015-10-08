@@ -22,12 +22,9 @@ class AdminMenu extends ContainerAware
         $menu->setChildrenAttribute('class', isset($options['class']) ? $options['class'] : 'sidebar-menu'); // nav navbar-nav
         $menu->addChild('Dashboard',     ['route' => 'cms_admin_index'])->setExtras(['beforeCode' => '<i class="fa fa-dashboard"></i>']);
 
+
         foreach ($this->container->get('cms.module')->all() as $module) {
-            if ($module->hasAdmin()) {
-                $menu->addChild($module->getShortName(), [
-                    'uri' => $this->container->get('router')->generate('cms_admin_index').$module->getShortName().'/',
-                ])->setExtras(['beforeCode' => '<i class="fa fa-angle-right"></i>']);
-            }
+            $module->buildAdminMenu($menu);
         }
 
         $systemItems = $menu->addChild('System', ['route' => 'cms_admin_system'])
