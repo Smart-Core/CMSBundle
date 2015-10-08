@@ -42,7 +42,7 @@ class AdminMenu extends ContainerAware
         $systemItems->addChild('Configuration',  ['route' => 'cms_admin_config'])->setExtras(['beforeCode' => '<i class="fa fa-gears"></i>']);
         $systemItems->addChild('Appearance',     ['route' => 'cms_admin_appearance'])->setExtras(['beforeCode' => '<i class="fa fa-image"></i>']);
 
-        $menu->addChild('Reports',       ['route' => 'cms_admin_reports'])->setExtras(['beforeCode' => '<i class="fa fa-file-excel-o"></i>']);
+        $menu->addChild('Reports',       ['route' => 'cms_admin_reports'])->setExtras(['beforeCode' => '<i class="fa fa-bar-chart"></i>']);
         //$menu->addChild('Help',          ['route' => 'cms_admin_help'])->setExtras(['beforeCode' => '<i class="fa fa-question"></i>']);
 
         return $menu;

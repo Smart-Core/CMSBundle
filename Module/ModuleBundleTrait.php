@@ -7,6 +7,8 @@ use SmartCore\Bundle\CMSBundle\Entity\Node;
 
 trait ModuleBundleTrait
 {
+    protected $adminMenuBeforeCode = '<i class="fa fa-angle-right"></i>';
+
     /**
      * Действие при создании ноды.
      *
@@ -101,9 +103,13 @@ trait ModuleBundleTrait
      *
      * @return MenuItem
      */
-    public function buildAdminMenu(MenuItem $menu, array $extras = ['beforeCode' => '<i class="fa fa-angle-right"></i>'])
+    public function buildAdminMenu(MenuItem $menu, array $extras = [])
     {
         if ($this->hasAdmin()) {
+            if (!isset($extras['beforeCode'])) {
+                $extras['beforeCode'] = $this->adminMenuBeforeCode;
+            }
+
             $menu->addChild($this->getShortName(), [
                 'uri' => $this->container->get('router')->generate('cms_admin_index').$this->getShortName().'/',
             ])->setExtras($extras);
