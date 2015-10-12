@@ -1,16 +1,16 @@
 <?php
 
-namespace SmartCore\Bundle\CMSBundle\Entity;
+namespace SmartCore\Bundle\CMSBundle\Model;
 
 use FOS\UserBundle\Model\User as BaseUser;
 use Doctrine\ORM\Mapping as ORM;
 use Smart\CoreBundle\Doctrine\ColumnTrait;
 
 /**
- * @ORM\Entity
- * @ORM\Table(name="users")
+ * ORM\Entity
+ * ORM\Table(name="users")
  */
-class User extends BaseUser
+class UserModel extends BaseUser
 {
     use ColumnTrait\CreatedAt;
 
@@ -24,16 +24,16 @@ class User extends BaseUser
     /**
      * @var string
      *
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=255, nullable=true)
      */
-    protected $firstname = '';
+    protected $firstname;
 
     /**
      * @var string
      *
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=255, nullable=true)
      */
-    protected $lastname = '';
+    protected $lastname;
 
     /**
      * Constructor.
