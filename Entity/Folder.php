@@ -4,6 +4,7 @@ namespace SmartCore\Bundle\CMSBundle\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+use FOS\UserBundle\Model\UserInterface;
 use Smart\CoreBundle\Doctrine\ColumnTrait;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -31,7 +32,7 @@ class Folder
     use ColumnTrait\DeletedAt;
     use ColumnTrait\Description;
     use ColumnTrait\Position;
-    use ColumnTrait\UserId;
+    use ColumnTrait\FosUser;
 
     /**
      * @var Folder
@@ -164,7 +165,6 @@ class Folder
         $this->template_inheritable = null;
         $this->template_self        = null;
         $this->uri_part             = null;
-        $this->user_id              = 1;
     }
 
     /**

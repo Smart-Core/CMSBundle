@@ -19,7 +19,7 @@ class AppearanceHistory
 {
     use ColumnTrait\Id;
     use ColumnTrait\CreatedAt;
-    use ColumnTrait\UserId;
+    use ColumnTrait\FosUser;
 
     /**
      * @var string

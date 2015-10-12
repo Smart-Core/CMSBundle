@@ -125,7 +125,7 @@ class AdminStructureController extends Controller
     {
         $engineRegion = $this->get('cms.region');
         $region = $engineRegion->create();
-        $region->setUserId($this->getUser());
+        $region->setUser($this->getUser());
 
         $form = $engineRegion->createForm($region);
 
@@ -201,7 +201,7 @@ class AdminStructureController extends Controller
         $engineFolder = $this->get('cms.folder');
 
         $folder = $engineFolder->create();
-        $folder->setUserId($this->getUser());
+        $folder->setUser($this->getUser());
 
         if (empty($parent)) {
             $folder->setTitle($this->get('translator')->trans('Homepage'));
@@ -370,7 +370,7 @@ class AdminStructureController extends Controller
 
         $cmsNode = $this->get('cms.node');
         $node = $cmsNode->create();
-        $node->setUserId($this->getUser())
+        $node->setUser($this->getUser())
             ->setFolder($folder);
 
         $form = $cmsNode->createForm($node);

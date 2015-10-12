@@ -34,7 +34,7 @@ class Node implements \Serializable
     use ColumnTrait\DeletedAt;
     use ColumnTrait\Description;
     use ColumnTrait\Position;
-    use ColumnTrait\UserId;
+    use ColumnTrait\FosUser;
 
     /**
      * @var int
@@ -168,7 +168,6 @@ class Node implements \Serializable
         $this->params       = [];
         $this->position     = 0;
         $this->priority     = 0;
-        $this->user_id      = 1;
     }
 
     /**

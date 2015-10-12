@@ -55,7 +55,7 @@ class AdminAppearanceController extends Controller
                     ->setPath('/Resources/views/')
                     ->setFilename($name.'.html.twig')
                     ->setCode($template_code)
-                    ->setUserId($this->getUser())
+                    ->setUser($this->getUser())
                 ;
 
                 $this->persist($history, true);
@@ -194,7 +194,7 @@ class AdminAppearanceController extends Controller
                 ->setPath('/Resources/public/css/')
                 ->setFilename($name)
                 ->setCode($style_code)
-                ->setUserId($this->getUser())
+                ->setUser($this->getUser())
             ;
 
             $this->persist($history, true);

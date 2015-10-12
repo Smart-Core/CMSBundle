@@ -23,7 +23,7 @@ class Region
     use ColumnTrait\CreatedAt;
     use ColumnTrait\Description;
     use ColumnTrait\Position;
-    use ColumnTrait\UserId;
+    use ColumnTrait\FosUser;
 
     /**
      * @var string
@@ -51,7 +51,6 @@ class Region
         $this->description  = $description;
         $this->name         = $name;
         $this->position     = 0;
-        $this->user_id      = 1;
     }
 
     /**
