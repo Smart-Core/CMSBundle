@@ -106,7 +106,7 @@ class EngineFolder
                 $folder = $this->repository->findOneBy([
                     'id'         => $folder_id,
                     'is_active'  => true,
-                    'is_deleted' => false,
+//                    'is_deleted' => false,
                 ]);
 
                 if ($folder) {

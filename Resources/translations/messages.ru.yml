@@ -10,6 +10,7 @@ All: Все
 All structure: Вся структура
 All users: Все пользователи
 Appearance: Оформление
+Author: Автор
 Base settings: Основные настройки
 Block: Блок
 Block edit: Редактирование блока
@@ -22,6 +23,7 @@ Comment: Комментарий
 Configuration: Конфигурация
 Connect module: Подключить модуль
 Control panel: Панель управления
+Creator: Создатель
 Create: Создать
 Create datetime: Дата создания
 Create folder: Добавить папку
@@ -89,6 +91,7 @@ Node edit: Редактирование ноды
 Nodes count: Кол-во нод
 Node properties: Кол-во нод
 Original filename: Оригинальное имя файла
+Owner: Владелец
 Page: Страница
 Parent folder: Родительская папка
 Parent item: Родительский пункт
@@ -144,6 +147,7 @@ Update: Обновить
 Updated: Обновлено
 Upload: Загрузить
 Username: Имя пользователя
+User: Пользователь
 Users: Пользователи
 Yes: Да
 Width: Ширина
