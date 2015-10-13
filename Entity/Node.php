@@ -13,7 +13,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ORM\Table(name="engine_nodes",
  *      indexes={
  *          @ORM\Index(columns={"is_active"}),
- *          @ORM\Index(columns={"is_deleted"}),
+ *          @ORM\Index(columns={"deleted_at"}),
  *          @ORM\Index(columns={"position"}),
  *          @ORM\Index(columns={"region_id"}),
  *          @ORM\Index(columns={"module"})
@@ -29,7 +29,6 @@ class Node implements \Serializable
 
     use ColumnTrait\Id;
     use ColumnTrait\IsActive;
-    use ColumnTrait\IsDeleted;
     use ColumnTrait\CreatedAt;
     use ColumnTrait\DeletedAt;
     use ColumnTrait\Description;
@@ -163,7 +162,6 @@ class Node implements \Serializable
         $this->created_at   = new \DateTime();
         $this->is_active    = true;
         $this->is_cached    = false;
-        $this->is_deleted   = false;
         $this->is_use_eip   = true;
         $this->params       = [];
         $this->position     = 0;
@@ -182,7 +180,6 @@ class Node implements \Serializable
             $this->id,
             $this->is_active,
             $this->is_cached,
-            $this->is_deleted,
             $this->is_use_eip,
             $this->module,
             $this->params,
@@ -195,8 +192,9 @@ class Node implements \Serializable
             $this->template,
             $this->description,
             $this->controls_in_toolbar,
-            $this->user_id,
+            $this->user,
             $this->created_at,
+            $this->deleted_at,
             $this->controller,
         ]);
     }
@@ -210,7 +208,6 @@ class Node implements \Serializable
             $this->id,
             $this->is_active,
             $this->is_cached,
-            $this->is_deleted,
             $this->is_use_eip,
             $this->module,
             $this->params,
@@ -223,8 +220,9 @@ class Node implements \Serializable
             $this->template,
             $this->description,
             $this->controls_in_toolbar,
-            $this->user_id,
+            $this->user,
             $this->created_at,
+            $this->deleted_at,
             $this->controller) = unserialize($serialized);
         //) = igbinary_unserialize($serialized);
     }

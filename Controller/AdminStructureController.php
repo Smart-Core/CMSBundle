@@ -26,15 +26,18 @@ class AdminStructureController extends Controller
     }
 
     /**
-     * @return Response
+     * @return \Symfony\Component\HttpFoundation\Response
+     *
+     * @todo пагинация и табы.
      */
     public function trashAction()
     {
-        $em = $this->getDoctrine()->getManager();
+        /** @var \Doctrine\ORM\EntityManager $em */
+        $em = $this->get('doctrine.orm.entity_manager');
 
         return $this->render('CMSBundle:AdminStructure:trash.html.twig', [
-            'deleted_folders' => $em->getRepository('CMSBundle:Folder')->findBy(['is_deleted' => true]),
-            'deleted_nodes'   => $em->getRepository('CMSBundle:Node')->findBy(['is_deleted' => true]),
+            'deleted_folders' => $em->getRepository('CMSBundle:Folder')->findDeleted(),
+            'deleted_nodes'   => $em->getRepository('CMSBundle:Node')->findDeleted(),
         ]);
     }
 
@@ -45,18 +48,13 @@ class AdminStructureController extends Controller
      */
     public function trashRestoreFolderAction(Folder $folder)
     {
-        $folder
-            ->setIsDeleted(false)
-            ->setDeletedAt(null)
-        ;
+        $folder->setIsDeleted(false);
 
-        $em = $this->getDoctrine()->getManager();
-        $em->persist($folder);
-        $em->flush($folder);
+        $this->persist($folder, true);
 
         $this->addFlash('success', 'Папка восстановлена.');
 
-        return $this->redirect($this->generateUrl('cms_admin_structure_trash'));
+        return $this->redirectToRoute('cms_admin_structure_trash');
     }
 
     /**
@@ -70,7 +68,7 @@ class AdminStructureController extends Controller
 
         $this->addFlash('success', 'Папка удалена.');
 
-        return $this->redirect($this->generateUrl('cms_admin_structure_trash'));
+        return $this->redirectToRoute('cms_admin_structure_trash');
     }
 
     /**
@@ -80,10 +78,7 @@ class AdminStructureController extends Controller
      */
     public function trashRestoreNodeAction(Node $node)
     {
-        $node
-            ->setIsDeleted(false)
-            ->setDeletedAt(null)
-        ;
+        $node->setIsDeleted(false);
 
         // Если у модуля есть роутинги, тогда нода подключается к папке как роутер.
         $folder = $node->getFolder();
@@ -91,13 +86,11 @@ class AdminStructureController extends Controller
             $folder->setRouterNodeId($node->getId());
         }
 
-        $em = $this->getDoctrine()->getManager();
-        $em->persist($node);
-        $em->flush();
+        $this->persist($node, true);
 
         $this->addFlash('success', 'Нода восстановлена.');
 
-        return $this->redirect($this->generateUrl('cms_admin_structure_trash'));
+        return $this->redirectToRoute('cms_admin_structure_trash');
     }
 
     /**
@@ -111,7 +104,7 @@ class AdminStructureController extends Controller
 
         $this->addFlash('success', 'Нода удалена.');
 
-        return $this->redirect($this->generateUrl('cms_admin_structure_trash'));
+        return $this->redirectToRoute('cms_admin_structure_trash');
     }
 
     /**
@@ -124,6 +117,7 @@ class AdminStructureController extends Controller
     public function regionIndexAction(Request $request)
     {
         $engineRegion = $this->get('cms.region');
+
         $region = $engineRegion->create();
         $region->setUser($this->getUser());
 
@@ -135,7 +129,7 @@ class AdminStructureController extends Controller
                 $engineRegion->update($form->getData());
                 $this->addFlash('success', 'Область создана.');
 
-                return $this->redirect($this->generateUrl('cms_admin_structure_region'));
+                return $this->redirectToRoute('cms_admin_structure_region');
             }
         }
 
@@ -294,14 +288,9 @@ class AdminStructureController extends Controller
 
                 /** @var $folder \SmartCore\Bundle\CMSBundle\Entity\Folder */
                 $folder = $form->getData();
-                $folder
-                    ->setIsDeleted(true)
-                    ->setDeletedAt(new \DateTime())
-                ;
+                $folder->setIsDeleted(true);
 
-                $em = $this->getDoctrine()->getManager();
-                $em->persist($folder);
-                $em->flush($folder);
+                $this->persist($folder, true);
 
                 $this->get('tagcache')->deleteTag('node');
                 $this->get('tagcache')->deleteTag('folder');

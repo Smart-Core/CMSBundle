@@ -14,7 +14,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ORM\Table(name="engine_folders",
  *      indexes={
  *          @ORM\Index(columns={"is_active"}),
- *          @ORM\Index(columns={"is_deleted"}),
+ *          @ORM\Index(columns={"deleted_at"}),
  *          @ORM\Index(columns={"position"})
  *      },
  *      uniqueConstraints={
@@ -27,7 +27,6 @@ class Folder
 {
     use ColumnTrait\Id;
     use ColumnTrait\IsActive;
-    use ColumnTrait\IsDeleted;
     use ColumnTrait\CreatedAt;
     use ColumnTrait\DeletedAt;
     use ColumnTrait\Description;
@@ -151,7 +150,6 @@ class Folder
         $this->children             = new ArrayCollection();
         $this->created_at           = new \DateTime();
         $this->is_active            = true;
-        $this->is_deleted           = false;
         $this->is_file              = false;
         $this->lockout_nodes        = null;
         $this->meta                 = [];

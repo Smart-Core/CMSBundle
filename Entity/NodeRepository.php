@@ -3,9 +3,12 @@
 namespace SmartCore\Bundle\CMSBundle\Entity;
 
 use Doctrine\ORM\EntityRepository;
+use Smart\CoreBundle\Doctrine\RepositoryTrait;
 
 class NodeRepository extends EntityRepository
 {
+    use RepositoryTrait\FindDeleted;
+
     /**
      * @param array $list
      *
@@ -69,7 +72,7 @@ class NodeRepository extends EntityRepository
             FROM $engine_nodes_table
             WHERE folder_id = '$folder'
             AND is_active = TRUE
-            AND is_deleted = FALSE
+            AND deleted_at IS NOT NULL
         ";
 
         // Исключение ранее включенных нод.
@@ -102,7 +105,7 @@ class NodeRepository extends EntityRepository
                 $engine_regions_inherit_table AS ri
             WHERE n.region_id = ri.region_id
                 AND n.is_active = TRUE
-                AND n.is_deleted = FALSE
+                AND n.deleted_at IS NOT NULL
                 AND n.folder_id = '$folder'
                 AND ri.folder_id = '$folder'
             ORDER BY n.position ASC
