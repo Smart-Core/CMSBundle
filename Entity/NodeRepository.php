@@ -72,7 +72,7 @@ class NodeRepository extends EntityRepository
             FROM $engine_nodes_table
             WHERE folder_id = '$folder'
             AND is_active = TRUE
-            AND deleted_at IS NOT NULL
+            AND deleted_at IS NULL
         ";
 
         // Исключение ранее включенных нод.
@@ -105,7 +105,7 @@ class NodeRepository extends EntityRepository
                 $engine_regions_inherit_table AS ri
             WHERE n.region_id = ri.region_id
                 AND n.is_active = TRUE
-                AND n.deleted_at IS NOT NULL
+                AND n.deleted_at IS NULL
                 AND n.folder_id = '$folder'
                 AND ri.folder_id = '$folder'
             ORDER BY n.position ASC
