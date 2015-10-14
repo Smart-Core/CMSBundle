@@ -9,17 +9,19 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class UserFormType extends AbstractType
 {
-    /**
-     * @var EntityManager
-     */
+    /** @var EntityManager */
     protected $em;
+
+    /** @var string */
+    protected $user_class;
 
     /**
      * @param EntityManager $em
      */
-    public function __construct(EntityManager $em)
+    public function __construct(EntityManager $em, $user_class)
     {
-        $this->em = $em;
+        $this->em         = $em;
+        $this->user_class = $user_class;
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options)
@@ -59,7 +61,7 @@ class UserFormType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
-            'data_class' => 'SmartCore\Bundle\CMSBundle\Entity\User',
+            'data_class' => $this->user_class, // 'SmartCore\Bundle\CMSBundle\Model\UserModel',
         ]);
     }
 

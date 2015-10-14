@@ -95,7 +95,7 @@ services:
             - { name: form.type, alias: cms_folder_tree }
     cms.form.type.user:
         class: SmartCore\Bundle\CMSBundle\Form\Type\UserFormType
-        arguments: [ @doctrine.orm.default_entity_manager ]
+        arguments: [ @doctrine.orm.default_entity_manager, %user_class% ]
         tags:
             - { name: form.type, alias: smart_core_cms_user }
     cms.form.registration.admin.factory:

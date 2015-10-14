@@ -14,31 +14,12 @@ cms:
         # настройки для 'filesystem'
         #path: %smart_core_cms_data_dir%
 
-liip_imagine:
-    loaders:
-        default:
-            filesystem:
-                data_root: '%web_dir%'
-    resolvers:
-        default:
-            web_path:
-                web_root: '%web_dir%'
-    filter_sets:
-        100_100:
-            format: jpeg
-            quality: 100
-            filters:
-                thumbnail: { size: [100, 100], mode: inset }
-        200_200:
-            format: jpeg
-            quality: 100
-            filters:
-                thumbnail: { size: [200, 200], mode: inset }
-        300_300:
-            format: jpeg
-            quality: 100
-            filters:
-                thumbnail: { size: [300, 300], mode: inset }
+doctrine:
+    orm:
+        auto_generate_proxy_classes: %kernel.debug%
+        auto_mapping: true
+        resolve_target_entities:
+            FOS\UserBundle\Model\UserInterface: %user_class%
 
 doctrine_cache:
     providers:
@@ -138,7 +119,7 @@ fm_elfinder:
 fos_user:
     db_driver: orm # other valid values are 'mongodb', 'couchdb' and 'propel'
     firewall_name: main
-    user_class: SmartCore\Bundle\CMSBundle\Entity\User
+    user_class: %user_class% # @todo разобраться как будет себя вести инсталляция
     registration:
         confirmation:
             enabled: true
@@ -165,6 +146,32 @@ knp_menu:
 
 knp_disqus:
     api_key: %knp_disqus.api_key%
+
+liip_imagine:
+    loaders:
+        default:
+            filesystem:
+                data_root: '%web_dir%'
+    resolvers:
+        default:
+            web_path:
+                web_root: '%web_dir%'
+    filter_sets:
+        100_100:
+            format: jpeg
+            quality: 100
+            filters:
+                thumbnail: { size: [100, 100], mode: inset }
+        200_200:
+            format: jpeg
+            quality: 100
+            filters:
+                thumbnail: { size: [200, 200], mode: inset }
+        300_300:
+            format: jpeg
+            quality: 100
+            filters:
+                thumbnail: { size: [300, 300], mode: inset }
 
 liip_theme:
     path_patterns:
