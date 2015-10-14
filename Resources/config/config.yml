@@ -6,7 +6,7 @@ parameters:
     liip_theme.templating_locator.class: SmartCore\Bundle\CMSBundle\Twig\Locator\TemplateLocator
     liip_theme.filesystem_loader.class: SmartCore\Bundle\CMSBundle\Twig\Loader\FilesystemLoader
 
-cms:
+#cms:
     # database (db), filesystem (fs)
     #storage: db
         # настройки для 'database'
