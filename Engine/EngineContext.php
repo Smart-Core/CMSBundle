@@ -7,9 +7,10 @@ use Symfony\Component\HttpFoundation\RequestStack;
 
 class EngineContext
 {
-    protected $current_folder_id = 1;
-    protected $current_folder_path = '/';
-    protected $current_node_id = null;
+    protected $current_folder_id    = 1;
+    protected $current_folder_path  = '/';
+    protected $current_node_id      = null;
+    protected $template             = 'index';
 
     /**
      * @param RequestStack $requestStack
@@ -79,5 +80,25 @@ class EngineContext
     public function getCurrentNodeId()
     {
         return $this->current_node_id;
+    }
+
+    /**
+     * @return string
+     */
+    public function getTemplate()
+    {
+        return $this->template;
+    }
+
+    /**
+     * @param string $template
+     *
+     * @return $this
+     */
+    public function setTemplate($template)
+    {
+        $this->template = $template;
+
+        return $this;
     }
 }

@@ -61,6 +61,10 @@ class EngineRouter
      */
     public function match($baseUrl, $slug = null, $type = HttpKernelInterface::MASTER_REQUEST)
     {
+        /** @var \Doctrine\ORM\EntityManager $em */
+        $em = $this->container->get('doctrine.orm.entity_manager');
+
+
         if ($type === HttpKernelInterface::MASTER_REQUEST) {
             if (!empty($this->router_data)) {
                 return $this->router_data;
@@ -98,7 +102,7 @@ class EngineRouter
                 break;
             }
 
-            $folder = $this->container->get('doctrine.orm.entity_manager')->getRepository('CMSBundle:Folder')->findOneBy([
+            $folder = $em->getRepository('CMSBundle:Folder')->findOneBy([
                 'is_active'     => true,
                 'uri_part'      => empty($segment) ? null : $segment,
                 'parent_folder' => $parent_folder,

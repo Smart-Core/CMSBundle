@@ -4,6 +4,7 @@ namespace SmartCore\Bundle\CMSBundle\Module;
 
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\HttpKernel\KernelInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 abstract class AbstractNodePropertiesFormType extends AbstractType
@@ -14,11 +15,18 @@ abstract class AbstractNodePropertiesFormType extends AbstractType
     protected $em;
 
     /**
-     * @param EntityManager $em
+     * @var KernelInterface
      */
-    public function __construct(EntityManager $em)
+    protected $kernel;
+
+    /**
+     * @param EntityManager   $em
+     * @param KernelInterface $kernel
+     */
+    public function __construct(EntityManager $em, KernelInterface $kernel)
     {
-        $this->em = $em;
+        $this->em       = $em;
+        $this->kernel   = $kernel;
     }
 
     public function configureOptions(OptionsResolver $resolver)

@@ -38,6 +38,8 @@ class EngineController extends Controller
             $tagcache->set($cache_key, $router_data, ['folder', 'node']);
         }
 
+        $this->get('cms.context')->setTemplate($router_data['template']);
+
         if (empty($router_data['folders'])) { // Случай пустой инсталляции, когда еще ни одна папка не создана.
             $this->get('cms.toolbar')->prepare();
 
@@ -74,9 +76,11 @@ class EngineController extends Controller
 
         $this->get('cms.toolbar')->prepare(isset($this->front_controls['node']) ? $this->front_controls['node'] : null);
 
+        $template = $this->get('cms.context')->getTemplate();
+
         // @todo выводить сообщение о том, что неверно указано имя шаблона
-        return $this->get('templating')->exists("SiteBundle::{$router_data['template']}.html.twig")
-            ? new Response($this->get('twig')->render("SiteBundle::{$router_data['template']}.html.twig", $nodesResponses), $router_data['status'])
+        return $this->get('templating')->exists("SiteBundle::$template.html.twig")
+            ? new Response($this->get('twig')->render("SiteBundle::$template.html.twig", $nodesResponses), $router_data['status'])
             : $this->get('twig')->render('CMSBundle::welcome.html.twig');
     }
 
