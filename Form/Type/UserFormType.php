@@ -16,7 +16,8 @@ class UserFormType extends AbstractType
     protected $user_class;
 
     /**
-     * @param EntityManager $em
+     * @param \Doctrine\ORM\EntityManager $em
+     * @param string $user_class
      */
     public function __construct(EntityManager $em, $user_class)
     {
@@ -61,7 +62,7 @@ class UserFormType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
-            'data_class' => $this->user_class, // 'SmartCore\Bundle\CMSBundle\Model\UserModel',
+            'data_class' => $this->user_class, // 'extends of SmartCore\Bundle\CMSBundle\Model\UserModel',
         ]);
     }
 
