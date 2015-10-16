@@ -32,9 +32,19 @@ class CmsExtension extends \Twig_Extension
             'cms_nodes_count_in_region' => new \Twig_Function_Method($this, 'nodesCountInRegion'),
             'cms_get_notifications'     => new \Twig_Function_Method($this, 'getNotifications'),
             'cms_version'               => new \Twig_Function_Method($this, 'getCMSKernelVersion'),
+            'cms_context_set'           => new \Twig_Function_Method($this, 'cmsContextSet'),
         ];
     }
 
+    /**
+     * @param string $key
+     * @param mixed  $value
+     */
+    public function cmsContextSet($key, $value)
+    {
+        $this->container->get('cms.context')->set($key, $value);
+    }
+    
     /**
      * Получение текущей папки.
      *
