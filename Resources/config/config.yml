@@ -1,7 +1,7 @@
 parameters:
     admin_path: admin
     user_path: user
-    user_class: SmartCore\Bundle\CMSBundle\Model
+    user_class: App\User
     genemu.form.file.root_dir: '%web_dir%'
     liip_theme.file_locator.class: SmartCore\Bundle\CMSBundle\Twig\Locator\ModuleThemeLocator
     liip_theme.templating_locator.class: SmartCore\Bundle\CMSBundle\Twig\Locator\TemplateLocator
@@ -21,6 +21,13 @@ doctrine:
         auto_mapping: true
         resolve_target_entities:
             FOS\UserBundle\Model\UserInterface: %user_class%
+        mappings:
+            model:
+                type: annotation
+                dir: %kernel.root_dir%/Entity
+                prefix: App
+                #alias: User
+                is_bundle: false
 
 doctrine_cache:
     providers:
