@@ -5,9 +5,9 @@ namespace SmartCore\Bundle\CMSBundle\Controller;
 use SmartCore\Bundle\CMSBundle\Entity\Node;
 use SmartCore\Bundle\CMSBundle\Twig\RegionRenderHelper;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
@@ -39,7 +39,6 @@ class EngineController extends Controller
         }
 
         $this->get('cms.context')->setTemplate($router_data['template']);
-
         if (empty($router_data['folders'])) { // Случай пустой инсталляции, когда еще ни одна папка не создана.
             $this->get('cms.toolbar')->prepare();
 
@@ -78,10 +77,17 @@ class EngineController extends Controller
 
         $template = $this->get('cms.context')->getTemplate();
 
-        // @todo выводить сообщение о том, что неверно указано имя шаблона
-        return $this->get('templating')->exists("SiteBundle::$template.html.twig")
-            ? new Response($this->get('twig')->render("SiteBundle::$template.html.twig", $nodesResponses), $router_data['status'])
-            : $this->get('twig')->render('CMSBundle::welcome.html.twig');
+        if ($this->get('templating')->exists("SiteBundle::$template.html.twig")) {
+            return new Response($this->get('twig')->render("SiteBundle::$template.html.twig", $nodesResponses), $router_data['status']);
+        } else {
+            if ($this->get('kernel')->isDebug()) {
+                return $this->get('twig')->render('CMSBundle::error.html.twig', [
+                    'errors' => ['Unable to find template: SiteBundle::'. $template.'.html.twig'],
+                ]);
+            } else {
+                return $this->get('twig')->render('CMSBundle::welcome.html.twig');
+            }
+        }
     }
 
     /**
