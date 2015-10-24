@@ -76,7 +76,7 @@ class EngineRouter
             'folders'       => [],
             'meta'          => [],
             'status'        => 200,
-            'template'      => 'index',
+            'template'      => 'default',
             'node_routing'  => null,
             'current_folder_id'   => 1,
             'current_folder_path' => $baseUrl.'/',

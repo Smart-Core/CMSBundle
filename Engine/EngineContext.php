@@ -10,7 +10,7 @@ class EngineContext
     protected $current_folder_id    = 1;
     protected $current_folder_path  = '/';
     protected $current_node_id      = null;
-    protected $template             = 'index';
+    protected $template             = 'default';
 
     /**
      * @param RequestStack $requestStack
