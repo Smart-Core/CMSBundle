@@ -53,3 +53,5 @@ Possibly in future required packages:
         "snc/redis-bundle": "1.1.*",
         "sp/bower-bundle": "*",
 ```
+
+1
