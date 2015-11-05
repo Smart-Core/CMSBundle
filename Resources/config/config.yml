@@ -1,7 +1,7 @@
 parameters:
     admin_path: admin
     user_path: user
-    user_class: App\User
+    user_class: App\User # for installation prosess only
     genemu.form.file.root_dir: '%web_dir%'
     liip_theme.file_locator.class: SmartCore\Bundle\CMSBundle\Twig\Locator\ModuleThemeLocator
     liip_theme.templating_locator.class: SmartCore\Bundle\CMSBundle\Twig\Locator\TemplateLocator
