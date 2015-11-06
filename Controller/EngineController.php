@@ -22,14 +22,16 @@ class EngineController extends Controller
 
     /**
      * @param Request $request
-     * @param string $slug
+     * @param string  $slug
      *
      * @return Response
      */
     public function runAction(Request $request, $slug)
     {
         /** @var \RickySu\Tagcache\Adapter\TagcacheAdapter $tagcache */
-        $tagcache = $this->get('tagcache');
+        $tagcache   = $this->get('tagcache');
+        $twig       = $this->get('twig');
+        $cmsContext = $this->get('cms.context');
 
         // Кеширование роутера.
         $cache_key = md5('cms_router'.$request->getBaseUrl().$slug);
@@ -38,11 +40,11 @@ class EngineController extends Controller
             $tagcache->set($cache_key, $router_data, ['folder', 'node']);
         }
 
-        $this->get('cms.context')->setTemplate($router_data['template']);
+        $cmsContext->setTemplate($router_data['template']);
         if (empty($router_data['folders'])) { // Случай пустой инсталляции, когда еще ни одна папка не создана.
             $this->get('cms.toolbar')->prepare();
 
-            return $this->render('CMSBundle::welcome.html.twig');
+            return $twig->render('CMSBundle::welcome.html.twig');
         }
 
         if ($router_data['status'] == 404) {
@@ -57,8 +59,8 @@ class EngineController extends Controller
             $this->get('cms.breadcrumbs')->add($this->get('cms.folder')->getUri($folder), $folder->getTitle(), $folder->getDescription());
         }
 
-        $this->get('cms.context')->setCurrentFolderId($router_data['current_folder_id']);
-        $this->get('cms.context')->setCurrentFolderPath($router_data['current_folder_path']);
+        $cmsContext->setCurrentFolderId($router_data['current_folder_id']);
+        $cmsContext->setCurrentFolderPath($router_data['current_folder_path']);
 
         // Список нод кешируется только при GET запросах.
         $router_data['http_method'] = $request->getMethod();
@@ -75,19 +77,15 @@ class EngineController extends Controller
 
         $this->get('cms.toolbar')->prepare(isset($this->front_controls['node']) ? $this->front_controls['node'] : null);
 
-        $template = $this->get('cms.context')->getTemplate();
-
-        if ($this->get('templating')->exists("SiteBundle::$template.html.twig")) {
-            return new Response($this->get('twig')->render("SiteBundle::$template.html.twig", $nodesResponses), $router_data['status']);
-        } else {
+        try {
+            return $twig->render("SiteBundle::{$cmsContext->getTemplate()}.html.twig", $nodesResponses);
+        } catch (\Twig_Error_Loader $e) {
             if ($this->get('kernel')->isDebug()) {
-                return $this->get('twig')->render('CMSBundle::error.html.twig', [
-                    'errors' => ['Unable to find template: SiteBundle::'. $template.'.html.twig'],
-                ]);
-            } else {
-                return $this->get('twig')->render('CMSBundle::welcome.html.twig');
+                return $twig->render('CMSBundle::error.html.twig', ['errors' => ['Unable to find template: SiteBundle::'.$cmsContext->getTemplate().'.html.twig']]);
             }
         }
+
+        return $twig->render('CMSBundle::welcome.html.twig');
     }
 
     /**
@@ -95,7 +93,7 @@ class EngineController extends Controller
      * По мере прохождения, подключаются и запускаются нужные модули с нужными параметрами.
      *
      * @param Request $request
-     * @param \SmartCore\Bundle\CMSBundle\Entity\Node[] $nodes
+     * @param Node[]  $nodes
      *
      * @return array|Response|RedirectResponse
      */
