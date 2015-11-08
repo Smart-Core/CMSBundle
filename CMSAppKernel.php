@@ -243,7 +243,7 @@ abstract class CMSAppKernel extends BaseKernel
         }
 
         if ($count == 0 and isset($_SERVER['HTTP_HOST'])) {
-            die('Не доступен SiteBundle.</br></br>Сгенерируйте SiteBundle командой <pre>$ app/console cms:generate:sitebundle</pre>');
+            die('Не доступен SiteBundle, сгенерируйте его командой <pre>$ app/console cms:generate:sitebundle</pre>');
         }
 
         if ($count > 1) {
