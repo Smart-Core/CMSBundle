@@ -23,7 +23,7 @@
         "symfony/assetic-bundle": "~2.0@dev",
         "symfony/swiftmailer-bundle": "*",
         "symfony/monolog-bundle": "*",
-        "sensio/distribution-bundle": "*",
+        "sensio/distribution-bundle": "v5.0.0",
         "sensio/generator-bundle": "*",
 
         "twig/extensions": "~1.0",
