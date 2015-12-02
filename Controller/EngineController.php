@@ -28,16 +28,18 @@ class EngineController extends Controller
      */
     public function runAction(Request $request, $slug)
     {
-        /** @var \RickySu\Tagcache\Adapter\TagcacheAdapter $tagcache */
-        $tagcache   = $this->get('tagcache');
         $twig       = $this->get('twig');
         $cmsContext = $this->get('cms.context');
 
         // Кеширование роутера.
         $cache_key = md5('cms_router'.$request->getBaseUrl().$slug);
-        if (false == $router_data = $tagcache->get($cache_key)) {
+        if (false == $router_data = $this->get('tagcache')->get($cache_key)) {
             $router_data = $this->get('cms.router')->match($request->getBaseUrl(), $slug);
-            $tagcache->set($cache_key, $router_data, ['folder', 'node']);
+            $this->get('tagcache')->set($cache_key, $router_data, ['folder', 'node']);
+        }
+
+        if ($router_data['status'] == 301 and $router_data['redirect_to']) {
+            return new RedirectResponse($router_data['redirect_to'], $router_data['status']);
         }
 
         $cmsContext->setTemplate($router_data['template']);

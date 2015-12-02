@@ -35,7 +35,9 @@ class EngineRouter
      * If the matcher can not find information, it must throw one of the exceptions documented
      * below.
      *
+     * @param  string $baseUrl
      * @param  string $slug The path info to be parsed (raw format, i.e. not urldecoded)
+     * @param  int    $type
      *
      * @return array  Массив следующего формата:
      *      [folders]: array
@@ -47,6 +49,7 @@ class EngineRouter
      *          [language]: string
      *          [author]: string
      *      [status]: int 200
+     *      [redirect_to]: string null, // Для статуса 301.
      *      [template]: string "main"
      *      [node_route]: array
      *
@@ -64,7 +67,6 @@ class EngineRouter
         /** @var \Doctrine\ORM\EntityManager $em */
         $em = $this->container->get('doctrine.orm.entity_manager');
 
-
         if ($type === HttpKernelInterface::MASTER_REQUEST) {
             if (!empty($this->router_data)) {
                 return $this->router_data;
@@ -76,6 +78,7 @@ class EngineRouter
             'folders'       => [],
             'meta'          => [],
             'status'        => 200,
+            'redirect_to'   => null, // Для статуса 301.
             'template'      => 'default',
             'node_routing'  => null,
             'current_folder_id'   => 1,
@@ -115,7 +118,21 @@ class EngineRouter
                     break;
                 } else { // @todo if ($this->Permissions->isAllowed('folder', 'read', $folder->permissions)) {
                     if ($folder->getUriPart()) {
-                        $data['current_folder_path'] .= $folder->getUriPart().'/';
+                        if ($folder->isFile()) {
+                            $data['current_folder_path'] .= $folder->getUriPart();
+
+                            if (isset($path_parts[$key + 1])) {
+                                $data['status'] = 301;
+                                $data['redirect_to'] = $data['current_folder_path'];
+                            }
+                        } else {
+                            $data['current_folder_path'] .= $folder->getUriPart().'/';
+
+                            if (!isset($path_parts[$key + 1])) {
+                                $data['status'] = 301;
+                                $data['redirect_to'] = $data['current_folder_path'];
+                            }
+                        }
                     }
 
                     if ($folder->getTemplateInheritable()) {

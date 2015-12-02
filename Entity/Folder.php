@@ -230,6 +230,14 @@ class Folder
     }
 
     /**
+     * @return bool
+     */
+    public function isFile()
+    {
+        return $this->is_file;
+    }
+
+    /**
      * @param string $uri_part
      *
      * @return $this
