@@ -12,6 +12,7 @@ All structure: Вся структура
 All users: Все пользователи
 Appearance: Оформление
 Author: Автор
+Backup: Резервирование
 Base settings: Основные настройки
 Block: Блок
 Block edit: Редактирование блока
@@ -55,6 +56,7 @@ Email: Email
 Enabled: Включен
 Exit: Выход
 Filemanager: Управление файлами
+Filename: Имя файла
 File: Файл
 Files: Файлы
 Folder: Папка
@@ -101,6 +103,7 @@ Permissions: Права доступа
 Path: Путь
 Phone: Телефон
 Sign in: Вход на сайт
+Size: Размер
 Pos: Позиция
 Position: Позиция
 Properties: Свойства

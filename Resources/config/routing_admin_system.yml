@@ -3,6 +3,17 @@ cms_admin_system:
     defaults:
         _controller: CMSBundle:Admin:notFound
 
+cms_admin_backup_download:
+    path: /backup/{filename}
+    defaults:
+        _controller: CMSBundle:Admin:backupDownload
+        slug: '.+'
+
+cms_admin_backup:
+    path: /backup/
+    defaults:
+        _controller: CMSBundle:Admin:backupIndex
+
 # Structure
 cms_admin_structure:
     path: /structure/

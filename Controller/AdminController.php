@@ -322,4 +322,45 @@ class AdminController extends Controller
             return new Response('Обновление БД возможно только через AJAX.');
         }
     }
+
+    /**
+     * @return Response
+     */
+    public function backupIndexAction()
+    {
+        $dbdumper = $this->get('smart_db_dumper.manager');
+
+        $finder = new Finder();
+        $files = $finder->ignoreDotFiles(true)->in($dbdumper->getBackupsDir().$dbdumper->getPlatform());
+
+        return $this->render('CMSBundle:Admin:backup.html.twig', [
+            'files'  => $files,
+        ]);
+    }
+
+    /**
+     * @param string $filename
+     *
+     * @return Response
+     */
+    public function backupDownloadAction($filename)
+    {
+        $dbdumper = $this->get('smart_db_dumper.manager');
+
+        $path = $dbdumper->getBackupsDir().$dbdumper->getPlatform().'/'.$filename;
+
+        if (file_exists($path)) {
+            $response = new Response();
+            $response
+                ->setContent(file_get_contents($path))
+                ->headers->add([
+                    'Content-Disposition' => 'attachment; filename="'.$filename.'"'
+                ])
+            ;
+
+            return $response;
+        } else {
+            return $this->notFoundAction();
+        }
+    }
 }

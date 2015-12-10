@@ -1,0 +1,37 @@
+{% extends '@CMS/Admin/_layout.html.twig' %}
+
+{% block title %}{{ 'Backup'|trans }} / {{ parent() }}{% endblock %}
+
+{% set page_header = 'Backup'|trans %}
+{% set page_description = 'Копирование и восстановление БД.'|trans %}
+
+
+{% block content %}
+
+    <div class="box box-primary">
+        <div class="box-header with-border">
+
+            <table class="table table-bordered table-hover">
+                <thead><tr>
+                    <th>#</th>
+                    <th>{{ 'Filename'|trans }}</th>
+                    <th>{{ 'Size'|trans }}</th>
+                </tr></thead>
+                <tbody>
+
+                {% set count = 1 %}
+                {% for file in files %}
+                    <tr>
+                        <td>{{ count }}{% set count = count + 1 %}</td>
+                        <td><a href="{{ path('cms_admin_backup_download', {'filename': file.relativePathname}) }}">{{ file.relativePathname }}</a></td>
+                        <td>{{ file.size }}</td>
+                    </tr>
+                {% endfor %}
+
+                </tbody>
+            </table>
+
+        </div>
+    </div>
+
+{% endblock content %}
