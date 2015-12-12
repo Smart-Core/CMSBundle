@@ -88,6 +88,7 @@ class EngineRouter
         $folder          = null;
         $parent_folder   = null;
         $router_node_id  = null;
+        $template_self   = null;
         $slug            = '/'.$slug; // @todo сделать проверку на наличие слеша перед путём, чтобы привести к виду, как $this->container->get('request')->getPathInfo()
         $path_parts      = explode('/', $slug);
 
@@ -139,8 +140,9 @@ class EngineRouter
                         $data['template'] = $folder->getTemplateInheritable();
                     }
 
-                    $parent_folder = $folder;
+                    $parent_folder  = $folder;
                     $router_node_id = ($folder) ? $folder->getRouterNodeId() : null;
+                    $template_self  = $folder->getTemplateSelf();
 
                     $data['folders'][$folder->getId()] = $folder;
                     $data['current_folder_id'] = $folder->getId();
@@ -181,8 +183,8 @@ class EngineRouter
             }
         }
 
-        if ($folder and $folder->getTemplateSelf()) {
-            $data['template'] = $folder->getTemplateSelf();
+        if ($template_self) {
+            $data['template'] = $template_self;
         }
 
         if ($type === HttpKernelInterface::MASTER_REQUEST) {
