@@ -60,8 +60,8 @@
         "sonata-project/intl-bundle": "~2.0@dev",
         "whiteoctober/breadcrumbs-bundle": "~1.0@dev",
         "white-october/pagerfanta-bundle": "~1.0@dev",
-        "zendframework/zend-servicemanager": "2.x.x",
-        "zendframework/zend-tag": "2.x.x",
+        "zendframework/zend-servicemanager": "v2.6.0",
+        "zendframework/zend-tag": "v2.5.1",
         "zenstruck/imagine-extra-bundle": "*"
     },
     "config": {
