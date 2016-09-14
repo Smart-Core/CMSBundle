@@ -2,7 +2,7 @@
 
 namespace SmartCore\Bundle\CMSBundle\Controller;
 
-use Knp\RadBundle\Controller\Controller;
+use Smart\CoreBundle\Controller\Controller;
 use SmartCore\Bundle\MediaBundle\Entity\Collection;
 use SmartCore\Bundle\MediaBundle\Entity\Storage;
 use SmartCore\Bundle\MediaBundle\Form\Type\CollectionFormType;

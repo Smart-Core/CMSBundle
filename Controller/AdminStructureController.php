@@ -2,7 +2,7 @@
 
 namespace SmartCore\Bundle\CMSBundle\Controller;
 
-use Knp\RadBundle\Controller\Controller;
+use Smart\CoreBundle\Controller\Controller;
 use SmartCore\Bundle\CMSBundle\Entity\Folder;
 use SmartCore\Bundle\CMSBundle\Entity\Node;
 use SmartCore\Bundle\CMSBundle\Entity\Region;

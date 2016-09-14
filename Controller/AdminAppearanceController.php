@@ -2,7 +2,7 @@
 
 namespace SmartCore\Bundle\CMSBundle\Controller;
 
-use Knp\RadBundle\Controller\Controller;
+use Smart\CoreBundle\Controller\Controller;
 use SmartCore\Bundle\CMSBundle\Entity\AppearanceHistory;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\HttpFoundation\Request;

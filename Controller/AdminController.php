@@ -2,7 +2,7 @@
 
 namespace SmartCore\Bundle\CMSBundle\Controller;
 
-use Knp\RadBundle\Controller\Controller;
+use Smart\CoreBundle\Controller\Controller;
 use SmartCore\Bundle\CMSBundle\CMSAppKernel;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Component\Console\Input\ArrayInput;

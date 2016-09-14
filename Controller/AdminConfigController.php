@@ -2,7 +2,7 @@
 
 namespace SmartCore\Bundle\CMSBundle\Controller;
 
-use Knp\RadBundle\Controller\Controller;
+use Smart\CoreBundle\Controller\Controller;
 use SmartCore\Bundle\SettingsBundle\Form\Type\SettingFormType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;

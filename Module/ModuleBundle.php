@@ -2,7 +2,9 @@
 
 namespace SmartCore\Bundle\CMSBundle\Module;
 
-use Knp\RadBundle\AppBundle\Bundle;
+//use Knp\RadBundle\AppBundle\Bundle;
+//use Symfony\Component\HttpKernel\Bundle\Bundle;
+use Smart\CoreBundle\AppBundle\Bundle;
 
 /**
  * Использование Knp\RadBundle для автоматического конфигурирования сервисов,
