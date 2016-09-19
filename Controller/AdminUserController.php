@@ -121,7 +121,7 @@ class AdminUserController extends Controller
         /** @var \Doctrine\ORM\EntityManager $em */
         $em = $this->getDoctrine()->getManager();
 
-        $form = $this->createForm(new RoleFormType());
+        $form = $this->createForm(RoleFormType::class);
         $form->remove('position');
 
         if ($request->isMethod('POST')) {
@@ -156,7 +156,7 @@ class AdminUserController extends Controller
 
         $role = $em->find('CMSBundle:Role', $id);
 
-        $form = $this->createForm(new RoleFormType(), $role);
+        $form = $this->createForm(RoleFormType::class, $role);
 
         if ($request->isMethod('POST')) {
             $form->handleRequest($request);

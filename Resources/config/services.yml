@@ -3,6 +3,13 @@ parameters:
     router.options.generator_dumper_class: SmartCore\Bundle\CMSBundle\Router\PhpGeneratorDumper
 
 services:
+# Хак для устаревшего tagcache
+# @todo запилить тэги с doctrine cache.
+    tagcache:
+        class:      "%tagcache.adapter.class%"
+        factory:    ["%tagcache.factory.class%", getInstance]
+        arguments:
+            -       "%tagcache%"
 # Core
     cms.breadcrumbs:
         class: SmartCore\Bundle\CMSBundle\Tools\Breadcrumbs
@@ -100,10 +107,10 @@ services:
             - { name: form.type, alias: smart_core_cms_user }
     cms.form.registration.admin.factory:
         class: FOS\UserBundle\Form\Factory\FormFactory
-        arguments: [ "@form.factory", "%fos_user.registration.form.name%", "smart_core_cms_user", "%fos_user.registration.form.validation_groups%" ]
+        arguments: [ '@form.factory', "%fos_user.registration.form.name%", SmartCore\Bundle\CMSBundle\Form\Type\UserFormType, "%fos_user.registration.form.validation_groups%" ]
     cms.form.profile.admin.factory:
         class: FOS\UserBundle\Form\Factory\FormFactory
-        arguments: [ "@form.factory", "%fos_user.profile.form.name%", "smart_core_cms_user", "%fos_user.profile.form.validation_groups%" ]
+        arguments: [ '@form.factory', "%fos_user.profile.form.name%", SmartCore\Bundle\CMSBundle\Form\Type\UserFormType, "%fos_user.profile.form.validation_groups%" ]
 
 # Twig
     cms.twig.extension:

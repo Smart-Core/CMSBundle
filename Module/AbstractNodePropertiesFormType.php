@@ -3,6 +3,7 @@
 namespace SmartCore\Bundle\CMSBundle\Module;
 
 use Doctrine\ORM\EntityManager;
+use SmartCore\Bundle\CMSBundle\Container;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\HttpKernel\KernelInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -23,10 +24,11 @@ abstract class AbstractNodePropertiesFormType extends AbstractType
      * @param EntityManager   $em
      * @param KernelInterface $kernel
      */
-    public function __construct(EntityManager $em, KernelInterface $kernel)
+    //public function __construct(EntityManager $em, KernelInterface $kernel)
+    public function __construct()
     {
-        $this->em       = $em;
-        $this->kernel   = $kernel;
+        $this->em       = Container::get('doctrine.orm.entity_manager');
+        $this->kernel   = Container::get('kernel');
     }
 
     public function configureOptions(OptionsResolver $resolver)
@@ -54,7 +56,7 @@ abstract class AbstractNodePropertiesFormType extends AbstractType
     /**
      * @return string
      */
-    public function getTemplate()
+    public static function getTemplate()
     {
         return '@CMS/AdminStructure/node_properties_form.html.twig';
     }

@@ -58,7 +58,7 @@ class EngineFolder
      */
     public function createForm($data = null, array $options = [])
     {
-        return $this->container->get('form.factory')->create(new FolderFormType($this->container), $data, $options);
+        return $this->container->get('form.factory')->create(FolderFormType::class, $data, $options);
     }
 
     /**

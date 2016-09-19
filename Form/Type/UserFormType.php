@@ -4,6 +4,10 @@ namespace SmartCore\Bundle\CMSBundle\Form\Type;
 
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\EmailType;
+use Symfony\Component\Form\Extension\Core\Type\PasswordType;
+use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -39,18 +43,18 @@ class UserFormType extends AbstractType
                 'translation_domain' => 'FOSUserBundle',
                 'attr' => ['autofocus' => 'autofocus'],
             ])
-            ->add('email', 'email', [
+            ->add('email', EmailType::class, [
                 'label' => 'form.email',
                 'translation_domain' => 'FOSUserBundle',
             ])
-            ->add('plainPassword', 'repeated', [
-                'type'            => 'password',
+            ->add('plainPassword', RepeatedType::class, [ // 'repeated'
+                'type'            => PasswordType::class,
                 'required'        => false,
                 'options'         => ['translation_domain' => 'FOSUserBundle'],
                 'first_options'   => ['label' => 'form.new_password'],
                 'second_options'  => ['label' => 'form.new_password_confirmation'],
                 'invalid_message' => 'fos_user.password.mismatch',
-            ])->add('roles', 'choice', [
+            ])->add('roles', ChoiceType::class, [
                 'required'        => false,
                 'expanded'        => true,
                 'multiple'        => true,

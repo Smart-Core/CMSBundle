@@ -7,6 +7,7 @@ use SmartCore\Bundle\MediaBundle\Entity\Collection;
 use SmartCore\Bundle\MediaBundle\Entity\Storage;
 use SmartCore\Bundle\MediaBundle\Form\Type\CollectionFormType;
 use SmartCore\Bundle\MediaBundle\Form\Type\StorageFormType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -36,9 +37,9 @@ class AdminMediaLibraryController extends Controller
      */
     public function createStorageAction(Request $request)
     {
-        $form = $this->createForm(new StorageFormType(), new Storage('/_media'));
-        $form->add('create', 'submit', ['attr' => ['class' => 'btn btn-success']]);
-        $form->add('cancel', 'submit', ['attr' => ['class' => 'btn-default', 'formnovalidate' => 'formnovalidate']]);
+        $form = $this->createForm(StorageFormType::class, new Storage('/_media'));
+        $form->add('create', SubmitType::class, ['attr' => ['class' => 'btn btn-success']]);
+        $form->add('cancel', SubmitType::class, ['attr' => ['class' => 'btn-default', 'formnovalidate' => 'formnovalidate']]);
 
         if ($request->isMethod('POST')) {
             $form->handleRequest($request);
@@ -77,9 +78,9 @@ class AdminMediaLibraryController extends Controller
             return $this->redirectToRoute('cms_admin_config_media');
         }
 
-        $form = $this->createForm(new StorageFormType(), $storage);
-        $form->add('update', 'submit', ['attr' => ['class' => 'btn btn-success']]);
-        $form->add('cancel', 'submit', ['attr' => ['class' => 'btn-default', 'formnovalidate' => 'formnovalidate']]);
+        $form = $this->createForm(StorageFormType::class, $storage);
+        $form->add('update', SubmitType::class, ['attr' => ['class' => 'btn btn-success']]);
+        $form->add('cancel', SubmitType::class, ['attr' => ['class' => 'btn-default', 'formnovalidate' => 'formnovalidate']]);
 
         if ($request->isMethod('POST')) {
             $form->handleRequest($request);
@@ -111,9 +112,9 @@ class AdminMediaLibraryController extends Controller
         $collection = new Collection('/new');
         $collection->setTitle('Новая коллекция');
 
-        $form = $this->createForm(new CollectionFormType(), $collection);
-        $form->add('create', 'submit', ['attr' => ['class' => 'btn btn-success']]);
-        $form->add('cancel', 'submit', ['attr' => ['class' => 'btn-default', 'formnovalidate' => 'formnovalidate']]);
+        $form = $this->createForm(CollectionFormType::class, $collection);
+        $form->add('create', SubmitType::class, ['attr' => ['class' => 'btn btn-success']]);
+        $form->add('cancel', SubmitType::class, ['attr' => ['class' => 'btn-default', 'formnovalidate' => 'formnovalidate']]);
 
         if ($request->isMethod('POST')) {
             $form->handleRequest($request);
@@ -152,9 +153,9 @@ class AdminMediaLibraryController extends Controller
             return $this->redirectToRoute('cms_admin_config_media');
         }
 
-        $form = $this->createForm(new CollectionFormType(), $collection);
-        $form->add('update', 'submit', ['attr' => ['class' => 'btn btn-success']]);
-        $form->add('cancel', 'submit', ['attr' => ['class' => 'btn-default', 'formnovalidate' => 'formnovalidate']]);
+        $form = $this->createForm(CollectionFormType::class, $collection);
+        $form->add('update', SubmitType::class, ['attr' => ['class' => 'btn btn-success']]);
+        $form->add('cancel', SubmitType::class, ['attr' => ['class' => 'btn-default', 'formnovalidate' => 'formnovalidate']]);
 
         if ($request->isMethod('POST')) {
             $form->handleRequest($request);

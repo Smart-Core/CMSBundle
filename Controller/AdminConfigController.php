@@ -4,6 +4,7 @@ namespace SmartCore\Bundle\CMSBundle\Controller;
 
 use Smart\CoreBundle\Controller\Controller;
 use SmartCore\Bundle\SettingsBundle\Form\Type\SettingFormType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -33,9 +34,9 @@ class AdminConfigController extends Controller
             return $this->redirectToRoute('cms_admin_config_media');
         }
 
-        $form = $this->createForm(new SettingFormType(), $setting);
-        $form->add('update', 'submit', ['attr' => ['class' => 'btn btn-success']]);
-        $form->add('cancel', 'submit', ['attr' => ['class' => 'btn-default', 'formnovalidate' => 'formnovalidate']]);
+        $form = $this->createForm(SettingFormType::class, $setting);
+        $form->add('update', SubmitType::class, ['attr' => ['class' => 'btn btn-success']]);
+        $form->add('cancel', SubmitType::class, ['attr' => ['class' => 'btn-default', 'formnovalidate' => 'formnovalidate']]);
 
         if ($request->isMethod('POST')) {
             $form->handleRequest($request);

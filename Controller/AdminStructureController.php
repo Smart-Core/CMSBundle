@@ -487,7 +487,7 @@ class AdminStructureController extends Controller
             'allow_delete'    => true,
             'form'            => $form->createView(),
             'form_properties' => $form_properties->createView(),
-            'form_properties_template' => $propertiesFormType->getTemplate(),
+            'form_properties_template' => $propertiesFormType::getTemplate(),
             'node'            => $node,
         ]);
     }

@@ -9,7 +9,7 @@
 
     <h3>{{ 'Role edit'|trans }}: &laquo;{{ form.vars.value.name }}&raquo;</h3>
 
-    <form action="" {{ form_enctype(form) }} method="POST" class="form-horizontal well">
+    <form action="" enctype="multipart/form-data" method="POST" class="form-horizontal well">
         {{ form_widget(form) }}
 
         <div class="control-group">

@@ -5,7 +5,10 @@ namespace SmartCore\Bundle\CMSBundle\Form\Type;
 use Doctrine\ORM\EntityRepository;
 use SmartCore\Bundle\CMSBundle\Container;
 use SmartCore\Bundle\CMSBundle\Entity\Node;
+use SmartCore\Bundle\CMSBundle\Form\Tree\FolderTreeType;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -28,26 +31,26 @@ class NodeFormType extends AbstractType
         }
 
         $builder
-            ->add('module', 'choice', [
+            ->add('module', ChoiceType::class, [
                 'choices' => $modules,
                 'data' => 'Texter', // @todo настройку модуля по умолчанию.
             ])
-            ->add('folder', 'cms_folder_tree')
-            ->add('region', 'entity', [
+            ->add('folder', FolderTreeType::class)
+            ->add('region', EntityType::class, [ // 'entity'
                 'class' => 'CMSBundle:Region',
                 'query_builder' => function (EntityRepository $er) {
                     return $er->createQueryBuilder('b')->orderBy('b.position', 'ASC');
                 },
                 'required' => true,
             ])
-            ->add('controls_in_toolbar', 'choice', [
+            ->add('controls_in_toolbar', ChoiceType::class, [
                 'choices' => [
                     Node::TOOLBAR_NO => 'Никогда',
                     Node::TOOLBAR_ONLY_IN_SELF_FOLDER => 'Только в собственной папке',
                     //Node::TOOLBAR_ALWAYS => 'Всегда', // @todo
                 ],
             ])
-            ->add('template', 'choice', [
+            ->add('template', ChoiceType::class, [
                 'choices'  => $moduleThemes,
                 'required' => false,
                 'label'    => 'Тема шаблонов',
@@ -68,7 +71,7 @@ class NodeFormType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
-            'data_class' => 'SmartCore\Bundle\CMSBundle\Entity\Node',
+            'data_class' => Node::class,
         ]);
     }
 

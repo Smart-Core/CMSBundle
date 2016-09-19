@@ -108,7 +108,7 @@ class EngineNode
      */
     public function createForm($data = null, array $options = [])
     {
-        return $this->formFactory->create(new NodeFormType(), $data, $options);
+        return $this->formFactory->create(NodeFormType::class, $data, $options);
     }
 
     /**
@@ -194,7 +194,8 @@ class EngineNode
         try {
             $form_class_name = '\\'.$this->kernel->getModule($module_name)['namespace'].'\Form\Type\NodePropertiesFormType';
             if (class_exists($form_class_name)) {
-                return new $form_class_name($this->em, $this->kernel);
+                //return new $form_class_name($this->em, $this->kernel);
+                return $form_class_name;
             }
         } catch (\InvalidArgumentException $e) {
             // Случай, когда запрашивается не подключенный модуль.

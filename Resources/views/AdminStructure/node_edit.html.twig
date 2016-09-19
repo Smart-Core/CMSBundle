@@ -12,7 +12,7 @@
 
     <h3>Модуль {{ node.module }}</h3>
 
-    <form action="" {{ form_enctype(form) }} method="POST" class="form-horizontal well">
+    <form action="" enctype="multipart/form-data" method="POST" class="form-horizontal well">
         {% if form_properties.count > 0 %}
             <ul class="nav nav-pills" id="nodeTab">
                 <li class="active"><a href="#node-properties">Параметры подключения модуля</a></li>
