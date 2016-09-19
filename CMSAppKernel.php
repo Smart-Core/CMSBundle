@@ -189,7 +189,7 @@ abstract class CMSAppKernel extends BaseKernel
         $bundles[] = new \Stfalcon\Bundle\TinymceBundle\StfalconTinymceBundle(); // "stfalcon/tinymce-bundle": "v0.2.1",
         $bundles[] = new \WhiteOctober\BreadcrumbsBundle\WhiteOctoberBreadcrumbsBundle();
         $bundles[] = new \WhiteOctober\PagerfantaBundle\WhiteOctoberPagerfantaBundle();
-        $bundles[] = new \Zenstruck\Bundle\ImagineExtraBundle\ZenstruckImagineExtraBundle();
+        // $bundles[] = new \Zenstruck\Bundle\ImagineExtraBundle\ZenstruckImagineExtraBundle(); // "zenstruck/imagine-extra-bundle": "*"
 
         if (in_array($this->getEnvironment(), ['dev', 'test'])) {
             $bundles[] = new \Symfony\Bundle\WebProfilerBundle\WebProfilerBundle();
