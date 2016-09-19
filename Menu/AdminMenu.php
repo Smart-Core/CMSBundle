@@ -4,11 +4,14 @@ namespace SmartCore\Bundle\CMSBundle\Menu;
 
 use Knp\Menu\FactoryInterface;
 use Knp\Menu\ItemInterface;
-use Symfony\Component\DependencyInjection\ContainerAware;
+use Symfony\Component\DependencyInjection\ContainerAwareTrait;
+use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use SmartCore\Bundle\CMSBundle\Entity\Folder;
 
-class AdminMenu extends ContainerAware
+class AdminMenu implements ContainerAwareInterface
 {
+    use ContainerAwareTrait;
+
     /**
      * @param FactoryInterface $factory
      * @param array $options
@@ -21,7 +24,6 @@ class AdminMenu extends ContainerAware
 
         $menu->setChildrenAttribute('class', isset($options['class']) ? $options['class'] : 'sidebar-menu'); // nav navbar-nav
         $menu->addChild('Dashboard',     ['route' => 'cms_admin_index'])->setExtras(['beforeCode' => '<i class="fa fa-dashboard"></i>']);
-
 
         foreach ($this->container->get('cms.module')->all() as $module) {
             $module->buildAdminMenu($menu);

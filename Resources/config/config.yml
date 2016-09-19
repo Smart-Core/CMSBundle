@@ -2,7 +2,7 @@ parameters:
     admin_path: admin
     user_path: user
     user_class: App\User # for installation prosess only
-    genemu.form.file.root_dir: '%web_dir%'
+    genemu.form.file.root_dir: "%web_dir%"
     liip_theme.file_locator.class: SmartCore\Bundle\CMSBundle\Twig\Locator\ModuleThemeLocator
     liip_theme.templating_locator.class: SmartCore\Bundle\CMSBundle\Twig\Locator\TemplateLocator
     liip_theme.filesystem_loader.class: SmartCore\Bundle\CMSBundle\Twig\Loader\FilesystemLoader
@@ -17,14 +17,14 @@ parameters:
 
 doctrine:
     orm:
-        auto_generate_proxy_classes: %kernel.debug%
+        auto_generate_proxy_classes: "%kernel.debug%"
         auto_mapping: true
         resolve_target_entities:
-            FOS\UserBundle\Model\UserInterface: %user_class%
+            FOS\UserBundle\Model\UserInterface: "%user_class%"
         mappings:
             model:
                 type: annotation
-                dir: %kernel.root_dir%/Entity
+                dir: "%kernel.root_dir%/Entity"
                 prefix: App
                 #alias: User
                 is_bundle: false
@@ -50,29 +50,29 @@ doctrine_cache:
 fm_elfinder:
     instances:
         default:
-            locale: %locale%    # defaults to current request locale
+            locale: "%locale%"  # defaults to current request locale
             editor: tinymce     # other choices are ckeditor, tinymce or simple
-            tinymce_popup_path: "asset[bundles/stfalcontinymce/vendor/tiny_mce/tiny_mce_popup.js]"
+            tinymce_popup_path: 'asset[bundles/stfalcontinymce/vendor/tiny_mce/tiny_mce_popup.js]'
             fullscreen: true    # defaults true, applies to simple and ckeditor editors
             include_assets: true # disable if you want to handle loading of the javascript and css assets yourself
             connector:
                 debug: false    # defaults to false
-                bind:
-                    mkfile.pre:
-                        - Plugin.Normalizer.cmdPreprocess
-                        - Plugin.Sanitizer.cmdPreprocess
-                    upload.presave:
-                        - Plugin.Normalizer.onUpLoadPreSave
-                        - Plugin.Sanitizer.onUpLoadPreSave
-                plugin:
-                    Normalizer:
-                        enable: true
-                        nfc: true
-                        nfkc: true
-                    Sanitizer:
-                        enable: true
-                        targets: ['\\','/',':','*','?','"','<','>','|',' ']
-                        replace: '_'
+#                bind:
+#                    mkfile.pre:
+#                        - Plugin.Normalizer.cmdPreprocess
+#                        - Plugin.Sanitizer.cmdPreprocess
+#                    upload.presave:
+#                        - Plugin.Normalizer.onUpLoadPreSave
+#                        - Plugin.Sanitizer.onUpLoadPreSave
+#                plugin:
+#                    Normalizer:
+#                        enable: true
+#                        nfc: true
+#                        nfkc: true
+#                    Sanitizer:
+#                        enable: true
+#                        targets: ['\\','/',':','*','?','"','<','>','|',' ']
+#                        replace: '_'
                 roots:          # at least one root must be defined
                     images:
                         driver: LocalFileSystem
@@ -87,29 +87,29 @@ fm_elfinder:
                         upload_deny: ['all']
                         upload_max_size: 50M
         tinymce4:
-            locale: %locale%    # defaults to current request locale
+            locale: "%locale%"  # defaults to current request locale
             editor: tinymce4    # other choices are ckeditor, tinymce or simple
-            tinymce_popup_path: "asset[bundles/stfalcontinymce/vendor/tiny_mce/tiny_mce_popup.js]"
+            tinymce_popup_path: 'asset[bundles/stfalcontinymce/vendor/tiny_mce/tiny_mce_popup.js]'
             fullscreen: true    # defaults true, applies to simple and ckeditor editors
             include_assets: true # disable if you want to handle loading of the javascript and css assets yourself
             connector:
                 debug: false    # defaults to false
-                bind:
-                    mkfile.pre:
-                        - Plugin.Normalizer.cmdPreprocess
-                        - Plugin.Sanitizer.cmdPreprocess
-                    upload.presave:
-                        - Plugin.Normalizer.onUpLoadPreSave
-                        - Plugin.Sanitizer.onUpLoadPreSave
-                plugin:
-                    Normalizer:
-                        enable: true
-                        nfc: true
-                        nfkc: true
-                    Sanitizer:
-                        enable: true
-                        targets: ['\\','/',':','*','?','"','<','>','|',' ']
-                        replace: '_'
+#                bind:
+#                    mkfile.pre:
+#                        - Plugin.Normalizer.cmdPreprocess
+#                        - Plugin.Sanitizer.cmdPreprocess
+#                    upload.presave:
+#                        - Plugin.Normalizer.onUpLoadPreSave
+#                        - Plugin.Sanitizer.onUpLoadPreSave
+#                plugin:
+#                    Normalizer:
+#                        enable: true
+#                        nfc: true
+#                        nfkc: true
+#                    Sanitizer:
+#                        enable: true
+#                        targets: ['\\','/',':','*','?','"','<','>','|',' ']
+#                        replace: '_'
                 roots:          # at least one root must be defined
                     images:
                         driver: LocalFileSystem
@@ -127,23 +127,23 @@ fm_elfinder:
 fos_user:
     db_driver: orm # other valid values are 'mongodb', 'couchdb' and 'propel'
     firewall_name: main
-    user_class: %user_class% # @todo разобраться как будет себя вести инсталляция
+    user_class: "%user_class%" # @todo разобраться как будет себя вести инсталляция
     registration:
         confirmation:
             enabled: true
             from_email:
-                address: %registration_email_confirmation%
+                address: "%registration_email_confirmation%"
                 sender_name: Email confirmation
     resetting:
         email:
             from_email:
-                address: %email_resetting%
+                address: "%email_resetting%"
                 sender_name: Password resetting
 
 genemu_form:
     image: ~
     captcha:
-        font_dir: '%web_dir%/bundles/genemuform/fonts'
+        font_dir: "%web_dir%/bundles/genemuform/fonts"
     file:
         swf: /assets/uploadify/uploadify.swf
         folder: /uploads
@@ -152,18 +152,18 @@ knp_menu:
     twig:
         template: CMSBundle:Menu:knp_menu.html.twig
 
-knp_disqus:
-    api_key: %knp_disqus.api_key%
+#knp_disqus:
+#    api_key: "%knp_disqus.api_key%"
 
 liip_imagine:
     loaders:
         default:
             filesystem:
-                data_root: '%web_dir%'
+                data_root: "%web_dir%"
     resolvers:
         default:
             web_path:
-                web_root: '%web_dir%'
+                web_root: "%web_dir%"
     filter_sets:
         100_100:
             format: jpeg
@@ -186,9 +186,9 @@ liip_theme:
         #app_resource:
             #- %%site_dir%%/modules/%%bundle_name%%/%%module_theme%%/%%template%%
         bundle_resource_dir:
-            - %%site_dir%%/modules/%%bundle_name%%/%%module_theme%%/%%template%%
+            - "%%site_dir%%/modules/%%bundle_name%%/%%module_theme%%/%%template%%"
         bundle_resource:
-            - %%site_dir%%/modules/%%bundle_name%%/%%module_theme%%/%%template%%
+            - "%%site_dir%%/modules/%%bundle_name%%/%%module_theme%%/%%template%%"
 
 mopa_bootstrap:
     form:
@@ -218,37 +218,37 @@ smart_rich_editor:
     include_jquery: false
     tinymce_jquery: true
     textarea_class: 'wysiwyg'
-    language: %locale%
+    language: "%locale%"
     theme:
         advanced:
             file_browser_callback : 'elFinderBrowser'
-            theme: "advanced"
-            plugins: "autolink,lists,pagebreak,style,layer,table,save,advhr,advimage,advlink,emotions,iespell,inlinepopups,insertdatetime,preview,media,searchreplace,print,contextmenu,paste,directionality,fullscreen,noneditable,visualchars,nonbreaking,xhtmlxtras,template,advlist"
-            theme_advanced_buttons1: "save,newdocument,|,bold,italic,underline,strikethrough,|,justifyleft,justifycenter,justifyright,justifyfull,styleselect,formatselect,fontselect,fontsizeselect"
-            theme_advanced_buttons2: "cut,copy,paste,pastetext,pasteword,|,search,replace,|,bullist,numlist,|,outdent,indent,blockquote,|,undo,redo,|,link,unlink,anchor,image,cleanup,help,code,|,insertdate,inserttime,preview,|,forecolor,backcolor"
-            theme_advanced_buttons3: "tablecontrols,|,hr,removeformat,visualaid,|,sub,sup,|,charmap,emotions,iespell,media,advhr,|,print,|,ltr,rtl,|,fullscreen"
-            theme_advanced_toolbar_location: "top"
-            theme_advanced_toolbar_align: "left"
-            theme_advanced_statusbar_location: "bottom"
+            theme: 'advanced'
+            plugins: 'autolink,lists,pagebreak,style,layer,table,save,advhr,advimage,advlink,emotions,iespell,inlinepopups,insertdatetime,preview,media,searchreplace,print,contextmenu,paste,directionality,fullscreen,noneditable,visualchars,nonbreaking,xhtmlxtras,template,advlist'
+            theme_advanced_buttons1: 'save,newdocument,|,bold,italic,underline,strikethrough,|,justifyleft,justifycenter,justifyright,justifyfull,styleselect,formatselect,fontselect,fontsizeselect'
+            theme_advanced_buttons2: 'cut,copy,paste,pastetext,pasteword,|,search,replace,|,bullist,numlist,|,outdent,indent,blockquote,|,undo,redo,|,link,unlink,anchor,image,cleanup,help,code,|,insertdate,inserttime,preview,|,forecolor,backcolor'
+            theme_advanced_buttons3: 'tablecontrols,|,hr,removeformat,visualaid,|,sub,sup,|,charmap,emotions,iespell,media,advhr,|,print,|,ltr,rtl,|,fullscreen'
+            theme_advanced_toolbar_location: 'top'
+            theme_advanced_toolbar_align: 'left'
+            theme_advanced_statusbar_location: 'bottom'
             theme_advanced_resizing: true
             theme_advanced_resizing_use_cookie: true
             theme_advanced_resize_horizontal: false
             force_br_newlines : false
-            forced_root_block : ""
+            forced_root_block : ''
             convert_urls : false
             relative_urls: false
-            width: "100%"
+            width: '100%'
             height: 380
-            content_css: "asset[bundles/felib/tinymce/content.css]"
+            content_css: 'asset[bundles/felib/tinymce/content.css]'
         simple:
-            theme: "simple"
+            theme: 'simple'
             force_br_newlines : false
-            forced_root_block : ""
+            forced_root_block : ''
             convert_urls : false
             relative_urls: false
-            width: "100%"
+            width: '100%'
             height: 180
-            content_css: "asset[bundles/felib/tinymce/content.css]"
+            content_css: 'asset[bundles/felib/tinymce/content.css]'
 
 stfalcon_tinymce:
     use_callback_tinymce_init: true
@@ -257,23 +257,23 @@ stfalcon_tinymce:
         advanced:
             file_browser_callback: 'elFinderBrowser'
             plugins:
-                - "advlist autolink lists link image charmap print preview hr anchor pagebreak"
-                - "searchreplace wordcount visualblocks visualchars code fullscreen"
-                - "insertdatetime media nonbreaking save table contextmenu directionality"
-                - "emoticons template paste textcolor"
-            toolbar1: "insertfile undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image | preview media | forecolor backcolor emoticons"
+                - 'advlist autolink lists link image charmap print preview hr anchor pagebreak'
+                - 'searchreplace wordcount visualblocks visualchars code fullscreen'
+                - 'insertdatetime media nonbreaking save table contextmenu directionality'
+                - 'emoticons template paste textcolor'
+            toolbar1: 'insertfile undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image | preview media | forecolor backcolor emoticons'
             image_advtab: true
             force_br_newlines : false
-            forced_root_block : ""
+            forced_root_block : ''
             convert_urls : false
             relative_urls: false
             height: 380
-            content_css: "asset[bundles/felib/tinymce/content.css]"
+            content_css: 'asset[bundles/felib/tinymce/content.css]'
 
 tagcache:
-    driver:        %tagcache_driver% # Memcache, Memcached, File, Sqlite, Apc, Nullcache
+    driver:        "%tagcache_driver%" # Memcache, Memcached, File, Sqlite, Apc, Nullcache
     #debug:         %kernel.debug%
-    namespace:     %secret%
+    namespace:     "%secret%"
     options:
         cache_dir: "%kernel.cache_dir%/smart_core_tagcache"
         hashkey:   true

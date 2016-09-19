@@ -9,7 +9,7 @@ use Symfony\Component\HttpKernel\Kernel as BaseKernel;
 
 abstract class CMSAppKernel extends BaseKernel
 {
-    const VERSION = 'v0.1';
+    const VERSION = 'v0.2';
 
     /** @var string  */
     protected $siteName = null;
@@ -148,6 +148,13 @@ abstract class CMSAppKernel extends BaseKernel
      */
     protected function registerCmsDependencyBundles(&$bundles)
     {
+        /**
+         * Not support for Symfony 3.x
+         *
+         * "happyr/slugify-bundle": "*",
+         * "mremi/templating-extra-bundle": "dev-master",
+         * "jms/debugging-bundle": "dev-master",
+         */
         $bundles[] = new \Doctrine\Bundle\DoctrineBundle\DoctrineBundle();
         $bundles[] = new \Sensio\Bundle\FrameworkExtraBundle\SensioFrameworkExtraBundle();
         $bundles[] = new \Symfony\Bundle\FrameworkBundle\FrameworkBundle();
@@ -166,7 +173,7 @@ abstract class CMSAppKernel extends BaseKernel
         $bundles[] = new \JMS\SerializerBundle\JMSSerializerBundle();
         //$bundles[] = new \HWI\Bundle\OAuthBundle\HWIOAuthBundle();
         $bundles[] = new \Knp\Bundle\GaufretteBundle\KnpGaufretteBundle();
-        $bundles[] = new \Knp\Bundle\DisqusBundle\KnpDisqusBundle();
+        //$bundles[] = new \Knp\Bundle\DisqusBundle\KnpDisqusBundle();
         $bundles[] = new \Knp\Bundle\MenuBundle\KnpMenuBundle();
         //$bundles[] = new \Knp\RadBundle\KnpRadBundle();
         $bundles[] = new \Liip\ThemeBundle\LiipThemeBundle();
