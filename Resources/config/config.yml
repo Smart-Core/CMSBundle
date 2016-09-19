@@ -48,10 +48,12 @@ doctrine_cache:
                 directory: "%kernel.cache_dir%/smart_blog"
 
 fm_elfinder:
+    assets_path: /assets
     instances:
         default:
             locale: "%locale%"  # defaults to current request locale
             editor: tinymce     # other choices are ckeditor, tinymce or simple
+            theme: smoothness
             tinymce_popup_path: 'asset[bundles/stfalcontinymce/vendor/tiny_mce/tiny_mce_popup.js]'
             fullscreen: true    # defaults true, applies to simple and ckeditor editors
             include_assets: true # disable if you want to handle loading of the javascript and css assets yourself
