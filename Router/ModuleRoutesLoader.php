@@ -7,6 +7,9 @@ use Symfony\Component\Config\Loader\Loader;
 use Symfony\Component\DependencyInjection\ContainerAwareTrait;
 use Symfony\Component\Routing\RouteCollection;
 
+/**
+ * Загрузчик маршрутов модулей.
+ */
 class ModuleRoutesLoader extends Loader implements LoaderInterface
 {
     use ContainerAwareTrait;

@@ -10,6 +10,7 @@ use SmartCore\Bundle\CMSBundle\Entity\Region;
 use SmartCore\Bundle\CMSBundle\Form\Type\NodeDefaultPropertiesFormType;
 use SmartCore\Bundle\CMSBundle\Form\Type\NodeFormType;
 use SmartCore\Bundle\CMSBundle\Module\AbstractNodePropertiesFormType;
+use SmartCore\Bundle\CMSBundle\Module\ModuleBundle;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\HttpKernel\KernelInterface;
 
@@ -399,7 +400,7 @@ class EngineNode
         try {
             $module = $this->kernel->getBundle($node->getModule().'Module');
 
-            if ($module instanceof \SmartCore\Bundle\CMSBundle\Module\ModuleBundle) {
+            if ($module instanceof ModuleBundle) {
                 $module->deleteNode($node);
             }
         } catch (\InvalidArgumentException $e) {

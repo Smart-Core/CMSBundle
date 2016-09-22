@@ -53,7 +53,7 @@ class NodeRouter extends Router
                 }
             }
 
-            $routeParams = $this->mycontainer->get('request')->attributes->get('_route_params', null);
+            $routeParams = $this->mycontainer->get('request_stack')->getCurrentRequest()->attributes->get('_route_params', null);
 
             if (isset($routeParams['_folderPath']) and (!isset($parameters['_folderPath']) or empty($parameters['_folderPath']))) {
                 $parameters['_folderPath'] = empty($routeParams['_folderPath']) ? $this->rootHash : $routeParams['_folderPath'];

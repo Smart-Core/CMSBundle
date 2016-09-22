@@ -2,6 +2,7 @@
 
 namespace SmartCore\Bundle\CMSBundle\Listener;
 
+use SmartCore\Bundle\CMSBundle\Controller\EngineController;
 use SmartCore\Bundle\CMSBundle\Engine\EngineContext;
 use SmartCore\Bundle\CMSBundle\Engine\EngineFolder;
 use SmartCore\Bundle\CMSBundle\Engine\EngineModule;
@@ -80,7 +81,7 @@ class ModuleControllerModifierListener
                 }
 
                 if (!$isValidRequiredParams) {
-                    $controller[0] = new \SmartCore\Bundle\CMSBundle\Controller\EngineController();
+                    $controller[0] = new EngineController();
                     $controller[1] = 'moduleNotConfiguredAction';
                     $event->setController($controller);
 

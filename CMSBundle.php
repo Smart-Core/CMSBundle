@@ -2,6 +2,7 @@
 
 namespace SmartCore\Bundle\CMSBundle;
 
+use SmartCore\Bundle\CMSBundle\DependencyInjection\Compiler\ChangeRouterClassPass;
 use SmartCore\Bundle\CMSBundle\DependencyInjection\Compiler\FormPass;
 use SmartCore\Bundle\CMSBundle\DependencyInjection\Compiler\ModulesRoutingResolverPass;
 use SmartCore\Bundle\CMSBundle\DependencyInjection\Compiler\RemoveTagcacheActionCacheListenerPass;
@@ -20,6 +21,7 @@ class CMSBundle extends Bundle
     {
         parent::build($container);
 
+        $container->addCompilerPass(new ChangeRouterClassPass());
         $container->addCompilerPass(new ModulesRoutingResolverPass());
         $container->addCompilerPass(new FormPass());
         $container->addCompilerPass(new RemoveTagcacheActionCacheListenerPass()); //, PassConfig::TYPE_AFTER_REMOVING);
