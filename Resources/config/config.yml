@@ -48,7 +48,7 @@ doctrine_cache:
                 directory: "%kernel.cache_dir%/smart_blog"
 
 fm_elfinder:
-    assets_path: /assets
+    assets_path: /bundles/components
     instances:
         default:
             locale: "%locale%"  # defaults to current request locale
