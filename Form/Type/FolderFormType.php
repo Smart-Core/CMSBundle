@@ -58,19 +58,19 @@ class FolderFormType extends AbstractType
             ->add('title', null, ['attr' => ['autofocus' => 'autofocus']])
             ->add('uri_part')
             ->add('description')
-            ->add('parent_folder', FolderTreeType::class) // 'cms_folder_tree'
-            ->add('router_node_id', ChoiceType::class, [ // 'choice'
+            ->add('parent_folder', FolderTreeType::class)
+            ->add('router_node_id', ChoiceType::class, [
                 'choices'  => $routedNodes,
                 'required' => false,
             ])
             ->add('position')
             ->add('is_active', null, ['required' => false])
             ->add('is_file',   null, ['required' => false])
-            ->add('template_inheritable', ChoiceType::class, [ // 'choice'
+            ->add('template_inheritable', ChoiceType::class, [
                 'choices'  => $templates,
                 'required' => false,
             ])
-            ->add('template_self', ChoiceType::class, [ //'choice'
+            ->add('template_self', ChoiceType::class, [
                 'choices'  => $templates,
                 'required' => false,
             ])
