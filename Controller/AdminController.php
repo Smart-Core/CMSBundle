@@ -82,7 +82,7 @@ class AdminController extends Controller
         ];
         $isDebug = $this->get('kernel')->isDebug() ? 'true' : 'false';
         $data[] = [
-            'title' => 'Symfony2 Framework version',
+            'title' => 'Symfony Framework version',
             'value' => Kernel::VERSION.' (debug = '.$isDebug.')',
             'required' => '',
             'recomended' => '',
