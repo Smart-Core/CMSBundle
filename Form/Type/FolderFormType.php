@@ -88,7 +88,7 @@ class FolderFormType extends AbstractType
         ]);
     }
 
-    public function getName()
+    public function getBlockPrefix()
     {
         return 'smart_core_cms_folder';
     }

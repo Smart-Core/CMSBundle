@@ -4,6 +4,7 @@ namespace SmartCore\Bundle\CMSBundle\Form\Type;
 
 use Doctrine\ORM\EntityRepository;
 use SmartCore\Bundle\CMSBundle\Container;
+use SmartCore\Bundle\CMSBundle\Engine\EngineModule;
 use SmartCore\Bundle\CMSBundle\Entity\Node;
 use SmartCore\Bundle\CMSBundle\Form\Tree\FolderTreeType;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
@@ -14,6 +15,17 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class NodeFormType extends AbstractType
 {
+    /** @var EngineModule */
+    protected $cmsModule;
+
+    /**
+     * @param EngineModule $engineModule
+     */
+    public function __construct(EngineModule $engineModule)
+    {
+        $this->cmsModule = $engineModule;
+    }
+
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         // Запрос списка областей, чтобы в случае отсутствия, был создан дефолтная область.
@@ -21,12 +33,12 @@ class NodeFormType extends AbstractType
         Container::get('cms.region')->all();
 
         $modules = [];
-        foreach (Container::get('cms.module')->all() as $module_name => $_dummy) {
+        foreach ($this->cmsModule->all() as $module_name => $_dummy) {
             $modules[$module_name] = $module_name;
         }
 
         $moduleThemes = [];
-        foreach (Container::get('cms.module')->getThemes($options['data']->getModule().'Module') as $theme) {
+        foreach ($this->cmsModule->getThemes($options['data']->getModule().'Module') as $theme) {
             $moduleThemes[$theme] = $theme;
         }
 
@@ -36,7 +48,7 @@ class NodeFormType extends AbstractType
                 'data' => 'Texter', // @todo настройку модуля по умолчанию.
             ])
             ->add('folder', FolderTreeType::class)
-            ->add('region', EntityType::class, [ // 'entity'
+            ->add('region', EntityType::class, [
                 'class' => 'CMSBundle:Region',
                 'query_builder' => function (EntityRepository $er) {
                     return $er->createQueryBuilder('b')->orderBy('b.position', 'ASC');
@@ -45,8 +57,8 @@ class NodeFormType extends AbstractType
             ])
             ->add('controls_in_toolbar', ChoiceType::class, [
                 'choices' => [
-                    Node::TOOLBAR_NO => 'Никогда',
-                    Node::TOOLBAR_ONLY_IN_SELF_FOLDER => 'Только в собственной папке',
+                    'Никогда' => Node::TOOLBAR_NO,
+                    'Только в собственной папке' => Node::TOOLBAR_ONLY_IN_SELF_FOLDER,
                     //Node::TOOLBAR_ALWAYS => 'Всегда', // @todo
                 ],
             ])
@@ -75,7 +87,7 @@ class NodeFormType extends AbstractType
         ]);
     }
 
-    public function getName()
+    public function getBlockPrefix()
     {
         return 'smart_core_cms_node';
     }

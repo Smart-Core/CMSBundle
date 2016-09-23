@@ -72,7 +72,7 @@ class EngineRegion
      */
     public function createForm($data = null, array $options = [])
     {
-        return $this->formFactory->create(new RegionFormType(), $data, $options);
+        return $this->formFactory->create(RegionFormType::class, $data, $options);
     }
 
     /**

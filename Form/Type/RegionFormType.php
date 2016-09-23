@@ -2,6 +2,7 @@
 
 namespace SmartCore\Bundle\CMSBundle\Form\Type;
 
+use SmartCore\Bundle\CMSBundle\Form\Tree\FolderTreeType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -14,7 +15,7 @@ class RegionFormType extends AbstractType
             ->add('name', null, ['attr' => ['autofocus' => 'autofocus']])
             ->add('description')
             ->add('position')
-            ->add('folders', 'cms_folder_tree', [
+            ->add('folders', FolderTreeType::class, [
                 //'attr'        => ['style' => 'height: 300px;'],
                 'only_active' => true,
                 'expanded'    => true,
@@ -32,7 +33,7 @@ class RegionFormType extends AbstractType
         ]);
     }
 
-    public function getName()
+    public function getBlockPrefix()
     {
         return 'smart_core_cms_region';
     }

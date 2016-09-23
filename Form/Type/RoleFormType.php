@@ -26,7 +26,7 @@ class RoleFormType extends AbstractType
         ]);
     }
 
-    public function getName()
+    public function getBlockPrefix()
     {
         return 'smart_core_cms_role';
     }
