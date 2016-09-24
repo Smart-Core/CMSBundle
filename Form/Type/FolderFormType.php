@@ -2,7 +2,7 @@
 
 namespace SmartCore\Bundle\CMSBundle\Form\Type;
 
-use SmartCore\Bundle\CMSBundle\Container;
+use SmartCore\Bundle\CMSBundle\Entity\Folder;
 use SmartCore\Bundle\CMSBundle\Form\Tree\FolderTreeType;
 use SmartCore\Bundle\SeoBundle\Form\Type\MetaFormType;
 use Symfony\Component\DependencyInjection\ContainerAwareTrait;
@@ -20,11 +20,9 @@ class FolderFormType extends AbstractType
     /**
      * @param ContainerInterface $container
      */
-    //public function __construct(ContainerInterface $container)
-    public function __construct()
+    public function __construct(ContainerInterface $container)
     {
-        //$this->container = $container;
-        $this->container = Container::getContainer();
+        $this->container = $container;
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options)
@@ -84,7 +82,7 @@ class FolderFormType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
-            'data_class' => 'SmartCore\Bundle\CMSBundle\Entity\Folder',
+            'data_class' => Folder::class,
         ]);
     }
 
