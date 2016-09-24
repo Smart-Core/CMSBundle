@@ -258,6 +258,7 @@ stfalcon_tinymce:
     theme:
         advanced:
             file_browser_callback: 'elFinderBrowser'
+            skin: lightgray-gradient
             plugins:
                 - 'advlist autolink lists link image charmap print preview hr anchor pagebreak'
                 - 'searchreplace wordcount visualblocks visualchars code fullscreen'
