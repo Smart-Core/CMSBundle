@@ -28,6 +28,7 @@ class ModuleThemeLocator extends FileLocator
     protected function getPathsForBundleResource($parameters)
     {
         $parameters['%site_dir%']     = $this->kernel->getBundle('SiteBundle')->getPath().'/Resources';
+        $parameters['%cms_dir%']      = $this->kernel->getBundle('CMSBundle')->getPath().'/Resources';
         $parameters['%module_theme%'] = $this->moduleTheme;
 
         return parent::getPathsForBundleResource($parameters);

@@ -48,4 +48,52 @@ class FilesystemLoader extends BaseFilesystemLoader
     {
         return $this->locator;
     }
+
+    /**
+     * Добавление пути после app.
+     *
+     * @param string $path      A path where to look for templates
+     * @param string $namespace A path name
+     *
+     * @throws \Twig_Error_Loader
+     */
+    public function addCmsAppPath($path, $namespace = self::MAIN_NAMESPACE)
+    {
+        // invalidate the cache
+        $this->cache = $this->errorCache = array();
+
+        if (!is_dir($path)) {
+            throw new \Twig_Error_Loader(sprintf('The "%s" directory does not exist.', $path));
+        }
+
+        $path = rtrim($path, '/\\');
+
+        if (!isset($this->paths[$namespace])) {
+            $this->paths[$namespace][] = $path;
+        } else {
+            $existAppPathKey = false;
+
+            foreach ($this->paths[$namespace] as $key => $path2) {
+                if (strpos($path2, 'app/Resources/')) {
+                    $existAppPathKey = $key;
+                }
+            }
+
+            if ($existAppPathKey === false) {
+                array_unshift($this->paths[$namespace], $path);
+            } else {
+                $newPaths = [];
+
+                foreach ($this->paths[$namespace] as $key => $path2) {
+                    $newPaths[] = $path2;
+
+                    if ($key == $existAppPathKey) {
+                        $newPaths[] = $path;
+                    }
+                }
+
+                $this->paths[$namespace] = $newPaths;
+            }
+        }
+    }
 }

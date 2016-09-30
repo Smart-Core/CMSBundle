@@ -189,8 +189,10 @@ liip_theme:
             #- %%site_dir%%/modules/%%bundle_name%%/%%module_theme%%/%%template%%
         bundle_resource_dir:
             - "%%site_dir%%/modules/%%bundle_name%%/%%module_theme%%/%%template%%"
+            - "%%cms_dir%%/%%bundle_name%%/%%override_path%%"
         bundle_resource:
             - "%%site_dir%%/modules/%%bundle_name%%/%%module_theme%%/%%template%%"
+            - "%%cms_dir%%/%%bundle_name%%/%%override_path%%"
 
 mopa_bootstrap:
     form:
