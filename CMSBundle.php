@@ -6,6 +6,7 @@ use SmartCore\Bundle\CMSBundle\DependencyInjection\Compiler\ChangeRouterClassPas
 use SmartCore\Bundle\CMSBundle\DependencyInjection\Compiler\FormPass;
 use SmartCore\Bundle\CMSBundle\DependencyInjection\Compiler\ModulesRoutingResolverPass;
 use SmartCore\Bundle\CMSBundle\DependencyInjection\Compiler\RemoveTagcacheActionCacheListenerPass;
+use SmartCore\Bundle\CMSBundle\DependencyInjection\Compiler\TwigLoaderPass;
 use Symfony\Component\DependencyInjection\Compiler\PassConfig;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
@@ -22,6 +23,7 @@ class CMSBundle extends Bundle
         parent::build($container);
 
         $container->addCompilerPass(new ChangeRouterClassPass());
+        $container->addCompilerPass(new TwigLoaderPass());
         $container->addCompilerPass(new ModulesRoutingResolverPass());
         $container->addCompilerPass(new FormPass());
         $container->addCompilerPass(new RemoveTagcacheActionCacheListenerPass()); //, PassConfig::TYPE_AFTER_REMOVING);
