@@ -38,7 +38,6 @@
         "egulias/listeners-debug-command-bundle": "*",
         "elao/web-profiler-extra-bundle": "~2.0@dev",
         "friendsofsymfony/rest-bundle": "*",
-        "genemu/form-bundle": "dev-master",
         "incenteev/composer-parameter-handler": "~2.0",
         "intervention/image": "*",
         "jms/di-extra-bundle": "*",
