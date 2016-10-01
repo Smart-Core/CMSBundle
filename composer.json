@@ -44,7 +44,6 @@
         "jms/di-extra-bundle": "*",
         "jms/serializer-bundle": "*",
         "happyr/google-site-authenticator-bundle": "*",
-        "happyr/slugify-bundle": "*",
         "helios-ag/fm-elfinder-bundle": "~6",
         "helios-ag/fm-elfinder-php-connector": "*",
         "knplabs/knp-gaufrette-bundle": "*",
