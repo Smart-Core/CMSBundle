@@ -117,8 +117,20 @@ class AdminController extends Controller
     {
         $accelerators = '';
 
-        if (function_exists('apc_store') && ini_get('apc.enabled')) {
-            $accelerators = 'APC';
+        if (function_exists('apc_store')) {
+            if (ini_get('apc.enabled')) {
+                $accelerators = 'APC';
+            } else {
+                $accelerators = 'APC (disabled)';
+            }
+        }
+
+        if (function_exists('apcu_store')) {
+            if (ini_get('apc.enabled')) {
+                $accelerators = 'APCu';
+            } else {
+                $accelerators = 'APCu (disabled)';
+            }
         }
 
         if (extension_loaded('wincache') and ini_get('wincache.ocenabled')) {
