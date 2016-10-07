@@ -30,6 +30,20 @@ abstract class CMSAppKernel extends BaseKernel
     }
 
     /**
+     * {@inheritdoc}
+     */
+    public function getBundle($name, $first = true)
+    {
+        $moduleNname = str_replace('ModuleBundle', 'Module', $name);
+
+        if (isset($this->bundleMap[$moduleNname])) {
+            $name = $moduleNname;
+        }
+
+        return parent::getBundle($name, $first);
+    }
+
+    /**
      * Boots the current kernel.
      *
      * @api
