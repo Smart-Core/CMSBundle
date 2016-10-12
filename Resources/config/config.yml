@@ -46,6 +46,11 @@ doctrine_cache:
             type: file_system
             file_system:
                 directory: "%kernel.cache_dir%/smart_blog"
+        smart_settings:
+            namespace: "smart_settings_%secret%"
+            type: file_system # memcache
+            file_system:
+                directory: "%kernel.cache_dir%/smart_settings"
 
 fm_elfinder:
     assets_path: /bundles/components
@@ -253,6 +258,9 @@ smart_rich_editor:
             width: '100%'
             height: 180
             content_css: 'asset[bundles/felib/tinymce/content.css]'
+
+smart_settings:
+    doctrine_cache_provider: smart_settings
 
 stfalcon_tinymce:
     use_callback_tinymce_init: true
