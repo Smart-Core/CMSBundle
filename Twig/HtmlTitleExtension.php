@@ -26,9 +26,9 @@ class HtmlTitleExtension extends \Twig_Extension
         $this->breadcrumbs  = $breadcrumbs;
 
         $this->options = [
-            'delimiter'       => $engineManager->get('cms', 'html_title_delimiter'),
-            'site_short_name' => $engineManager->get('cms', 'site_short_name'),
-            'site_full_name'  => $engineManager->get('cms', 'site_full_name'),
+            'delimiter'       => $engineManager->get('cms:html_title_delimiter'),
+            'site_short_name' => $engineManager->get('cms:site_short_name'),
+            'site_full_name'  => $engineManager->get('cms:site_full_name'),
         ];
     }
 

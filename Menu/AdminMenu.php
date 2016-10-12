@@ -41,7 +41,7 @@ class AdminMenu implements ContainerAwareInterface
         $systemItems->addChild('Site structure', ['route' => 'cms_admin_structure'])->setExtras(['beforeCode' => '<i class="fa fa-folder-open"></i>']);
         $systemItems->addChild('Files',          ['route' => 'cms_admin_files'])->setExtras(['beforeCode' => '<i class="fa fa-download"></i>']);
         $systemItems->addChild('Users',          ['route' => 'cms_admin_user'])->setExtras(['beforeCode' => '<i class="fa fa-users"></i>']);
-        $systemItems->addChild('Configuration',  ['route' => 'cms_admin_config'])->setExtras(['beforeCode' => '<i class="fa fa-gears"></i>']);
+        $systemItems->addChild('Configuration',  ['route' => 'smart_core_settings'])->setExtras(['beforeCode' => '<i class="fa fa-gears"></i>']);
         $systemItems->addChild('Appearance',     ['route' => 'cms_admin_appearance'])->setExtras(['beforeCode' => '<i class="fa fa-image"></i>']);
         $systemItems->addChild('Backup',         ['route' => 'cms_admin_backup'])->setExtras(['beforeCode' => '<i class="fa fa-file-archive-o "></i>']);
 

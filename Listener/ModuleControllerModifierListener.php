@@ -8,6 +8,7 @@ use SmartCore\Bundle\CMSBundle\Engine\EngineFolder;
 use SmartCore\Bundle\CMSBundle\Engine\EngineModule;
 use SmartCore\Bundle\CMSBundle\Engine\EngineNode;
 use SmartCore\Bundle\CMSBundle\Twig\Loader\FilesystemLoader;
+use SmartCore\Bundle\SettingsBundle\Manager\SettingsManager;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\FilterControllerEvent;
 use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
@@ -29,6 +30,9 @@ class ModuleControllerModifierListener
     /** @var EngineNode */
     protected $engineNodeManager;
 
+    /** @var SettingsManager  */
+    protected $settingsManager;
+
     /** @var \SmartCore\Bundle\CMSBundle\Twig\Loader\FilesystemLoader  */
     protected $twigLoader;
 
@@ -44,12 +48,14 @@ class ModuleControllerModifierListener
         EngineFolder $engineFolder,
         EngineModule $engineModule,
         EngineNode $engineNodeManager,
+        SettingsManager $settingsManager,
         FilesystemLoader $twigLoader
     ) {
         $this->engineContext      = $engineContext;
         $this->engineFolder       = $engineFolder;
         $this->engineModule       = $engineModule;
         $this->engineNodeManager  = $engineNodeManager;
+        $this->settingsManager    = $settingsManager;
         $this->twigLoader         = $twigLoader;
     }
 
@@ -113,6 +119,10 @@ class ModuleControllerModifierListener
 
     public function onRequest(GetResponseEvent $event)
     {
+        if (HttpKernelInterface::MASTER_REQUEST === $event->getRequestType()) {
+            date_default_timezone_set($this->settingsManager->get('cms:timezone'));
+        }
+
         if (HttpKernelInterface::SUB_REQUEST === $event->getRequestType()) {
             $controller = explode(':', $event->getRequest()->attributes->get('_controller'));
 

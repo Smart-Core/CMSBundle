@@ -170,17 +170,6 @@ cms_admin_user_edit:
         _controller: CMSBundle:AdminUser:edit
 
 # Configuration
-cms_admin_config:
-    path: /config/
-    defaults:
-        _controller: CMSBundle:AdminConfig:index
-
-cms_admin_config_edit_setting:
-    path: /config/setting_{id}/
-    defaults:
-        _controller: CMSBundle:AdminConfig:editSetting
-    requirements:
-        id: \d+
 
 cms_admin_config_media:
     path: /config/media/
@@ -210,3 +199,7 @@ cms_admin_config_media_edit_collection:
         _controller: CMSBundle:AdminMediaLibrary:editCollection
     requirements:
         id: \d+
+
+admin_settings:
+    resource: '@SmartSettingsBundle/Resources/config/routing.yml'
+    prefix:   /config/

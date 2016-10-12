@@ -59,7 +59,7 @@ class EngineToolbar extends Controller
                         'config' => [
                             'title' => $t->trans('Configuration'),
                             'icon'  => 'tasks',
-                            'uri'   => $router->generate('cms_admin_config'),
+                            'uri'   => $router->generate('smart_core_settings'),
                         ],
                         'appearance' => [
                             'title' => $t->trans('Appearance'),
@@ -169,7 +169,7 @@ class EngineToolbar extends Controller
     {
         if ($this->get('security.authorization_checker')->isGranted('ROLE_ADMIN')) {
             $cms_front_controls = [
-                'twitterBootstrapVersion' => $this->get('settings')->get('cms', 'twitter_bootstrap_version'),
+                'twitterBootstrapVersion' => $this->get('settings')->get('cms:twitter_bootstrap_version'),
                 'toolbar' => $this->getArray(),
                 'nodes'   => $nodes_front_controls,
             ];

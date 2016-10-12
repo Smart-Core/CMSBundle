@@ -24,7 +24,7 @@
 
     <a href="{{ path('cms_admin_appearance_template_history', {'name': name}) }}" style="float: right;">История изменений шаблона <b>{{ name }}.html.twig</b></a>
 
-    {% if is_setting('cms', 'appearance_editor', 'ace') %}
+    {% if is_setting('cms:appearance_editor', 'ace') %}
     <style type="text/css" media="screen">
         body {
             margin-bottom: 0px;
@@ -49,7 +49,7 @@
         var editor = ace.edit('ace_template_twig');
         var textarea = $('textarea[name="template_code"]').hide();
         //editor.setTheme('ace/theme/idle_fingers');
-        editor.setTheme('ace/theme/{{ setting('cms', 'appearance_editor_theme') }}');
+        editor.setTheme('ace/theme/{{ setting('cms:appearance_editor_theme') }}');
         editor.focus();
         editor.getSession().setMode('ace/mode/twig');
         //editor.getSession().setValue($('#template_code_cache').text());
@@ -84,7 +84,7 @@
 
 {% block styles %}
     {{ parent() }}
-    {% if is_setting('cms', 'appearance_editor', 'codemirror') %}
+    {% if is_setting('cms:appearance_editor', 'codemirror') %}
     <link rel="stylesheet" href="{{ asset('bundles/felib/codemirror/lib/codemirror.css') }}">
     <link rel="stylesheet" href="{{ asset('bundles/felib/codemirror/addon/hint/show-hint.css') }}">
     <link rel="stylesheet" href="{{ asset('bundles/felib/codemirror/addon/display/fullscreen.css') }}">
@@ -109,7 +109,7 @@
 
 {% block scripts %}
     {{ parent() }}
-    {% if is_setting('cms', 'appearance_editor', 'codemirror') %}
+    {% if is_setting('cms:appearance_editor', 'codemirror') %}
     <script src="{{ asset('bundles/felib/codemirror/lib/codemirror.js') }}"></script>
     <script src="{{ asset('bundles/felib/codemirror/addon/display/fullscreen.js') }}"></script>
     <script src="{{ asset('bundles/felib/codemirror/addon/edit/closetag.js') }}"></script>
@@ -129,7 +129,7 @@
 
 {% block body_js %}
     {{ parent() }}
-    {% if is_setting('cms', 'appearance_editor', 'codemirror') %}
+    {% if is_setting('cms:appearance_editor', 'codemirror') %}
     <script type="text/javascript">
         window.onload = function() {
             editor = CodeMirror.fromTextArea(document.getElementById('template_code'), {
