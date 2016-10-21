@@ -44,7 +44,7 @@ class ApiEngineController extends Controller
 
         $controller['_node'] = $node;
 
-        $subRequest = $this->get('request')->duplicate(
+        $subRequest = $this->get('request_stack')->getCurrentRequest()->duplicate(
             $request->query->all(),
             $request->request->all(),
             $controller,
