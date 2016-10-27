@@ -83,7 +83,7 @@ class EngineController extends Controller
             return $twig->render("SiteBundle::{$cmsContext->getTemplate()}.html.twig", $nodesResponses);
         } catch (\Twig_Error_Loader $e) {
             if ($this->get('kernel')->isDebug()) {
-                return $twig->render('CMSBundle::error.html.twig', ['errors' => ['Unable to find template: SiteBundle::'.$cmsContext->getTemplate().'.html.twig']]);
+                return $twig->render('CMSBundle::error.html.twig', ['errors' => [$e->getMessage()]]);
             }
         }
 
