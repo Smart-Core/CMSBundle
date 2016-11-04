@@ -27,12 +27,12 @@ class CmsExtension extends \Twig_Extension
     public function getFunctions()
     {
         return [
-            'cms_current_folder'        => new \Twig_Function_Method($this, 'getCurrentFolder'),
-            'cms_folder_path'           => new \Twig_Function_Method($this, 'generateFolderPath'),
-            'cms_nodes_count_in_region' => new \Twig_Function_Method($this, 'nodesCountInRegion'),
-            'cms_get_notifications'     => new \Twig_Function_Method($this, 'getNotifications'),
-            'cms_version'               => new \Twig_Function_Method($this, 'getCMSKernelVersion'),
-            'cms_context_set'           => new \Twig_Function_Method($this, 'cmsContextSet'),
+            new \Twig_SimpleFunction('cms_current_folder',  [$this, 'getCurrentFolder']),
+            new \Twig_SimpleFunction('cms_folder_path',  [$this, 'generateFolderPath']),
+            new \Twig_SimpleFunction('cms_nodes_count_in_region',  [$this, 'nodesCountInRegion']),
+            new \Twig_SimpleFunction('cms_get_notifications',  [$this, 'getNotifications']),
+            new \Twig_SimpleFunction('cms_version',  [$this, 'getCMSKernelVersion']),
+            new \Twig_SimpleFunction('cms_context_set',  [$this, 'cmsContextSet']),
         ];
     }
 
