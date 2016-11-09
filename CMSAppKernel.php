@@ -56,8 +56,6 @@ abstract class CMSAppKernel extends BaseKernel
 
         parent::boot();
 
-        require_once $this->rootDir.'/../vendor/smart-core/simple-profiler-bundle/Profiler.php';
-
         \Profiler::setKernel($this);
     }
 
