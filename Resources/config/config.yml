@@ -2,7 +2,7 @@ parameters:
     admin_path: admin
     user_path: user
     user_class: App\User # for installation prosess only
-    genemu.form.file.root_dir: "%web_dir%"
+    genemu.form.file.root_dir: "%kernel.root_dir%/../web"
     liip_theme.file_locator.class: SmartCore\Bundle\CMSBundle\Twig\Locator\ModuleThemeLocator
     liip_theme.templating_locator.class: SmartCore\Bundle\CMSBundle\Twig\Locator\TemplateLocator
     liip_theme.filesystem_loader.class: SmartCore\Bundle\CMSBundle\Twig\Loader\FilesystemLoader
@@ -150,7 +150,7 @@ fos_user:
 genemu_form:
     image: ~
     captcha:
-        font_dir: "%web_dir%/bundles/genemuform/fonts"
+        font_dir: "%kernel.root_dir%/../web/bundles/genemuform/fonts"
     file:
         swf: /assets/uploadify/uploadify.swf
         folder: /uploads
@@ -166,11 +166,11 @@ liip_imagine:
     loaders:
         default:
             filesystem:
-                data_root: "%web_dir%"
+                data_root: "%kernel.root_dir%/../web"
     resolvers:
         default:
             web_path:
-                web_root: "%web_dir%"
+                web_root: "%kernel.root_dir%/../web"
     filter_sets:
         100_100:
             format: jpeg
