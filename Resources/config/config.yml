@@ -35,22 +35,22 @@ doctrine_cache:
             namespace: "smart_texter_%secret%"
             type: file_system # memcache
             file_system:
-                directory: "%kernel.cache_dir%/smart_texter"
+                directory: "%kernel.cache_dir%/smart_core/texter"
         cms:
             namespace: "cms_%secret%"
             type: file_system
             file_system:
-                directory: "%kernel.cache_dir%/smart_core_cms"
+                directory: "%kernel.cache_dir%/smart_core/cms"
         smart_blog: # @todo убрать
             namespace: "smart_blog_%secret%"
             type: file_system
             file_system:
-                directory: "%kernel.cache_dir%/smart_blog"
+                directory: "%kernel.cache_dir%/smart_core/blog"
         smart_settings:
             namespace: "smart_settings_%secret%"
             type: file_system # memcache
             file_system:
-                directory: "%kernel.cache_dir%/smart_settings"
+                directory: "%kernel.cache_dir%/smart_core/settings"
 
 fm_elfinder:
     assets_path: /bundles/components
