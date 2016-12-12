@@ -1,6 +1,7 @@
 parameters:
     admin_path: admin
     cms_api: ajax
+    uploads_dir: uploads
     user_path: user
     user_class: App\User # for installation prosess only
     genemu.form.file.root_dir: "%kernel.root_dir%/../web"
@@ -135,7 +136,7 @@ fm_elfinder:
                         upload_max_size: 2M
                     uploads:
                         driver: LocalFileSystem
-                        path: uploads
+                        path: "%uploads_dir%"
                         upload_allow: ['image/png', 'image/jpg', 'image/jpeg']
                         upload_deny: ['all']
                         upload_max_size: 50M
@@ -172,7 +173,7 @@ fm_elfinder:
                         upload_max_size: 2M
                     uploads:
                         driver: LocalFileSystem
-                        path: uploads
+                        path: "%uploads_dir%"
                         upload_allow: ['image/png', 'image/jpg', 'image/jpeg']
                         upload_deny: ['all']
                         upload_max_size: 50M
@@ -199,7 +200,7 @@ genemu_form:
         font_dir: "%kernel.root_dir%/../web/bundles/genemuform/fonts"
     file:
         swf: /assets/uploadify/uploadify.swf
-        folder: /uploads
+        folder: "/%uploads_dir%"
 
 knp_menu:
     twig:
