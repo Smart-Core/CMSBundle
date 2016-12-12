@@ -18,7 +18,7 @@ monolog:
             # log all messages (since debug is the lowest level)
             level:    debug
             type:     stream
-            path:     '%kernel.logs_dir%/security.log'
+            path:     "%kernel.logs_dir%/security.log"
             channels: [ security ]
         main:
             type:         fingers_crossed
@@ -27,5 +27,5 @@ monolog:
             channels:     ['!security']
         nested:
             type:  stream
-            path:  %kernel.logs_dir%/%kernel.environment%.log
+            path:  "%kernel.logs_dir%/%kernel.environment%.log"
             level: debug

@@ -40,7 +40,7 @@ class ModuleAdminRoutesLoader extends Loader implements LoaderInterface
             $resource = $module['path'].'/Resources/config/routing_admin.yml';
             if (file_exists($resource)) {
                 $importedRoutes = $this->import('@'.$moduleName.'Module/Resources/config/routing_admin.yml', 'yaml');
-                $importedRoutes->addPrefix($this->container->getParameter('admin_path').'/'.$moduleName);
+                $importedRoutes->addPrefix($moduleName);
 
                 $collection->addCollection($importedRoutes);
             }

@@ -10,11 +10,6 @@ cms_admin:
     resource: routing_admin.yml
     prefix: /%admin_path%/
 
-# Подлючение маршрутов модулей в админку.
-cms_admin_module_routes:
-    resource: .
-    type: module_admin
-
 elfinder:
     resource: '@FMElfinderBundle/Resources/config/routing.yml'
 genemu_base64:
