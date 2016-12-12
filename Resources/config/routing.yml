@@ -1,24 +1,28 @@
+site:
+    resource: '@SiteBundle/Resources/config/routing.yml'
+    prefix: /
 
 cms_api:
-    resource: 'routing_api.yml'
-    prefix: /api/
+    resource: routing_api.yml
+    prefix: /%cms_api%/
 
 cms_admin:
-    resource: 'routing_admin.yml'
+    resource: routing_admin.yml
     prefix: /%admin_path%/
 
+# Подлючение маршрутов модулей в админку.
 cms_admin_module_routes:
     resource: .
     type: module_admin
 
-# ... other
-cms_admin_404:
-    path: /%admin_path%/{slug}
-    defaults:
-        _controller: CMSBundle:Admin:notFound
-        slug: ''
-    requirements:
-        slug: '.+'
+elfinder:
+    resource: '@FMElfinderBundle/Resources/config/routing.yml'
+genemu_base64:
+    resource: '@GenemuFormBundle/Resources/config/routing/base64.xml'
+genemu_image:
+    resource: '@GenemuFormBundle/Resources/config/routing/image.xml'
+genemu_upload:
+    resource: '@GenemuFormBundle/Resources/config/routing/upload.xml'
 
 cms_getprocessor:
     path: /{slug}
@@ -42,3 +46,23 @@ cms_postprocessor:
 cms_modules:
     resource: .
     type: modules_enabled
+
+fos_user_security:
+    resource: '@FOSUserBundle/Resources/config/routing/security.xml'
+    prefix: /%user_path%
+
+fos_user_profile:
+    resource: '@FOSUserBundle/Resources/config/routing/profile.xml'
+    prefix: /%user_path%
+
+fos_user_register:
+    resource: '@FOSUserBundle/Resources/config/routing/registration.xml'
+    prefix: /%user_path%/register
+
+fos_user_resetting:
+    resource: '@CMSBundle/Resources/config/routing/fosuser_resetting.xml'
+    prefix: /%user_path%/resetting
+
+fos_user_change_password:
+    resource: '@FOSUserBundle/Resources/config/routing/change_password.xml'
+    prefix: /%user_path%

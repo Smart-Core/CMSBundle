@@ -68,3 +68,12 @@ cms_admin_help:
     path: /help/
     defaults:
         _controller: CMSBundle:Admin:notFound
+
+# ... other
+cms_admin_404:
+    path: /{slug}
+    defaults:
+        _controller: CMSBundle:Admin:notFound
+        slug: ''
+    requirements:
+        slug: '.+'

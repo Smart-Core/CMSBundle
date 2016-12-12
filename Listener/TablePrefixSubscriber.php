@@ -11,12 +11,12 @@ class TablePrefixSubscriber implements EventSubscriber
     /**
      * @var string
      */
-    protected $prefix = '';
+    protected $prefix;
 
     /**
      * @param string $prefix
      */
-    public function __construct($prefix)
+    public function __construct($prefix = '')
     {
         $this->prefix = (string) $prefix;
     }

@@ -40,7 +40,7 @@ class HtmlTitleExtension extends \Twig_Extension
     public function getFunctions()
     {
         return [
-            'cms_html_title' => new \Twig_Function_Method($this, 'renderTitle'),
+            new \Twig_SimpleFunction('cms_html_title', [$this, 'renderTitle']),
         ];
     }
 
