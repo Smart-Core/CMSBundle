@@ -2,12 +2,34 @@
 
 namespace SmartCore\Bundle\CMSBundle\Twig\Loader;
 
+use Liip\ThemeBundle\ActiveTheme;
 use Liip\ThemeBundle\Twig\Loader\FilesystemLoader as BaseFilesystemLoader;
 use SmartCore\Bundle\CMSBundle\Entity\Node;
 use SmartCore\Bundle\CMSBundle\Twig\Locator\TemplateLocator;
+use Symfony\Component\Config\FileLocatorInterface;
+use Symfony\Component\Templating\TemplateNameParserInterface;
 
 class FilesystemLoader extends BaseFilesystemLoader
 {
+    /**
+     * Фикс для Symfony v3.2.1 где 3-им аргументом приходит root_dir.
+     *
+     * FilesystemLoader constructor.
+     *
+     * @param FileLocatorInterface        $locator
+     * @param TemplateNameParserInterface $parser
+     * @param null                        $path
+     * @param null                        $activeTheme
+     */
+    public function __construct(FileLocatorInterface $locator, TemplateNameParserInterface $parser, $path = null, $activeTheme = null)
+    {
+        if ($path instanceof ActiveTheme) {
+            $activeTheme = $path;
+        }
+
+        parent::__construct($locator, $parser, $activeTheme);
+    }
+
     /**
      * @param Node|null $node
      */
