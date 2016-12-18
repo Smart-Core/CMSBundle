@@ -177,6 +177,8 @@ abstract class CMSAppKernel extends BaseKernel
         $bundles[] = new \Symfony\Bundle\AsseticBundle\AsseticBundle();
         $bundles[] = new \Symfony\Bundle\DebugBundle\DebugBundle();
 
+        $bundles[] = new \Cache\AdapterBundle\CacheAdapterBundle();
+        $bundles[] = new \Cache\CacheBundle\CacheBundle();
         $bundles[] = new \Doctrine\Bundle\DoctrineCacheBundle\DoctrineCacheBundle();
         $bundles[] = new \FM\ElfinderBundle\FMElfinderBundle();
         $bundles[] = new \FOS\RestBundle\FOSRestBundle();
@@ -191,6 +193,7 @@ abstract class CMSAppKernel extends BaseKernel
         $bundles[] = new \Liip\ThemeBundle\LiipThemeBundle();
         $bundles[] = new \Liip\ImagineBundle\LiipImagineBundle();
         $bundles[] = new \Mopa\Bundle\BootstrapBundle\MopaBootstrapBundle();
+        $bundles[] = new \Oneup\FlysystemBundle\OneupFlysystemBundle();
         $bundles[] = new \RaulFraile\Bundle\LadybugBundle\RaulFraileLadybugBundle();
         $bundles[] = new \RickySu\TagcacheBundle\TagcacheBundle();
         $bundles[] = new \Smart\CoreBundle\SmartCoreBundle();
