@@ -1,8 +1,8 @@
 appearance_editor:
     type: ChoiceType
     choices:
-        ace: ace
-        codemirror: codemirror
+        ace: Ace
+        codemirror: Codemirror
     value: ace
 appearance_editor_theme: idle_fingers
 html_title_delimiter: '&ndash;'
@@ -11,8 +11,8 @@ site_short_name: Smart Core CMS
 twitter_bootstrap_version:
     type: ChoiceType
     choices:
-        2: 2
-        3: 3
+        2: v2.3.2
+        3: v3.3.7
     value: 3
 timezone:
     #title: Timezone
