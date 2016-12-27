@@ -4,6 +4,7 @@ appearance_editor:
         ace: Ace
         codemirror: Codemirror
     value: ace
+    personalize: true
 appearance_editor_theme: idle_fingers
 html_title_delimiter: '&ndash;'
 site_full_name: Smart Core CMS (based on Symfony2 Framework)
