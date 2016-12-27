@@ -19,10 +19,13 @@ timezone:
     #title: Timezone
     type: TimezoneType
     value: Europe/Moscow
-test_mutliselect:
+languages:
     type: ChoiceType
     expanded: true
+    multiple: true
+    description: Проверка мльтиселекта.
     choices:
         ru: Русский
         en: Английский
-    value: [ru, en]
+    value: [ru]
+    personalize: true
