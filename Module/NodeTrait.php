@@ -6,13 +6,11 @@ use SmartCore\Bundle\CMSBundle\Entity\Node;
 
 trait NodeTrait
 {
-    /**
-     * @var Node
-     */
+    /** @var  Node */
     protected $node;
 
     /**
-     * Установить параметры ноды.
+     * Установка параметров ноды.
      *
      * @todo сделать проверку на доступные параметры в классе и выдавать предупреждение.
      */
@@ -22,5 +20,13 @@ trait NodeTrait
         foreach ($node->getParams() as $key => $value) {
             $this->$key = $value;
         }
+    }
+
+    /**
+     * @return Node
+     */
+    public function getNode()
+    {
+        return $this->node;
     }
 }
