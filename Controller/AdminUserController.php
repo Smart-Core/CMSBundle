@@ -5,8 +5,8 @@ namespace SmartCore\Bundle\CMSBundle\Controller;
 use FOS\UserBundle\Event\FormEvent;
 use FOS\UserBundle\FOSUserEvents;
 use FOS\UserBundle\Event\GetResponseUserEvent;
+use Smart\CoreBundle\Controller\Controller;
 use SmartCore\Bundle\CMSBundle\Form\Type\RoleFormType;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -23,7 +23,7 @@ class AdminUserController extends Controller
      */
     public function indexAction()
     {
-        return $this->render('CMSBundle:AdminUser:index.html.twig', [
+        return $this->render('@CMS/AdminUser/index.html.twig', [
             'users' => $this->get('fos_user.user_manager')->findUsers(),
         ]);
     }
@@ -68,13 +68,13 @@ class AdminUserController extends Controller
                     $response = new RedirectResponse($url);
                 }
 
-                $this->get('session')->getFlashBag()->set('success', 'Новый пользователь <b>'.$user->getUsername().'</b> создан.');
+                $this->addFlash('success', 'Новый пользователь <b>'.$user->getUsername().'</b> создан.');
 
                 return $response;
             }
         }
 
-        return $this->render('CMSBundle:AdminUser:create.html.twig', [
+        return $this->render('@CMS/AdminUser/create.html.twig', [
             'form' => $form->createView(),
         ]);
     }
@@ -89,7 +89,12 @@ class AdminUserController extends Controller
      */
     public function editAction(Request $request, $id)
     {
-        $user = $this->get('fos_user.user_manager')->findUserBy(['id' => $id]);
+        /** @var $userManager \FOS\UserBundle\Model\UserManagerInterface */
+        $userManager = $this->get('fos_user.user_manager');
+        /** @var $dispatcher \Symfony\Component\EventDispatcher\EventDispatcherInterface */
+        $dispatcher = $this->get('event_dispatcher');
+
+        $user = $userManager->findUserBy(['id' => $id]);
         if (!is_object($user) || !$user instanceof UserInterface) {
             return $this->redirect($this->generateUrl('cms_admin_user'));
         }
@@ -101,14 +106,21 @@ class AdminUserController extends Controller
             $form->handleRequest($request);
 
             if ($form->isValid()) {
-                $this->get('fos_user.user_manager')->updateUser($user);
-                $this->get('session')->getFlashBag()->set('success', 'Данные пользовалеля <b>'.$user->getUsername().'</b> обновлены.');
+                $event = new GetResponseUserEvent($user, $request);
+                $dispatcher->dispatch(FOSUserEvents::PROFILE_EDIT_INITIALIZE, $event);
+
+                $userManager->updateUser($user);
+
+                $event = new GetResponseUserEvent($user, $request);
+                $dispatcher->dispatch(FOSUserEvents::PROFILE_EDIT_COMPLETED, $event);
+
+                $this->addFlash('success', 'Данные пользовалеля <b>'.$user->getUsername().'</b> обновлены.');
 
                 return $this->redirect($this->generateUrl('cms_admin_user'));
             }
         }
 
-        return $this->render('CMSBundle:AdminUser:edit.html.twig', [
+        return $this->render('@CMS/AdminUser/edit.html.twig', [
             'form' => $form->createView(),
         ]);
     }
@@ -128,16 +140,15 @@ class AdminUserController extends Controller
             $form->handleRequest($request);
             if ($form->isValid()) {
                 $role = $form->getData();
-                $em->persist($role);
-                $em->flush($role);
+                $this->persist($role, true);
 
-                $this->get('session')->getFlashBag()->add('success', "Роль <b>$role</b> создана."); // @todo перевод
+                $this->addFlash('success', "Роль <b>$role</b> создана.");
 
                 return $this->redirect($this->generateUrl('cms_admin_user_roles'));
             }
         }
 
-        return $this->render('CMSBundle:AdminUser:roles.html.twig', [
+        return $this->render('@CMS/AdminUser/roles.html.twig', [
             'form'  => $form->createView(),
             'roles' => $em->getRepository('CMSBundle:Role')->findAll(),
         ]);
@@ -161,16 +172,15 @@ class AdminUserController extends Controller
         if ($request->isMethod('POST')) {
             $form->handleRequest($request);
             if ($form->isValid()) {
-                $em->persist($role);
-                $em->flush($role);
+                $this->persist($role, true);
 
-                $this->get('session')->getFlashBag()->add('success', 'Роль обновлена.'); // @todo перевод
+                $this->addFlash('success', 'Роль обновлена.');
 
                 return $this->redirect($this->generateUrl('cms_admin_user_roles'));
             }
         }
 
-        return $this->render('CMSBundle:AdminUser:role_edit.html.twig', [
+        return $this->render('@CMS/AdminUser/role_edit.html.twig', [
             'form' => $form->createView(),
         ]);
     }
