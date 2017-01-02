@@ -18,13 +18,12 @@ class AdminMediaLibraryController extends Controller
      */
     public function indexAction()
     {
-        /** @var \Doctrine\ORM\EntityManager $em */
-        $em = $this->getDoctrine()->getManager();
+        $em = $this->get('doctrine.orm.entity_manager');
 
         $collections = $em->getRepository('SmartMediaBundle:Collection')->findAll();
         $storages    = $em->getRepository('SmartMediaBundle:Storage')->findAll();
 
-        return $this->render('CMSBundle:AdminMediaLibrary:index.html.twig', [
+        return $this->render('@CMS/AdminMediaLibrary/index.html.twig', [
             'collections'   => $collections,
             'storages'      => $storages,
         ]);
@@ -56,7 +55,7 @@ class AdminMediaLibraryController extends Controller
             }
         }
 
-        return $this->render('CMSBundle:AdminMediaLibrary:create_storage.html.twig', [
+        return $this->render('@CMS/AdminMediaLibrary/create_storage.html.twig', [
             'form'   => $form->createView(),
         ]);
     }
@@ -69,9 +68,7 @@ class AdminMediaLibraryController extends Controller
      */
     public function editStorageAction(Request $request, $id)
     {
-        /** @var \Doctrine\ORM\EntityManager $em */
-        $em = $this->getDoctrine()->getManager();
-
+        $em = $this->get('doctrine.orm.entity_manager');
         $storage = $em->find('SmartMediaBundle:Storage', $id);
 
         if (empty($storage)) {
@@ -97,7 +94,7 @@ class AdminMediaLibraryController extends Controller
             }
         }
 
-        return $this->render('CMSBundle:AdminMediaLibrary:edit_storage.html.twig', [
+        return $this->render('@CMS/AdminMediaLibrary/edit_storage.html.twig', [
             'form'   => $form->createView(),
         ]);
     }
@@ -131,7 +128,7 @@ class AdminMediaLibraryController extends Controller
             }
         }
 
-        return $this->render('CMSBundle:AdminMediaLibrary:create_collection.html.twig', [
+        return $this->render('@CMS/AdminMediaLibrary/create_collection.html.twig', [
             'form'   => $form->createView(),
         ]);
     }
@@ -144,9 +141,7 @@ class AdminMediaLibraryController extends Controller
      */
     public function editCollectionAction(Request $request, $id)
     {
-        /** @var \Doctrine\ORM\EntityManager $em */
-        $em = $this->getDoctrine()->getManager();
-
+        $em = $this->get('doctrine.orm.entity_manager');
         $collection = $em->find('SmartMediaBundle:Collection', $id);
 
         if (empty($collection)) {
@@ -172,7 +167,7 @@ class AdminMediaLibraryController extends Controller
             }
         }
 
-        return $this->render('CMSBundle:AdminMediaLibrary:edit_collection.html.twig', [
+        return $this->render('@CMS/AdminMediaLibrary/edit_collection.html.twig', [
             'form'   => $form->createView(),
         ]);
     }

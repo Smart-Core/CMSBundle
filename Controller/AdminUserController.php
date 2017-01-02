@@ -130,8 +130,7 @@ class AdminUserController extends Controller
      */
     public function rolesAction(Request $request)
     {
-        /** @var \Doctrine\ORM\EntityManager $em */
-        $em = $this->getDoctrine()->getManager();
+        $em = $this->get('doctrine.orm.entity_manager');
 
         $form = $this->createForm(RoleFormType::class);
         $form->remove('position');

@@ -16,7 +16,7 @@ class AdminAppearanceController extends Controller
      */
     public function indexAction()
     {
-        return $this->render('CMSBundle:AdminAppearance:index.html.twig', [
+        return $this->render('@CMS/AdminAppearance/index.html.twig', [
             'styles'         => $this->getStyles(),
             'styles_path'    => '/Resources/public/css/',
             'templates'      => $this->getTemplates(),
@@ -70,7 +70,7 @@ class AdminAppearanceController extends Controller
             }
         }
 
-        return $this->render('CMSBundle:AdminAppearance:template_edit.html.twig', [
+        return $this->render('@CMS/AdminAppearance/template_edit.html.twig', [
             'name'          => $name,
             'templates'     => $this->getTemplates(),
             'template_code' => $template_code,
@@ -84,15 +84,14 @@ class AdminAppearanceController extends Controller
      */
     public function templateHistoryAction($name)
     {
-        /** @var \Doctrine\ORM\EntityManager $em */
-        $em = $this->getDoctrine()->getManager();
+        $em = $this->get('doctrine.orm.entity_manager');
 
         $histories = $em->getRepository('CMSBundle:AppearanceHistory')->findBy([
             'path'       => '/Resources/views/',
             'filename'   => $name.'.html.twig',
         ], ['created_at' => 'DESC']);
 
-        return $this->render('CMSBundle:AdminAppearance:template_history.html.twig', [
+        return $this->render('@CMS/AdminAppearance/template_history.html.twig', [
             'name' => $name,
             'histories' => $histories,
         ]);
@@ -105,15 +104,14 @@ class AdminAppearanceController extends Controller
      */
     public function styleHistoryAction($name)
     {
-        /** @var \Doctrine\ORM\EntityManager $em */
-        $em = $this->getDoctrine()->getManager();
+        $em = $this->get('doctrine.orm.entity_manager');
 
         $histories = $em->getRepository('CMSBundle:AppearanceHistory')->findBy([
             'path'       => '/Resources/public/css/',
             'filename'   => $name,
         ], ['created_at' => 'DESC']);
 
-        return $this->render('CMSBundle:AdminAppearance:style_history.html.twig', [
+        return $this->render('@CMS/AdminAppearance/style_history.html.twig', [
             'name' => $name,
             'histories' => $histories,
         ]);
@@ -126,8 +124,7 @@ class AdminAppearanceController extends Controller
      */
     public function historyCodeAction($id)
     {
-        /** @var \Doctrine\ORM\EntityManager $em */
-        $em = $this->getDoctrine()->getManager();
+        $em = $this->get('doctrine.orm.entity_manager');
 
         $history = $em->getRepository('CMSBundle:AppearanceHistory')->find($id);
 
@@ -135,7 +132,7 @@ class AdminAppearanceController extends Controller
             throw $this->createNotFoundException();
         }
 
-        return $this->render('CMSBundle:AdminAppearance:history_code.html.twig', [
+        return $this->render('@CMS/AdminAppearance/history_code.html.twig', [
             'history' => $history,
         ]);
     }
@@ -147,8 +144,7 @@ class AdminAppearanceController extends Controller
      */
     public function historyRollbackAction($id)
     {
-        /** @var \Doctrine\ORM\EntityManager $em */
-        $em = $this->getDoctrine()->getManager();
+        $em = $this->get('doctrine.orm.entity_manager');
 
         $history = $em->getRepository('CMSBundle:AppearanceHistory')->find($id);
 

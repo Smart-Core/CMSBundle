@@ -10,18 +10,17 @@ use Symfony\Component\Console\Output\BufferedOutput;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpKernel\Kernel;
 
 class AdminController extends Controller
 {
     /**
-     * @return RedirectResponse
+     * @return Response
      */
     public function indexAction()
     {
         if (!$this->get('security.authorization_checker')->isGranted('ROLE_ADMIN')) {
-            return $this->render('CMSBundle:User:login.html.twig');
+            return $this->render('@CMS/User/login.html.twig');
         }
 
         $dashboard = [];
@@ -34,7 +33,7 @@ class AdminController extends Controller
             }
         }
 
-        return $this->render('CMSBundle:Admin:index.html.twig', [
+        return $this->render('@CMS/Admin/index.html.twig', [
             'dashboard' => $dashboard,
         ]);
     }
@@ -44,7 +43,7 @@ class AdminController extends Controller
      */
     public function notFoundAction()
     {
-        return $this->render('CMSBundle:Admin:not_found.html.twig', []);
+        return $this->render('@CMS/Admin/not_found.html.twig');
     }
 
     /**
@@ -52,13 +51,11 @@ class AdminController extends Controller
      */
     public function reportsAction()
     {
-        $system = [
-            'php' => $this->getPhpSettings(),
-            'platform' => $this->getPlatformInfo(),
-        ];
-
-        return $this->render('CMSBundle:Admin:reports.html.twig', [
-            'system' => $system,
+        return $this->render('@CMS/Admin/reports.html.twig', [
+            'system' => [
+                'php' => $this->getPhpSettings(),
+                'platform' => $this->getPlatformInfo(),
+            ],
         ]);
     }
 
@@ -105,6 +102,7 @@ class AdminController extends Controller
             'hint' => '',
             'warning' => 0,
         ];
+
         return $data;
     }
 
@@ -254,6 +252,7 @@ class AdminController extends Controller
             'hint' => '',
             'warning' => 0,
         ];
+
         return $data;
     }
     
@@ -266,7 +265,7 @@ class AdminController extends Controller
      */
     public function elfinderAction()
     {
-        return $this->render('CMSBundle:Admin:elfinder.html.twig', [
+        return $this->render('@CMS/Admin/elfinder.html.twig', [
             'fullscreen'    => true,
             'includeAssets' => $this->container->getParameter('fm_elfinder')['instances']['default']['include_assets'],
             'prefix'        => $this->container->getParameter('fm_elfinder')['assets_path'],
@@ -281,7 +280,7 @@ class AdminController extends Controller
      */
     public function moduleAction()
     {
-        return $this->render('CMSBundle:Admin:module.html.twig', [
+        return $this->render('@CMS/Admin/module.html.twig', [
             'modules' => $this->get('cms.module')->all(),
         ]);
     }
@@ -308,7 +307,7 @@ class AdminController extends Controller
             $this->get('cms.module')->install($filename);
         }
 
-        return $this->render('CMSBundle:Admin:module_install.html.twig', [
+        return $this->render('@CMS/Admin/module_install.html.twig', [
             'modules'  => $finder,
             'filename' => $filename,
         ]);
@@ -347,7 +346,7 @@ class AdminController extends Controller
         $finder = new Finder();
         $files = $finder->ignoreDotFiles(true)->in($dbdumper->getBackupsDir().$dbdumper->getPlatform());
 
-        return $this->render('CMSBundle:Admin:backup.html.twig', [
+        return $this->render('@CMS/Admin/backup.html.twig', [
             'files'  => $files,
         ]);
     }

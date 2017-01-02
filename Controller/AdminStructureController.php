@@ -22,7 +22,7 @@ class AdminStructureController extends Controller
             return $this->redirect($this->generateUrl('cms_admin_structure_folder_create'));
         }
 
-        return $this->render('CMSBundle:AdminStructure:structure.html.twig');
+        return $this->render('@CMS/AdminStructure/structure.html.twig');
     }
 
     /**
@@ -467,9 +467,7 @@ class AdminStructureController extends Controller
 
                 $node->getFolder()->setRouterNodeId(null);
 
-                $em = $this->getDoctrine()->getManager();
-                $em->persist($node);
-                $em->flush();
+                $this->persist($node, true);
 
                 $this->get('tagcache')->deleteTag('node');
 
@@ -479,11 +477,11 @@ class AdminStructureController extends Controller
                     return $this->get('cms.router')->redirect($node);
                 }
 
-                return $this->redirect($this->generateUrl('cms_admin_structure'));
+                return $this->redirectToRoute('cms_admin_structure');
             }
         }
 
-        return $this->render('CMSBundle:AdminStructure:node_edit.html.twig', [
+        return $this->render('@CMS/AdminStructure/node_edit.html.twig', [
             'allow_delete'    => true,
             'form'            => $form->createView(),
             'form_properties' => $form_properties->createView(),
