@@ -24,21 +24,23 @@ class EngineToolbar extends Controller
                 'administration' => [
                     'title' => $t->trans('Administration'),
                     'descr' => '',
+                    'icon' => 'admin',
+                    'onlyicon' => true,
                     'uri'   => $router->generate('cms_admin_index'),
                 ],
                 'menu' => [
                     'title' => $t->trans('Menu'),
                     'descr' => '',
-                    'icon' => 'wrench',
+                    'icon' => 'menu',
                     'items' => [
                         'structure' => [
                             'title' => $t->trans('Site structure'),
-                            'icon'  => 'book',
+                            'icon'  => 'structure',
                             'uri'   => $router->generate('cms_admin_structure'),
                         ],
                         'modules' => [
                             'title' => $t->trans('Modules'),
-                            'icon'  => 'cog',
+                            'icon'  => 'modules',
                             'uri'   => $router->generate('cms_admin_module'),
                         ],
                         'files' => [
@@ -48,27 +50,27 @@ class EngineToolbar extends Controller
                         ],
                         'regions' => [
                             'title' => $t->trans('Regions'),
-                            'icon'  => 'th',
+                            'icon'  => 'area',
                             'uri'   => $router->generate('cms_admin_structure_region'),
                         ],
                         'users' => [
                             'title' => $t->trans('Users'),
-                            'icon'  => 'user',
+                            'icon'  => 'users',
                             'uri'   => $router->generate('cms_admin_user'),
                         ],
                         'config' => [
                             'title' => $t->trans('Configuration'),
-                            'icon'  => 'tasks',
+                            'icon'  => 'conf',
                             'uri'   => $router->generate('smart_core_settings'),
                         ],
                         'appearance' => [
                             'title' => $t->trans('Appearance'),
-                            'icon'  => 'picture',
+                            'icon'  => 'code',
                             'uri'   => $router->generate('cms_admin_appearance'),
                         ],
                         'reports' => [
                             'title' => $t->trans('Reports'),
-                            'icon' => 'warning-sign',
+                            'icon' => 'report',
                             'uri' => $router->generate('cms_admin_reports'),
                         ],
                         /*
@@ -83,32 +85,32 @@ class EngineToolbar extends Controller
                 'structure' => [
                     'title' => '',
                     'descr' => $t->trans('Structure'),
-                    'icon'  => 'folder-open',
+                    'icon'  => 'folder',
+                    'onlyicon' => true,
                     'items' => [
                         'folder_edit' => [
                             'title' => $t->trans('Edit folder'),
-                            'icon'  => 'edit',
+                            'icon'  => 'edit-toolbar',
                             'uri'   => $router->generate('cms_admin_structure_folder', ['id' => $current_folder_id]),
                         ],
                         'folder_new' => [
                             'title' => $t->trans('Create folder'),
-                            'icon'  => 'plus',
+                            'icon'  => 'add',
                             'uri'   => $router->generate('cms_admin_structure_folder_create_in_folder', ['parent' => $current_folder_id]),
                         ],
-                        'diviver_1' => 'diviver',
                         'add_module' => [
                             'title' => $t->trans('Add module'),
-                            'icon'  => 'plus',
+                            'icon'  => 'add',
                             'uri'   => $router->generate('cms_admin_structure_node_create_in_folder', ['folder_pid' => $current_folder_id]),
                         ],
                     ],
                 ],
             ],
             'right' => [
-                'eip_toggle' => ['Режим правки: ОТКЛ', 'Режим правки: ВКЛ.'], // @todo перевод // [$t->trans('Viewing'), $t->trans('Edit')],
+                //'eip_toggle' => ['Режим правки: ОТКЛ', 'Режим правки: ВКЛ.'], // @todo перевод // [$t->trans('Viewing'), $t->trans('Edit')],
                 'user' => [
                     'title' => $this->container->get('security.token_storage')->getToken()->getUser()->getUserName(),
-                    'icon' => 'user',
+                    'icon' => 'user-setting',
                     'items' => [
                         /*
                         'admin' => [
@@ -121,14 +123,13 @@ class EngineToolbar extends Controller
                         'profile' => [
                             'title' => $t->trans('My profile'),
                             'uri'   => $router->generate('cms_admin_user_edit', ['id' => $this->container->get('security.token_storage')->getToken()->getUser()->getId()]),
-                            'icon'  => 'user',
+                            'icon'  => 'profile',
                             'overalay' => false,
                         ],
-                        'diviver_1' => 'diviver',
                         'logout' => [
                             'title' => $t->trans('Logout'),
                             'uri'   => $router->generate('cms_admin_logout'),
-                            'icon'  => 'off',
+                            'icon'  => 'exit',
                             'overalay' => false,
                         ],
                     ],
@@ -175,7 +176,7 @@ class EngineToolbar extends Controller
             ];
 
             $this->get('smart.felib')
-                ->call('bootstrap')
+                //->call('bootstrap')
                 ->call('jquery-cookie');
 
             $this->get('html')

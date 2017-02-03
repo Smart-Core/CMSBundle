@@ -1,3 +1,9 @@
+@import "style.min.css";
+@import "sprites-toolbar.min.css";
+@import "sprites-toolbar-hover.min.css";
+@import "sprites.min.css";
+@import "sprites-hover.min.css";
+
 body {
     /* @todo отступ сверху нужен для размещения тулбара, НО при узком окне (мобильная версия), тулбар тоже отступает сверху :( надо как-то починить ;) */
     /* padding-top: 60px;*/
