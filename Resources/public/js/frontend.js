@@ -8,7 +8,7 @@ $(document).ready(function () {
     }
 
     function renderToolbar() {
-        $('body')
+        $('body').css('padding-top', '2.5em')
             .prepend('<div class="cms-tool-bar--new">' +
                 '<div class="cms-tool-bar__container">' +
                 '<div class="cms-tool-bar__entity cms-tool-bar__menu-button">' +
@@ -22,21 +22,22 @@ $(document).ready(function () {
                 '</div>' +
                 '</div>' +
                 '<div class="cms-tool-bar__container--right">' +
-                '<div class="cms-tool-bar__entity cms-tool-bar__switcher cms-tool-bar__entity--switched">' +
-                '<label class="switch">' +
-                '<input type="checkbox">' +
-                '<div class="slider round">' +
-                '</div>' +
-                '</label>' +
-                '</div>' +
+                //'<div class="cms-tool-bar__entity cms-tool-bar__switcher cms-tool-bar__entity--switched">' +
+                //'<label class="switch">' +
+                //'<input type="checkbox">' +
+                //'<div class="slider round">' +
+                //'</div>' +
+                //'</label>' +
+                //'</div>' +
                 '</div>' +
                 '</div>' +
                 '</div>');
     }
 
     // Переключатель "просмотр" и "редактирование" на тулбаре.
-    $('.switch').click(function() {
-        if ($('.switch input').prop("checked")) {
+
+    //$('.switch').click(function() {
+      //  if ($('.switch input').prop("checked")) {
             /*
              if ($(this).attr('data-toggle') == 'button') {
              $('.cms-frontadmin-node').unbind('mouseenter mouseleave dblclick');
@@ -55,53 +56,62 @@ $(document).ready(function () {
                     if (typeof cms_front_controls.nodes[$(elem).attr('id')] === 'object') {
                         var node = cms_front_controls.nodes[$(elem).attr('id')];
 
-                        var node_buttons = '<div class="cms-frontadmin-node-buttons btn-group">';
+                        var node_buttons = '<ul class="cms-tool-node">';
 
                         // сначала поиск действия по умолчанию.
                         $.each(node, function(index, value) {
-                            if (value.descr != undefined) {
-                                var button_title = value.descr;
-                            } else {
-                                var button_title = '';
-                            }
-
+                            /*
+                                if (value.descr != undefined) {
+                                    var button_title = value.descr;
+                                } else {
+                                    var button_title = '';
+                                }
+                            */
+                            /*
                             if (value.default == true) {
-                                node_buttons += '<button OnClick="window.location=\'' + value.uri
-                                    + '?redirect_to=' + window.location.pathname + window.location.search
-                                    + '\'" title="' + button_title
-                                    + '" class="btn btn-mini btn-xs popup-trigger">' + value.title + '</button>';
+                                node_buttons += '<li><a OnClick="window.location=\'' + value.uri + '?redirect_to=' + window.location.pathname + window.location.search
+                                    + '\'" class="cms-tool-node"></a></li>';
                             }
+                            */
                         });
 
-                        node_buttons += '<button data-toggle="dropdown" class="btn btn-mini btn-xs dropdown-toggle"><span class="caret"></span></button>';
-                        node_buttons += '<ul class="dropdown-menu">';
+                        //node_buttons += '<button data-toggle="dropdown" class="btn btn-mini btn-xs dropdown-toggle"><span class="caret"></span></button>';
+                        //node_buttons += '<ul class="dropdown-menu">';
 
                         // затем отрисовка пунктов меню.
                         $.each(node, function(index, value) {
-                            if (value.descr != undefined) {
-                                var item_title = value.descr;
+
+                            /*
+                                if (value.descr != undefined) {
+                                    var item_title = value.descr;
+                                } else {
+                                    var item_title = '';
+                                }
+                            */
+
+                            if (value.default == true) {
+                                node_buttons += '<li><a style="background-color: white;" href="' + value.uri + '?redirect_to=' + window.location.pathname + window.location.search + '">' + '<i style="height: 24px; width: 24px; display: block;" class="cms-tool-bar__icon cms-tool-bar__icon--edit-module"></i>' + '</a>';
                             } else {
-                                var item_title = '';
+                                node_buttons += '<li><a style="background-color: white;" href="' + value.uri + '?redirect_to=' + window.location.pathname + window.location.search + '">' + '<i style="height: 24px; width: 24px; display: block;" class="cms-tool-bar__icon cms-tool-bar__icon--module"></i>' + '</a>';
                             }
 
-                            node_buttons += '<li><a class="popup-trigger" title="' + item_title
-                                + '" href="' + value.uri + '?redirect_to=' + window.location.pathname + window.location.search + '">' ;
-
+                            /*
                             if (value.default == true) {
                                 node_buttons += '<strong>' + value.title + '</strong></a></li>';
                             } else {
                                 node_buttons += value.title + '</a></li>';
                             }
+                            */
                         });
 
-                        node_buttons += '</ul></div>';
+                        node_buttons += '</ul>';
 
                         $(elem).prepend(node_buttons);
                     }
                 },
                 function(){
                     var elem = this;
-                    $(elem).find('.cms-frontadmin-node-buttons.btn-group').hide().remove();
+                    $(elem).find('.cms-tool-node').hide().remove();
                 }
             );
 
@@ -112,14 +122,14 @@ $(document).ready(function () {
                 }
             });
 
-            $.cookie('cms-frontadmin-mode', 'edit', { path: '/' }); // @todo настройку path в корень сайта.
-        } else {
-            $('.cms-frontadmin-node').removeClass('cms-frontadmin-node-mode-edit');
-            $('.cms-frontadmin-node').children('.cms-empty-node').remove();
-        }
+      //      $.cookie('cms-frontadmin-mode', 'edit', { path: '/' }); // @todo настройку path в корень сайта.
+       // } else {
+       //     $('.cms-frontadmin-node').removeClass('cms-frontadmin-node-mode-edit');
+        //    $('.cms-frontadmin-node').children('.cms-empty-node').remove();
+       // }
         //}
         //}
-    });
+   // });
 
 // Элементы справа
     if (typeof cms_front_controls.toolbar.right === 'object') {

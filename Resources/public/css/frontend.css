@@ -4,22 +4,20 @@
 @import "sprites.min.css";
 @import "sprites-hover.min.css";
 
-body {
-    /* @todo отступ сверху нужен для размещения тулбара, НО при узком окне (мобильная версия), тулбар тоже отступает сверху :( надо как-то починить ;) */
-    /* padding-top: 60px;*/
-}
 .cms-frontadmin-node {
     position: relative;
 }
 .cms-frontadmin-node:hover {
 
 }
+/*
 .cms-frontadmin-node-mode-edit {
     outline: 1px dashed gray;
 }
 .cms-frontadmin-node-mode-edit:hover {
     outline: 2px dashed red;
 }
+*/
 .cms-empty-node {
     height: 8px;
     width: 8px;
