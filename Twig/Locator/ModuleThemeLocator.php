@@ -21,6 +21,14 @@ class ModuleThemeLocator extends FileLocator
     }
 
     /**
+     * @return string|null
+     */
+    public function getModuleTheme()
+    {
+        return $this->moduleTheme;
+    }
+
+    /**
      * @param array $parameters
      *
      * @return array
