@@ -115,6 +115,20 @@ class Node implements \Serializable
     protected $is_use_eip;
 
     /**
+     * @var string|null
+     *
+     * @ORM\Column(type="string", nullable=true)
+     */
+    protected $code_before;
+
+    /**
+     * @var string|null
+     *
+     * @ORM\Column(type="string", nullable=true)
+     */
+    protected $code_after;
+
+    /**
      * @ORM\Column(type="text", nullable=true)
      */
     //protected $cache_params;
@@ -183,6 +197,8 @@ class Node implements \Serializable
             $this->is_use_eip,
             $this->module,
             $this->params,
+            $this->code_before,
+            $this->code_after,
             $this->folder,
             $this->folder_id,
             $this->region,
@@ -211,6 +227,8 @@ class Node implements \Serializable
             $this->is_use_eip,
             $this->module,
             $this->params,
+            $this->code_before,
+            $this->code_after,
             $this->folder,
             $this->folder_id,
             $this->region,
@@ -225,6 +243,46 @@ class Node implements \Serializable
             $this->deleted_at,
             $this->controller) = unserialize($serialized);
         //) = igbinary_unserialize($serialized);
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getCodeBefore()
+    {
+        return $this->code_before;
+    }
+
+    /**
+     * @param string $code_before
+     *
+     * @return $this
+     */
+    public function setCodeBefore($code_before)
+    {
+        $this->code_before = $code_before;
+
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getCodeAfter()
+    {
+        return $this->code_after;
+    }
+
+    /**
+     * @param string $code_after
+     *
+     * @return $this
+     */
+    public function setCodeAfter($code_after)
+    {
+        $this->code_after = $code_after;
+
+        return $this;
     }
 
     /**

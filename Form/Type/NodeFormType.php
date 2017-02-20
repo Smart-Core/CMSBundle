@@ -3,6 +3,7 @@
 namespace SmartCore\Bundle\CMSBundle\Form\Type;
 
 use Doctrine\ORM\EntityRepository;
+use Smart\CoreBundle\Form\DataTransformer\HtmlTransformer;
 use SmartCore\Bundle\CMSBundle\Container;
 use SmartCore\Bundle\CMSBundle\Engine\EngineModule;
 use SmartCore\Bundle\CMSBundle\Entity\Node;
@@ -28,7 +29,7 @@ class NodeFormType extends AbstractType
 
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        // Запрос списка областей, чтобы в случае отсутствия, был создан дефолтная область.
+        // Запрос списка областей, чтобы в случае отсутствия, была создана дефолтная область.
         // @todo убрать отсюда.
         Container::get('cms.region')->all();
 
@@ -70,6 +71,8 @@ class NodeFormType extends AbstractType
             ->add('description')
             ->add('position')
             ->add('priority')
+            ->add($builder->create('code_before')->addViewTransformer(new HtmlTransformer(false)))
+            ->add($builder->create('code_after')->addViewTransformer(new HtmlTransformer(false)))
             ->add('is_active', null, ['required' => false])
             ->add('is_cached', null, ['required' => false])
             ->add('is_use_eip', null, ['required' => false])

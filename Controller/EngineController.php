@@ -130,6 +130,9 @@ class EngineController extends Controller
                         '_route' => 'cms_getprocessor',
                         '_route_params' => $request->attributes->get('_route_params'),
                     ], $request->query->all());
+
+                    // Обрамление ноды пользовательским кодом.
+                    $moduleResponse->setContent($node->getCodeBefore().$moduleResponse->getContent().$node->getCodeAfter());
                 } else {
                     $moduleResponse = new Response('Module "'.$node->getModule().'" is unavailable.');
                 }
@@ -154,7 +157,7 @@ class EngineController extends Controller
 
                 if ($this->isGranted('ROLE_ADMIN') and $node->getIsUseEip()) {
                     $moduleResponse->setContent(
-                        "\n<div class=\"cms-frontadmin-node\" id=\"__node_{$node->getId()}\">\n".$moduleResponse->getContent()."\n</div>\n"
+                        "\n<div class=\"cms-frontadmin-node\" id=\"__node_{$node->getId()}\" data-module=\"{$node->getModule()}\">\n".$moduleResponse->getContent()."\n</div>\n"
                     );
                 }
 
