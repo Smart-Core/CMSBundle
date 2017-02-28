@@ -226,18 +226,18 @@ liip_imagine:
         default:
             web_path:
                 web_root: "%kernel.root_dir%/../web"
-    filter_sets:
-        100_100:
+    filter_sets: # Важно! символ подчеркивание игнорируется, а минус преобразуется в подчеркивание.
+        100x100:
             format: jpeg
             quality: 100
             filters:
                 thumbnail: { size: [100, 100], mode: inset }
-        200_200:
+        200x200:
             format: jpeg
             quality: 100
             filters:
                 thumbnail: { size: [200, 200], mode: inset }
-        300_300:
+        300x300:
             format: jpeg
             quality: 100
             filters:
