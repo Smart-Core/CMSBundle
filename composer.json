@@ -70,6 +70,7 @@
         "oneup/flysystem-bundle": "*",
         "phpdocumentor/reflection-docblock": "*",
         "rickysu/tagcache-bundle": "~0.1",
+        "stfalcon/tinymce-bundle": "v2.1",
 
         "smart-core/accelerator-cache-bundle": "~1.0@dev",
         "smart-core/ladybug-bundle": "~0.7",
