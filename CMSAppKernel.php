@@ -197,6 +197,7 @@ abstract class CMSAppKernel extends BaseKernel
         $bundles[] = new \RaulFraile\Bundle\LadybugBundle\RaulFraileLadybugBundle();
         $bundles[] = new \RickySu\TagcacheBundle\TagcacheBundle();
         $bundles[] = new \Smart\CoreBundle\SmartCoreBundle();
+        $bundles[] = new \SmartCore\Bundle\AcceleratorCacheBundle\AcceleratorCacheBundle();
         $bundles[] = new \SmartCore\Bundle\CMSBundle\CMSBundle();
         $bundles[] = new \SmartCore\Bundle\FelibBundle\FelibBundle();
         $bundles[] = new \SmartCore\Bundle\HtmlBundle\HtmlBundle();
