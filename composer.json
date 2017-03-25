@@ -53,6 +53,7 @@
         "friendsofsymfony/jsrouting-bundle": "*",
         "friendsofsymfony/http-cache-bundle": "*",
         "friendsofsymfony/rest-bundle": "*",
+        "friendsofsymfony/user-bundle": "~2.0@dev",
         "incenteev/composer-parameter-handler": "~2.0",
         "intervention/image": "*",
         "jms/di-extra-bundle": "*",
