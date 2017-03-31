@@ -175,6 +175,8 @@ class EngineRouter
                                 $data['node_routing']['controller']['options'] = $options['nodes'][$router_node_id];
                             }
 
+                            // Если нода подключена в корневую папку, то не используется собственный шаблон папки.
+                            $template_self = null;
                         } catch (ResourceNotFoundException $e) {
                             // Роутинг модуля не нашел запрошенного ресурса.
                         }
