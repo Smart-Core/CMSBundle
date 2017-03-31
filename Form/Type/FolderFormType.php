@@ -49,7 +49,7 @@ class FolderFormType extends AbstractType
                 $nodeTitle .= ' ('.$node->getDescription().')';
             }
 
-            $routedNodes[$node->getId()] = $nodeTitle;
+            $routedNodes[$nodeTitle] = $node->getId();
         }
 
         $builder
