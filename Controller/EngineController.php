@@ -10,6 +10,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\HttpKernel\HttpKernelInterface;
 
 class EngineController extends Controller
 {
@@ -21,12 +22,13 @@ class EngineController extends Controller
     protected $front_controls = [];
 
     /**
-     * @param Request $request
-     * @param string  $slug
+     * @param Request    $request
+     * @param string     $slug
+     * @param array|null $options
      *
      * @return Response
      */
-    public function runAction(Request $request, $slug)
+    public function runAction(Request $request, $slug, array $options = null)
     {
         $twig       = $this->get('twig');
         $cmsContext = $this->get('cms.context');
@@ -34,7 +36,7 @@ class EngineController extends Controller
         // Кеширование роутера.
         $cache_key = md5('cms_router'.$request->getBaseUrl().$slug);
         if (false == $router_data = $this->get('tagcache')->get($cache_key)) {
-            $router_data = $this->get('cms.router')->match($request->getBaseUrl(), $slug);
+            $router_data = $this->get('cms.router')->match($request->getBaseUrl(), $slug, HttpKernelInterface::MASTER_REQUEST, $options);
             $this->get('tagcache')->set($cache_key, $router_data, ['folder', 'node']);
         }
 

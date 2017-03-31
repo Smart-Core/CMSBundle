@@ -35,9 +35,10 @@ class EngineRouter
      * If the matcher can not find information, it must throw one of the exceptions documented
      * below.
      *
-     * @param  string $baseUrl
-     * @param  string $slug The path info to be parsed (raw format, i.e. not urldecoded)
-     * @param  int    $type
+     * @param string     $baseUrl
+     * @param string     $slug The path info to be parsed (raw format, i.e. not urldecoded)
+     * @param int        $type
+     * @param array|null $options
      *
      * @return array  Массив следующего формата:
      *      [folders]: array
@@ -62,7 +63,7 @@ class EngineRouter
      *
      * @api
      */
-    public function match($baseUrl, $slug = null, $type = HttpKernelInterface::MASTER_REQUEST)
+    public function match($baseUrl, $slug = null, $type = HttpKernelInterface::MASTER_REQUEST, array $options = null)
     {
         /** @var \Doctrine\ORM\EntityManager $em */
         $em = $this->container->get('doctrine.orm.entity_manager');
@@ -169,6 +170,11 @@ class EngineRouter
                                 'node_id'    => $router_node_id,
                                 'controller' => $this->matchModule($node->getModule(), $node_slug),
                             ];
+
+                            if (isset($options['nodes'][$router_node_id])) {
+                                $data['node_routing']['controller']['options'] = $options['nodes'][$router_node_id];
+                            }
+
                         } catch (ResourceNotFoundException $e) {
                             // Роутинг модуля не нашел запрошенного ресурса.
                         }

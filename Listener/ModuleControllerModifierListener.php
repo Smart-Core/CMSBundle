@@ -78,6 +78,10 @@ class ModuleControllerModifierListener
             /** @var $node \SmartCore\Bundle\CMSBundle\Entity\Node */
             $node = $request->attributes->get('_node');
 
+            //if (is_numeric($node)) {
+            //    $node = $this->engineNodeManager->get($node);
+            //}
+
             if ($this->engineModule->has($node->getModule())) {
                 $isValidRequiredParams = true;
                 foreach ($this->engineModule->get($node->getModule())->getRequiredParams() as $param) {
