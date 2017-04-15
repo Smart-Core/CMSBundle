@@ -192,6 +192,7 @@ abstract class CMSAppKernel extends BaseKernel
         //$bundles[] = new \Knp\RadBundle\KnpRadBundle();
         $bundles[] = new \Liip\ThemeBundle\LiipThemeBundle();
         $bundles[] = new \Liip\ImagineBundle\LiipImagineBundle();
+        $bundles[] = new \Misd\PhoneNumberBundle\MisdPhoneNumberBundle();
         $bundles[] = new \Mopa\Bundle\BootstrapBundle\MopaBootstrapBundle();
         $bundles[] = new \Oneup\FlysystemBundle\OneupFlysystemBundle();
         $bundles[] = new \RaulFraile\Bundle\LadybugBundle\RaulFraileLadybugBundle();
