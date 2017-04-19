@@ -139,13 +139,13 @@ fm_elfinder:
                     images:
                         driver: LocalFileSystem
                         path: images
-                        upload_allow: ['image/png', 'image/jpg', 'image/jpeg']
+                        upload_allow: ['image/png', 'image/jpg', 'image/jpeg', 'image/gif']
                         upload_deny: ['all']
                         upload_max_size: 2M
                     uploads:
                         driver: LocalFileSystem
                         path: "%uploads_dir%"
-                        upload_allow: ['image/png', 'image/jpg', 'image/jpeg']
+                        upload_allow: ['image/png', 'image/jpg', 'image/jpeg', 'image/gif', 'application/x-shockwave-flash', 'audio/mpeg3']
                         upload_deny: ['all']
                         upload_max_size: 50M
         tinymce4:
