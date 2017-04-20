@@ -8,26 +8,26 @@ imports:
 
 doctrine:
     orm:
-        metadata_cache_driver: %orm_cache_driver%
-        result_cache_driver: %orm_cache_driver%
-        query_cache_driver: %orm_cache_driver%
+        metadata_cache_driver: "%orm_cache_driver%"
+        result_cache_driver: "%orm_cache_driver%"
+        query_cache_driver: "%orm_cache_driver%"
 
 monolog:
     handlers:
         security:
             level:    warning
             type:     stream
-            path:     '%kernel.logs_dir%/security.log'
+            path:     "%kernel.logs_dir%/security.log"
             channels: [ security ]
         request:
             level:    warning
             type:     stream
-            path:     '%kernel.logs_dir%/request.log'
+            path:     "%kernel.logs_dir%/request.log"
             channels: [ request ]
         translation:
             level:    warning
             type:     stream
-            path:     '%kernel.logs_dir%/translation.log'
+            path:     "%kernel.logs_dir%/translation.log"
             channels: [ translation ]
         main:
             type:         fingers_crossed
@@ -36,5 +36,5 @@ monolog:
             channels:     ['!security', '!event', '!request', '!translation']
         nested:
             type:  stream
-            path:  %kernel.logs_dir%/%kernel.environment%.log
+            path:  "%kernel.logs_dir%/%kernel.environment%.log"
             level: warning

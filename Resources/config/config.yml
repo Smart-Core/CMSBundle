@@ -40,9 +40,9 @@ assetic:
     filters:
         cssrewrite: ~
         # closure:
-        #     jar: %kernel.root_dir%/java/compiler.jar
+        #     jar: "%kernel.root_dir%/java/compiler.jar"
         # yui_css:
-        #     jar: %kernel.root_dir%/java/yuicompressor-2.4.2.jar
+        #     jar: "%kernel.root_dir%/java/yuicompressor-2.4.2.jar"
 
 # Doctrine Configuration
 doctrine:
@@ -64,12 +64,12 @@ doctrine:
                 #options:
                     #1002: "SET NAMES 'UTF8' COLLATE 'utf8_unicode_ci'"
             #db2:
-                #driver:   %database2_driver%
-                #port:     %database2_port%
-                #dbname:   %database2_name%
-                #user:     %database2_user%
-                #password: %database2_password%
-                #unix_socket: %database2_socket%
+                #driver:   "%database2_driver%"
+                #port:     "%database2_port%"
+                #dbname:   "%database2_name%"
+                #user:     "%database2_user%"
+                #password: "%database2_password%"
+                #unix_socket: "%database2_socket%"
     orm:
         auto_generate_proxy_classes: "%kernel.debug%"
         auto_mapping: true
@@ -250,7 +250,7 @@ liip_theme:
     #load_controllers: false
     path_patterns:
         #app_resource:
-            #- %%site_dir%%/modules/%%bundle_name%%/%%module_theme%%/%%template%%
+            #- "%%site_dir%%/modules/%%bundle_name%%/%%module_theme%%/%%template%%"
         bundle_resource_dir:
             - "%%site_dir%%/modules/%%bundle_name%%/%%module_theme%%/%%template%%"
             - "%%cms_dir%%/%%bundle_name%%/%%override_path%%"
@@ -357,7 +357,7 @@ swiftmailer:
 
 tagcache:
     driver:        "%tagcache_driver%" # Memcache, Memcached, File, Sqlite, Apc, Nullcache
-    #debug:         %kernel.debug%
+    #debug:         "%kernel.debug%"
     namespace:     "%secret%"
     options:
         cache_dir: "%kernel.cache_dir%/smart_core_tagcache"
