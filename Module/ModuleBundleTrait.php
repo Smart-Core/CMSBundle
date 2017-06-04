@@ -84,7 +84,7 @@ trait ModuleBundleTrait
      */
     final public function hasAdmin()
     {
-        return $this->container->has('cms.router_module.'.$this->getShortName().'.admin') ? true : false;
+        return $this->container->has('cms.router_module.'.strtolower($this->getShortName()).'.admin') ? true : false;
     }
 
     /**
