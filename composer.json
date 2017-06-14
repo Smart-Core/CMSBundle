@@ -20,6 +20,8 @@
         "ext-xml": "*",
         "ext-json": "*",
 
+        "symfony/symfony": ">=3.3",
+
         "symfony/assetic-bundle": "~2.0@dev",
         "symfony/swiftmailer-bundle": "~2.0",
         "symfony/monolog-bundle": "*",

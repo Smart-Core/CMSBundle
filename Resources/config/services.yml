@@ -56,6 +56,18 @@ services:
         calls:
             - [ setContainer, [ '@service_container' ] ]
 # Listeners
+    controller_name_converter: # Заглушка для Symfony\Bundle\FrameworkBundle\Resources\config\web.xml т.к. этот сервис приватный.
+        class: SmartCore\Bundle\CMSBundle\Listener\ControllerNameParser
+        arguments: [ '@kernel']
+        tags:
+            - { name: monolog.logger, channel: request }
+
+    resolve_controller_name_subscriber:
+        class: SmartCore\Bundle\CMSBundle\Listener\ResolveControllerNameSubscriber
+        arguments: [ '@controller_name_converter', '@cms.node']
+        tags:
+            - { name: kernel.event_subscriber }
+
     cms.controller.listener:
         class: SmartCore\Bundle\CMSBundle\Listener\ModuleControllerModifierListener
         arguments: [ '@cms.context', '@cms.folder', '@cms.module', '@cms.node', '@settings', '@twig.loader' ]

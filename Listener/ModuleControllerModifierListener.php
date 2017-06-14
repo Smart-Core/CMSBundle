@@ -127,6 +127,7 @@ class ModuleControllerModifierListener
             date_default_timezone_set($this->settingsManager->get('cms:timezone'));
         }
 
+        /*
         if (HttpKernelInterface::SUB_REQUEST === $event->getRequestType()) {
             $controller = explode(':', $event->getRequest()->attributes->get('_controller'));
 
@@ -143,6 +144,7 @@ class ModuleControllerModifierListener
                 $event->getRequest()->attributes->set('_node', $node);
             }
         }
+        */
     }
 
     public function onResponse(FilterResponseEvent $event)
