@@ -190,6 +190,7 @@ abstract class CMSAppKernel extends BaseKernel
         //$bundles[] = new \Knp\Bundle\DisqusBundle\KnpDisqusBundle();
         $bundles[] = new \Knp\Bundle\MenuBundle\KnpMenuBundle();
         //$bundles[] = new \Knp\RadBundle\KnpRadBundle();
+        $bundles[] = new \Lsw\ApiCallerBundle\LswApiCallerBundle();
         $bundles[] = new \Liip\ThemeBundle\LiipThemeBundle();
         $bundles[] = new \Liip\ImagineBundle\LiipImagineBundle();
         $bundles[] = new \Misd\PhoneNumberBundle\MisdPhoneNumberBundle();
