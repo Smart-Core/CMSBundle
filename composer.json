@@ -65,6 +65,7 @@
         "helios-ag/fm-elfinder-php-connector": "*",
         "knplabs/knp-gaufrette-bundle": "*",
         "knplabs/knp-paginator-bundle": "*",
+        "leaseweb/api-caller-bundle": "*",
         "liip/imagine-bundle": "*",
         "liip/theme-bundle": "~1.0@dev",
         "misd/phone-number-bundle": "*",
