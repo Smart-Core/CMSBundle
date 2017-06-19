@@ -167,8 +167,8 @@ class AdminController extends Controller
         $data[] = [
             'title' => 'PHP Version',
             'value' => phpversion().' ('.php_uname('m').')',
-            'required' => '5.4.1',
-            'recomended' => '5.5.9+',
+            'required' => '7.1.0',
+            'recomended' => '7.1.6+',
             'hint' => '',
             'warning' => 0,
         ];
