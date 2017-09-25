@@ -2,6 +2,7 @@
 
 namespace SmartCore\Bundle\CMSBundle\Twig;
 
+use DeviceDetector\DeviceDetector;
 use SmartCore\Bundle\CMSBundle\CMSAppKernel;
 use SmartCore\Bundle\CMSBundle\Entity\Region;
 use Symfony\Component\DependencyInjection\ContainerAwareTrait;
@@ -33,6 +34,7 @@ class CmsExtension extends \Twig_Extension
             new \Twig_SimpleFunction('cms_get_notifications',  [$this, 'getNotifications']),
             new \Twig_SimpleFunction('cms_version',  [$this, 'getCMSKernelVersion']),
             new \Twig_SimpleFunction('cms_context_set',  [$this, 'cmsContextSet']),
+            new \Twig_SimpleFunction('cms_device',  [$this, 'getDevice']),
         ];
     }
 
@@ -116,6 +118,23 @@ class CmsExtension extends \Twig_Extension
     public function getCMSKernelVersion()
     {
         return CMSAppKernel::VERSION;
+    }
+
+    /**
+     * @return DeviceDetector
+     */
+    public function getDevice()
+    {
+        $userAgent = $this->container->get('request_stack')->getMasterRequest()->headers->get('user-agent');
+
+        $dd = new DeviceDetector($userAgent);
+        $dd->setCache(new \Doctrine\Common\Cache\PhpFileCache(
+            $this->container->getParameter('kernel.cache_dir').'/device_detector')
+        );
+        $dd->skipBotDetection();
+        $dd->parse();
+
+        return $dd;
     }
 
     /**
