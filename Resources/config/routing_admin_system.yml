@@ -7,7 +7,7 @@ cms_admin_backup_download:
     path: /backup/{filename}
     defaults:
         _controller: CMSBundle:Admin:backupDownload
-        slug: '.+'
+        filename: '.+'
 
 cms_admin_backup:
     path: /backup/
