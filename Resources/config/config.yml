@@ -108,7 +108,7 @@ doctrine_cache:
                 directory: "%kernel.cache_dir%/smart_core/settings"
 
 fm_elfinder:
-    assets_path: /bundles/components
+    assets_path: /components
     instances:
         default:
             locale: "%locale%"  # defaults to current request locale
