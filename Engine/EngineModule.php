@@ -29,8 +29,10 @@ class EngineModule
     {
         $this->kernel = $kernel;
 
-        foreach ($this->kernel->getModules() as $module_name => $_dummy) {
-            $this->modules[$module_name] = $this->kernel->getBundle($module_name.'Module');
+        foreach ($this->kernel->getModules() as $module_name => $data) {
+//            $reflector = new \ReflectionClass($data['class']);
+//            $this->modules[$module_name] = $this->kernel->getBundle($reflector->getShortName());
+            $this->modules[$module_name] = $this->kernel->getBundle($module_name.'ModuleBundle');
         }
     }
 

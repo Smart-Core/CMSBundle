@@ -39,7 +39,7 @@ class ModuleAdminRoutesLoader extends Loader implements LoaderInterface
         foreach ($this->container->getParameter('smart_core_cms.modules') as $moduleName => $module) {
             $resource = $module['path'].'/Resources/config/routing_admin.yml';
             if (file_exists($resource)) {
-                $importedRoutes = $this->import('@'.$moduleName.'Module/Resources/config/routing_admin.yml', 'yaml');
+                $importedRoutes = $this->import('@'.$moduleName.'ModuleBundle/Resources/config/routing_admin.yml', 'yaml');
                 $importedRoutes->addPrefix($moduleName);
 
                 $collection->addCollection($importedRoutes);

@@ -39,7 +39,7 @@ class NodeFormType extends AbstractType
         }
 
         $moduleThemes = [];
-        foreach ($this->cmsModule->getThemes($options['data']->getModule().'Module') as $theme) {
+        foreach ($this->cmsModule->getThemes($options['data']->getModule().'ModuleBundle') as $theme) {
             $moduleThemes[$theme] = $theme;
         }
 

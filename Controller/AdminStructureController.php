@@ -329,7 +329,7 @@ class AdminStructureController extends Controller
     {
         $node = $this->get('cms.node')->get($id);
 
-        $controller = $this->get('cms.router')->matchModuleAdmin($node->getModule(), '/'.$slug);
+        $controller = $this->get('cms.router')->matchModuleAdmin(strtolower($node->getModule()), '/'.$slug);
         $controller['_node'] = $node;
 
         $subRequest = $this->get('request_stack')->getCurrentRequest()->duplicate($request->query->all(), null, $controller);

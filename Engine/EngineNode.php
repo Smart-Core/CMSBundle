@@ -139,7 +139,11 @@ class EngineNode
 
         $node = $this->repository->find($id);
 
-        return $node->isDeleted() ? null : $node;
+        if (empty($node) or $node->isDeleted()) {
+            return null;
+        }
+
+        return $node;
     }
 
     /**
@@ -168,7 +172,7 @@ class EngineNode
     public function update(Node $node)
     {
         /** @var \SmartCore\Bundle\CMSBundle\Module\ModuleBundle $module */
-        $module = $this->kernel->getBundle($node->getModule().'Module');
+        $module = $this->kernel->getBundle($node->getModule().'ModuleBundle');
 
         // Свежесозданная нода выполняет свои действия, а также устанавливает параметры по умолчанию.
         if ($this->is_just_created) {
@@ -398,7 +402,7 @@ class EngineNode
     public function remove(Node $node)
     {
         try {
-            $module = $this->kernel->getBundle($node->getModule().'Module');
+            $module = $this->kernel->getBundle($node->getModule().'ModuleBundle');
 
             if ($module instanceof ModuleBundle) {
                 $module->deleteNode($node);

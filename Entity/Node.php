@@ -617,16 +617,16 @@ class Node implements \Serializable
     public function getController($controllerName = null, $actionName = 'index')
     {
         if (null !== $controllerName or 'index' !== $actionName) {
-            $className = (null === $controllerName) ? $this->module : $controllerName;
+            $className = empty($controllerName) ? $this->module : $controllerName;
 
             return [
-                '_controller' => $this->module.'Module:'.$className.':'.$actionName,
+                '_controller' => $this->module.'ModuleBundle:'.$className.':'.$actionName,
             ];
         }
 
         if (empty($this->controller)) {
             $className = (null === $controllerName) ? $this->module : $controllerName;
-            $this->controller['_controller'] = $this->module.'Module:'.$className.':'.$actionName;
+            $this->controller['_controller'] = $this->module.'ModuleBundle:'.$className.':'.$actionName;
         }
 
         return $this->controller;

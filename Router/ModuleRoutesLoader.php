@@ -43,7 +43,7 @@ class ModuleRoutesLoader extends Loader implements LoaderInterface
             $resource = $module['path'].'/Resources/config/routing.yml';
             if (file_exists($resource)) {
                 /** @var \Symfony\Component\Routing\RouteCollection $importedRoutes */
-                $importedRoutes = $this->import('@'.$moduleName.'Module/Resources/config/routing.yml', 'yaml');
+                $importedRoutes = $this->import('@'.$moduleName.'ModuleBundle/Resources/config/routing.yml', 'yaml');
                 $importedRoutes->addPrefix(
                     '/{_folderPath}/',
                     ['_folderPath' => ''],

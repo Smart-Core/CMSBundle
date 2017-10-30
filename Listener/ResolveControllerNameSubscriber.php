@@ -28,6 +28,10 @@ class ResolveControllerNameSubscriber extends BaseResolveControllerNameSubscribe
         if (is_numeric($parts[0])) {
             $node = $this->engineNodeManager->get($parts[0]);
 
+            if (is_null($node)) {
+                return null;
+            }
+
             $controllerName = isset($parts[1]) ? $parts[1] : null;
             $actionName = isset($parts[2]) ? $parts[2] : 'index';
 

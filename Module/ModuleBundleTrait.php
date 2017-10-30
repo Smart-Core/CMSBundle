@@ -67,14 +67,14 @@ trait ModuleBundleTrait
     }
 
     /**
-     * Получить короткое имя (без суффикса Module).
+     * Получить короткое имя (без суффикса ModuleBundle).
      * Сейчас используется только в админке для получения списка.
      *
      * @return string
      */
     public function getShortName()
     {
-        return substr($this->getName(), 0, -6);
+        return substr($this->getName(), 0, -12);
     }
 
     /**

@@ -55,7 +55,7 @@ class FilesystemLoader extends BaseFilesystemLoader
 
         $this->getTemplateLocator()->clearCacheForModule($prefix);
 
-        $prefix .= 'Module';
+        $prefix .= 'ModuleBundle';
 
         foreach ($this->cache as $tpl => $__dummy_path) {
             if (0 === strpos($tpl, $prefix.':')) {
