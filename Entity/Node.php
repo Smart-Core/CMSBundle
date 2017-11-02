@@ -3,6 +3,7 @@
 namespace SmartCore\Bundle\CMSBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Smart\CoreBundle\CMS\NodeInterface;
 use Smart\CoreBundle\Doctrine\ColumnTrait;
 use SmartCore\Bundle\CMSBundle\Tools\FrontControl;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -20,7 +21,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  *      }
  * )
  */
-class Node implements \Serializable
+class Node implements NodeInterface, \Serializable
 {
     // Получать элементы управления для тулбара.
     const TOOLBAR_NO                    = 0; // Никогда
@@ -71,13 +72,6 @@ class Node implements \Serializable
      * @Assert\NotBlank()
      */
     protected $folder;
-
-    /**
-     * Хранение folder_id для минимизации кол-ва запросов.
-     *
-     * @var int|null
-     */
-    protected $folder_id = null;
 
     /**
      * @var Region
@@ -146,6 +140,13 @@ class Node implements \Serializable
     // ================================= Unmapped properties =================================
 
     /**
+     * Хранение folder_id для минимизации кол-ва запросов.
+     *
+     * @var int|null
+     */
+    protected $folder_id = null;
+
+    /**
      * @var array
      */
     protected $controller = [];
@@ -168,7 +169,7 @@ class Node implements \Serializable
     protected $region_name = null;
 
     /**
-     * Constructor.
+     * Node constructor.
      */
     public function __construct()
     {
@@ -187,7 +188,7 @@ class Node implements \Serializable
      */
     public function serialize()
     {
-        $this->getFolderId();
+        $this->getFolderId(); // Lazy load
 
         return serialize([
             //return igbinary_serialize([
@@ -541,29 +542,13 @@ class Node implements \Serializable
     public function addFrontControl($name)
     {
         if (isset($this->front_controls[$name])) {
-            throw new \Exception("From control: '{$name}' already exists.");
+            throw new \Exception("Front control: '{$name}' already exists.");
         }
 
         $this->front_controls[$name] = new FrontControl();
         $this->front_controls[$name]->setDescription($this->getDescription());
 
         return $this->front_controls[$name];
-    }
-
-    /**
-     * @param array $front_controls
-     *
-     * @return $this
-     *
-     * @deprecated
-     */
-    public function setFrontControls($front_controls)
-    {
-        if ($this->isEip() and $this->getIsUseEip()) {
-            $this->front_controls = $front_controls;
-        }
-
-        return $this;
     }
 
     /**

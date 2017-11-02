@@ -61,14 +61,14 @@ $(document).ready(function () {
                         // сначала поиск действия по умолчанию.
                         $.each(node, function(index, value) {
                             /*
-                                if (value.descr != undefined) {
-                                    var button_title = value.descr;
+                                if (value.description != undefined) {
+                                    var button_title = value.description;
                                 } else {
                                     var button_title = '';
                                 }
                             */
                             /*
-                            if (value.default == true) {
+                            if (value.is_default == true) {
                                 node_buttons += '<li><a OnClick="window.location=\'' + value.uri + '?redirect_to=' + window.location.pathname + window.location.search
                                     + '\'" class="cms-tool-node"></a></li>';
                             }
@@ -82,21 +82,21 @@ $(document).ready(function () {
                         $.each(node, function(index, value) {
 
                             /*
-                                if (value.descr != undefined) {
-                                    var item_title = value.descr;
+                                if (value.description != undefined) {
+                                    var item_title = value.description;
                                 } else {
                                     var item_title = '';
                                 }
                             */
 
-                            if (value.default == true) {
+                            if (value.is_default == true) {
                                 node_buttons += '<li><a style="background-color: white;" href="' + value.uri + '?redirect_to=' + window.location.pathname + window.location.search + '">' + '<i style="height: 24px; width: 24px; display: block;" class="cms-tool-bar__icon cms-tool-bar__icon--edit-module"></i>' + '</a>';
                             } else {
                                 node_buttons += '<li><a style="background-color: white;" href="' + value.uri + '?redirect_to=' + window.location.pathname + window.location.search + '">' + '<i style="height: 24px; width: 24px; display: block;" class="cms-tool-bar__icon cms-tool-bar__icon--module"></i>' + '</a>';
                             }
 
                             /*
-                            if (value.default == true) {
+                            if (value.is_default == true) {
                                 node_buttons += '<strong>' + value.title + '</strong></a></li>';
                             } else {
                                 node_buttons += value.title + '</a></li>';

@@ -17,7 +17,7 @@ class FrontControl
     protected $isDefault;
 
     /**
-     * Constructor.
+     * FrontControl constructor.
      */
     public function __construct()
     {
@@ -72,13 +72,16 @@ class FrontControl
         return $this;
     }
 
+    /**
+     * @return array
+     */
     public function getData()
     {
         return [
-            'title'   => $this->title,
-            'descr'   => $this->description,
-            'default' => $this->isDefault,
-            'uri'     => $this->uri,
+            'title'         => $this->title,
+            'description'   => $this->description,
+            'is_default'    => $this->isDefault,
+            'uri'           => $this->uri,
         ];
     }
 }

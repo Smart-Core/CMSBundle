@@ -76,7 +76,7 @@ class EngineFolder
     /**
      * Получение полной ссылки на папку, указав её id. Если не указать ид папки, то вернётся текущий путь.
      *
-     * @param  mixed|null $data - Node, Folder, $folderId or NULL for current folder Id form cms.context.
+     * @param  Node|Folder|int|null     NULL for current folder Id form cms.context.
      *
      * @return string $uri
      *
