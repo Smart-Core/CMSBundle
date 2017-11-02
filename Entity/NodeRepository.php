@@ -97,7 +97,7 @@ class NodeRepository extends EntityRepository
         }
 
         $engine_nodes_table           = $this->_class->getTableName();
-        $engine_regions_inherit_table = $this->_em->getClassMetadata('CMSBundle:Region')->getAssociationMapping('folders')['joinTable']['name'];
+        $engine_regions_inherit_table = $this->_em->getClassMetadata(Region::class)->getAssociationMapping('folders')['joinTable']['name'];
 
         $sql = "
             SELECT n.id

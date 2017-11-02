@@ -6,6 +6,7 @@ use FOS\UserBundle\Event\FormEvent;
 use FOS\UserBundle\FOSUserEvents;
 use FOS\UserBundle\Event\GetResponseUserEvent;
 use Smart\CoreBundle\Controller\Controller;
+use SmartCore\Bundle\CMSBundle\Entity\Role;
 use SmartCore\Bundle\CMSBundle\Form\Type\RoleFormType;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -149,7 +150,7 @@ class AdminUserController extends Controller
 
         return $this->render('@CMS/AdminUser/roles.html.twig', [
             'form'  => $form->createView(),
-            'roles' => $em->getRepository('CMSBundle:Role')->findAll(),
+            'roles' => $em->getRepository(Role::class)->findAll(),
         ]);
     }
 
@@ -164,7 +165,7 @@ class AdminUserController extends Controller
         /** @var \Doctrine\ORM\EntityManager $em */
         $em = $this->getDoctrine()->getManager();
 
-        $role = $em->find('CMSBundle:Role', $id);
+        $role = $em->find(Role::class, $id);
 
         $form = $this->createForm(RoleFormType::class, $role);
 

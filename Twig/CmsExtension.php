@@ -4,6 +4,7 @@ namespace SmartCore\Bundle\CMSBundle\Twig;
 
 use DeviceDetector\DeviceDetector;
 use SmartCore\Bundle\CMSBundle\CMSAppKernel;
+use SmartCore\Bundle\CMSBundle\Entity\Node;
 use SmartCore\Bundle\CMSBundle\Entity\Region;
 use Symfony\Component\DependencyInjection\ContainerAwareTrait;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -91,7 +92,7 @@ class CmsExtension extends \Twig_Extension
         /** @var \Doctrine\ORM\EntityManager $em */
         $em = $this->container->get('doctrine.orm.entity_manager');
 
-        return $em->getRepository('CMSBundle:Node')->countInRegion($region);
+        return $em->getRepository(Node::class)->countInRegion($region);
     }
 
     /**

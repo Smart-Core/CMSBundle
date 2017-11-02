@@ -37,7 +37,7 @@ class EngineFolder
         $this->container  = $container;
         $this->cache      = $container->get('tagcache');
         $this->em         = $container->get('doctrine.orm.entity_manager');
-        $this->repository = $this->em->getRepository('CMSBundle:Folder');
+        $this->repository = $this->em->getRepository(Folder::class);
     }
 
     /**

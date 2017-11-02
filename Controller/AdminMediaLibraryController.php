@@ -20,8 +20,8 @@ class AdminMediaLibraryController extends Controller
     {
         $em = $this->get('doctrine.orm.entity_manager');
 
-        $collections = $em->getRepository('SmartMediaBundle:Collection')->findAll();
-        $storages    = $em->getRepository('SmartMediaBundle:Storage')->findAll();
+        $collections = $em->getRepository(Collection::class)->findAll();
+        $storages    = $em->getRepository(Storage::class)->findAll();
 
         return $this->render('@CMS/AdminMediaLibrary/index.html.twig', [
             'collections'   => $collections,
@@ -69,7 +69,7 @@ class AdminMediaLibraryController extends Controller
     public function editStorageAction(Request $request, $id)
     {
         $em = $this->get('doctrine.orm.entity_manager');
-        $storage = $em->find('SmartMediaBundle:Storage', $id);
+        $storage = $em->find(Storage::class, $id);
 
         if (empty($storage)) {
             return $this->redirectToRoute('cms_admin_config_media');
@@ -142,7 +142,7 @@ class AdminMediaLibraryController extends Controller
     public function editCollectionAction(Request $request, $id)
     {
         $em = $this->get('doctrine.orm.entity_manager');
-        $collection = $em->find('SmartMediaBundle:Collection', $id);
+        $collection = $em->find(Collection::class, $id);
 
         if (empty($collection)) {
             return $this->redirectToRoute('cms_admin_config_media');

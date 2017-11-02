@@ -3,6 +3,7 @@
 namespace SmartCore\Bundle\CMSBundle\Form\Tree;
 
 use Doctrine\Common\Persistence\ObjectManager;
+use SmartCore\Bundle\CMSBundle\Entity\Folder;
 use Symfony\Bridge\Doctrine\Form\ChoiceList\DoctrineChoiceLoader;
 use Symfony\Bridge\Doctrine\Form\Type\DoctrineType;
 use Symfony\Component\Form\ChoiceList\Factory\CachingFactoryDecorator;
@@ -71,7 +72,7 @@ class FolderTreeType extends DoctrineType
 
         $resolver->setDefaults([
             'choice_label'  => 'form_title',
-            'class'         => 'CMSBundle:Folder',
+            'class'         => Folder::class,
             'choice_loader' => $choiceLoader,
             'only_active'   => false,
         ]);

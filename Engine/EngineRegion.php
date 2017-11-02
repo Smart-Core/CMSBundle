@@ -32,7 +32,7 @@ class EngineRegion
     {
         $this->em = $em;
         $this->formFactory = $formFactory;
-        $this->repository  = $em->getRepository('CMSBundle:Region');
+        $this->repository  = $em->getRepository(Region::class);
     }
 
     /**

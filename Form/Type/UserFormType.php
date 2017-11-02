@@ -3,6 +3,7 @@
 namespace SmartCore\Bundle\CMSBundle\Form\Type;
 
 use Doctrine\ORM\EntityManager;
+use SmartCore\Bundle\CMSBundle\Entity\Role;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
@@ -32,7 +33,7 @@ class UserFormType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $roles = [];
-        foreach ($this->em->getRepository('CMSBundle:Role')->findAll() as $role) {
+        foreach ($this->em->getRepository(Role::class)->findAll() as $role) {
             $roles[$role->getName()] = $role->getName();
         }
 

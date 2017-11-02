@@ -2,6 +2,7 @@
 
 namespace SmartCore\Bundle\CMSBundle\Engine;
 
+use SmartCore\Bundle\CMSBundle\Entity\Folder;
 use Symfony\Component\DependencyInjection\ContainerAwareTrait;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -107,7 +108,7 @@ class EngineRouter
                 break;
             }
 
-            $folder = $em->getRepository('CMSBundle:Folder')->findOneBy([
+            $folder = $em->getRepository(Folder::class)->findOneBy([
                 'is_active'     => true,
                 'uri_part'      => empty($segment) ? null : $segment,
                 'parent_folder' => $parent_folder,

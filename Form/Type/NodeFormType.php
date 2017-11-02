@@ -7,6 +7,7 @@ use Smart\CoreBundle\Form\DataTransformer\HtmlTransformer;
 use SmartCore\Bundle\CMSBundle\Container;
 use SmartCore\Bundle\CMSBundle\Engine\EngineModule;
 use SmartCore\Bundle\CMSBundle\Entity\Node;
+use SmartCore\Bundle\CMSBundle\Entity\Region;
 use SmartCore\Bundle\CMSBundle\Form\Tree\FolderTreeType;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
@@ -50,7 +51,7 @@ class NodeFormType extends AbstractType
             ])
             ->add('folder', FolderTreeType::class)
             ->add('region', EntityType::class, [
-                'class' => 'CMSBundle:Region',
+                'class' => Region::class,
                 'query_builder' => function (EntityRepository $er) {
                     return $er->createQueryBuilder('b')->orderBy('b.position', 'ASC');
                 },

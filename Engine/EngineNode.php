@@ -85,7 +85,7 @@ class EngineNode
         $this->em           = $em;
         $this->formFactory  = $formFactory;
         $this->kernel       = $kernel;
-        $this->repository   = $em->getRepository('CMSBundle:Node');
+        $this->repository   = $em->getRepository(Node::class);
         $this->tagcache     = $tagcache;
     }
 
@@ -285,9 +285,9 @@ class EngineNode
             */
 
             if ($folder->getId() == $this->context->getCurrentFolderId()) { // Обработка текущей папки.
-                $result = $this->em->getRepository('CMSBundle:Node')->getInFolder($folder, $used_nodes);
+                $result = $this->repository->getInFolder($folder, $used_nodes);
             } elseif ($folder->getRegions()->count() > 0) { // В этой папке есть ноды, которые наследуются...
-                $result = $this->em->getRepository('CMSBundle:Node')->getInheritedInFolder($folder);
+                $result = $this->repository->getInheritedInFolder($folder);
             } else { // В папке нет нод для сборки.
                 continue;
             }

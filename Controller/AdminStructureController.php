@@ -36,8 +36,8 @@ class AdminStructureController extends Controller
         $em = $this->get('doctrine.orm.entity_manager');
 
         return $this->render('CMSBundle:AdminStructure:trash.html.twig', [
-            'deleted_folders' => $em->getRepository('CMSBundle:Folder')->findDeleted(),
-            'deleted_nodes'   => $em->getRepository('CMSBundle:Node')->findDeleted(),
+            'deleted_folders' => $em->getRepository(Folder::class)->findDeleted(),
+            'deleted_nodes'   => $em->getRepository(Node::class)->findDeleted(),
         ]);
     }
 
