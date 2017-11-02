@@ -86,7 +86,7 @@ class AdminAppearanceController extends Controller
     {
         $em = $this->get('doctrine.orm.entity_manager');
 
-        $histories = $em->getRepository('CMSBundle:AppearanceHistory')->findBy([
+        $histories = $em->getRepository(AppearanceHistory::class)->findBy([
             'path'       => '/Resources/views/',
             'filename'   => $name.'.html.twig',
         ], ['created_at' => 'DESC']);
@@ -106,7 +106,7 @@ class AdminAppearanceController extends Controller
     {
         $em = $this->get('doctrine.orm.entity_manager');
 
-        $histories = $em->getRepository('CMSBundle:AppearanceHistory')->findBy([
+        $histories = $em->getRepository(AppearanceHistory::class)->findBy([
             'path'       => '/Resources/public/css/',
             'filename'   => $name,
         ], ['created_at' => 'DESC']);
@@ -126,7 +126,7 @@ class AdminAppearanceController extends Controller
     {
         $em = $this->get('doctrine.orm.entity_manager');
 
-        $history = $em->getRepository('CMSBundle:AppearanceHistory')->find($id);
+        $history = $em->getRepository(AppearanceHistory::class)->find($id);
 
         if (empty($history)) {
             throw $this->createNotFoundException();
@@ -146,7 +146,7 @@ class AdminAppearanceController extends Controller
     {
         $em = $this->get('doctrine.orm.entity_manager');
 
-        $history = $em->getRepository('CMSBundle:AppearanceHistory')->find($id);
+        $history = $em->getRepository(AppearanceHistory::class)->find($id);
 
         if (empty($history)) {
             throw $this->createNotFoundException();
