@@ -30,6 +30,7 @@ class CmsExtension extends \Twig_Extension
     {
         return [
             new \Twig_SimpleFunction('cms_current_folder',  [$this, 'getCurrentFolder']),
+            new \Twig_SimpleFunction('cms_folder',  [$this, 'getFolder']),
             new \Twig_SimpleFunction('cms_folder_path',  [$this, 'generateFolderPath']),
             new \Twig_SimpleFunction('cms_nodes_count_in_region',  [$this, 'nodesCountInRegion']),
             new \Twig_SimpleFunction('cms_get_notifications',  [$this, 'getNotifications']),
@@ -58,6 +59,29 @@ class CmsExtension extends \Twig_Extension
     public function getCurrentFolder($field = null)
     {
         $folder = $this->container->get('cms.folder')->get($this->container->get('cms.context')->getCurrentFolderId());
+
+        if (!empty($field)) {
+            $method = 'get'.ucfirst($field);
+
+            if (method_exists($folder, $method)) {
+                return $folder->$method();
+            }
+        }
+
+        return $folder;
+    }
+
+    /**
+     * Получение папки.
+     *
+     * @param int $folderId
+     * @param string|null $field
+     *
+     * @return null|\SmartCore\Bundle\CMSBundle\Entity\Folder
+     */
+    public function getFolder($folderId, $field = null)
+    {
+        $folder = $this->container->get('cms.folder')->get($folderId);
 
         if (!empty($field)) {
             $method = 'get'.ucfirst($field);
