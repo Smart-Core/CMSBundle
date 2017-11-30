@@ -9,6 +9,13 @@ parameters:
     liip_theme.templating_locator.class: SmartCore\Bundle\CMSBundle\Twig\Locator\TemplateLocator
     liip_theme.filesystem_loader.class: SmartCore\Bundle\CMSBundle\Twig\Loader\FilesystemLoader
 
+cache_adapter:
+    providers:
+        smart_felib:
+            factory: "cache.factory.filesystem"
+            options:
+                flysystem_service: 'oneup_flysystem.local_filesystem'
+
 framework:
     annotations:
         debug:       "%kernel.debug%"
