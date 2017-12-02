@@ -29,3 +29,6 @@ languages:
         en: Английский
     value: [ru]
     personalize: true
+test_param:
+    value: 123
+    hidden: true
