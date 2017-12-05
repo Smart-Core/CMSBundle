@@ -81,6 +81,7 @@
         "smart-core/ladybug-bundle": "~0.7",
 
         "sonata-project/intl-bundle": "~2.0@dev",
+        "vich/uploader-bundle": "^1.6",
         "yamilovs/sypex-geo-bundle": "*",
         "whiteoctober/breadcrumbs-bundle": "~1.0@dev",
         "white-october/pagerfanta-bundle": "~1.0@dev",
