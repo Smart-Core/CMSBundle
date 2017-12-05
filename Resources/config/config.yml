@@ -377,3 +377,6 @@ twig:
     debug:            "%kernel.debug%"
     strict_variables: false
     autoescape:       false
+
+vich_uploader:
+    db_driver: orm
