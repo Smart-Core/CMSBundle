@@ -23,6 +23,7 @@ class AdminMenu implements ContainerAwareInterface
         $menu = $factory->createItem('admin_main');
 
         $menu->setChildrenAttribute('class', isset($options['class']) ? $options['class'] : 'sidebar-menu'); // nav navbar-nav
+        $menu->setChildrenAttribute('data-widget', 'tree');
         $menu->addChild('Dashboard',     ['route' => 'cms_admin_index'])->setExtras(['beforeCode' => '<i class="fa fa-dashboard"></i>']);
 
         foreach ($this->container->get('cms.module')->all() as $module) {
