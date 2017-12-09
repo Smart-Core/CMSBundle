@@ -1,0 +1,14 @@
+.cms-tool-bar__icon {
+    background-repeat: no-repeat;
+    display: inline-block;
+    width: 1em;
+    height: 1em;
+    background-size: 100% 100%;
+
+    {{#items}}
+    &.cms-tool-bar__icon--{{slug}} {
+        background-image: url('{{{datauri}}}');
+    }
+
+    {{/items}}
+}

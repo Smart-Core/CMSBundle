@@ -8,8 +8,8 @@ $(document).ready(function () {
     }
 
     function renderToolbar() {
-        $('body').css('padding-top', '2.5em')
-            .prepend('<div class="cms-tool-bar--new">' +
+        $('body').css('padding-top', '32px')
+            .prepend('<div class="cms-tool-bar">' +
                 '<div class="cms-tool-bar__container">' +
                 '<div class="cms-tool-bar__entity cms-tool-bar__menu-button">' +
                 '<span></span>' +
@@ -90,9 +90,9 @@ $(document).ready(function () {
                             */
 
                             if (value.is_default == true) {
-                                node_buttons += '<li><a style="background-color: white;" href="' + value.uri + '?redirect_to=' + window.location.pathname + window.location.search + '">' + '<i style="height: 24px; width: 24px; display: block;" class="cms-tool-bar__icon cms-tool-bar__icon--edit-module"></i>' + '</a>';
+                                node_buttons += '<li><a style="background-color: white;" href="' + value.uri + '?redirect_to=' + window.location.pathname + window.location.search + '">' + '<i style="height: 16px; width: 16px; display: block;" class="cms-tool-bar__icon cms-tool-bar__icon--edit-module"></i>' + '</a>';
                             } else {
-                                node_buttons += '<li><a style="background-color: white;" href="' + value.uri + '?redirect_to=' + window.location.pathname + window.location.search + '">' + '<i style="height: 24px; width: 24px; display: block;" class="cms-tool-bar__icon cms-tool-bar__icon--module"></i>' + '</a>';
+                                node_buttons += '<li><a style="background-color: white;" href="' + value.uri + '?redirect_to=' + window.location.pathname + window.location.search + '">' + '<i style="height: 16px; width: 16px; display: block;" class="cms-tool-bar__icon cms-tool-bar__icon--module"></i>' + '</a>';
                             }
 
                             /*
