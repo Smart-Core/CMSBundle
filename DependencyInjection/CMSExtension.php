@@ -1,8 +1,9 @@
 <?php
 
+declare(strict_types=1);
+
 namespace SmartCore\Bundle\CMSBundle\DependencyInjection;
 
-//use Symfony\Component\Config\Definition\Processor;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;

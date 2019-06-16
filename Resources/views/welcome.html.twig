@@ -1,26 +1,16 @@
-
 {% extends '@Html/base.html.twig' %}
 
 {% block title %}{{ cms_html_title({
-    'site_full_name': 'Welcome to Smart Core CMS (based on Symfony2 Framework)',
+    'site_full_name': 'Welcome to Smart Core CMS (based on Symfony Framework)',
 })
 }}{% endblock %}
 
-{% if is_setting('cms:twitter_bootstrap_version', 3) %}
-    {% set felib = felib_use('bootstrap', '3') %}
-{% else %}
-    {% set felib = felib_use('bootstrap', '2') %}
-{% endif %}
+{% set felib = felib_use('bootstrap', '3') %}
 
 {% block styles %}
     {{ parent() }}
     <style type="text/css">
-        {% if is_setting('cms:twitter_bootstrap_version', 3) %}
-            @import url({{ asset('bundles/cms/css/bootstrap-theme-smart-core.css') }});
-        {% else %}
-            @import url({{ asset('bundles/felib/bootstrap/2/css/bootstrap-responsive.css') }});
-            {#@import url({{ asset('bundles/felib/bootstrap/2/css/bootstrap-responsive.min.css') }});#}
-        {% endif %}
+        @import url({{ asset('bundles/cms/css/bootstrap-theme-smart-core.css') }});
 
         body {
             margin-top: 40px;
