@@ -1,5 +1,5 @@
 {
-    "name": "smart-core/cms-bundle",
+    "name": "smart-core/cms-bundle-old",
     "description": "Base Bundle of Smart Core CMS.",
     "keywords": ["cmf", "cms", "bundle", "symfony2"],
     "type": "symfony-bundle",
